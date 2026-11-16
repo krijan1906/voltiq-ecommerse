@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Bank transfer instructions — Voltiq{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+  <div class="container">
+    <div class="payment-card">
+      <div class="payment-card-head">
+        <h1>Complete your bank transfer</h1>
+        <p>Order {{ order.order_number }} is reserved while we await your deposit.</p>
+      </div>
+      <div class="payment-card-body">
+        <div class="payment-amount">
+          <span>Amount to transfer</span>
+          <strong>{{ payment.amount|npr }}</strong>
+        </div>
+
+        {% if bank_details.account_number %}
+          <div class="bank-details">
+            <div class="bank-row"><span>Bank</span><strong>{{ bank_details.bank_name }}</strong></div>
+            <div class="bank-row"><span>Account name</span><strong>{{ bank_details.account_name }}</strong></div>
+            <div class="bank-row"><span>Account number</span><strong>{{ bank_details.account_number }}</strong></div>
+            <div class="bank-row"><span>Branch</span><strong>{{ bank_details.branch }}</strong></div>
+            {% if bank_details.swift %}<div class="bank-row"><span>SWIFT / BIC</span><strong>{{ bank_details.swift }}</strong></div>{% endif %}
+            <div class="bank-row"><span>Payment reference</span><strong style="font-family:var(--font-mono,monospace);font-size:.8rem">{{ payment.transaction_ref }}</strong></div>
+          </div>
+        {% else %}
+          <div class="alert alert-warning">
+            {% icon "alert-circle" %}
+            <div>
+              <strong>Bank details are being finalised.</strong>
+              Our team will email the account details to <strong>{{ order.email }}</strong> shortly.
+              You can also contact support quoting order <strong>{{ order.order_number }}</strong>.
+            </div>
+          </div>
+        {% endif %}
+
+        <h3 style="font-size:.95rem;margin-bottom:8px">How it works</h3>
+        <ol class="muted" style="font-size:.84rem;line-height:1.8;padding-left:18px;margin-bottom:18px">
+          <li>Transfer the exact amount using the reference above (mobile banking, ATM or branch deposit).</li>
+          <li>{{ bank_details.support_note }}</li>
+          <li>Our team verifies the deposit — usually within one business day — and confirms your order by email.</li>
+        </ol>
+
+        <div class="alert alert-info">
+          {% icon "shield" %}
+          <div>
+            <strong>Awaiting payment verification.</strong>
+            Do not send cash by post. Voltiq will never ask for your internet banking password, PIN or OTP.
+          </div>
+        </div>
+      </div>
+      <div class="payment-card-foot">
+        <a class="btn btn-outline" href="{% url 'orders:detail' order.order_number %}">View order</a>
+        <a class="btn btn-primary" href="{% url 'core:contact' %}">{% icon "headset" %} I need help</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

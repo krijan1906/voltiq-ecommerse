@@ -1,0 +1,35 @@
+{% load voltiq %}
+<aside class="account-sidebar" aria-label="Account navigation">
+  <div class="account-user">
+    <span class="avatar">
+      {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.initials }}{% endif %}
+    </span>
+    <div>
+      <strong>{{ user.get_full_name }}</strong>
+      <small>{{ user.email }}</small>
+    </div>
+  </div>
+  <nav class="account-nav">
+    <a href="{% url 'accounts:dashboard' %}" class="{% if active == 'dashboard' %}is-active{% endif %}">{% icon "dashboard" %} Overview</a>
+    <a href="{% url 'orders:list' %}" class="{% if active == 'orders' %}is-active{% endif %}">{% icon "package" %} My orders</a>
+    <a href="{% url 'wishlist:detail' %}" class="{% if active == 'wishlist' %}is-active{% endif %}">{% icon "heart" %} Wishlist</a>
+    <a href="{% url 'accounts:addresses' %}" class="{% if active == 'addresses' %}is-active{% endif %}">{% icon "map-pin" %} Addresses</a>
+    <a href="{% url 'accounts:payments' %}" class="{% if active == 'payments' %}is-active{% endif %}">{% icon "credit-card" %} Payments</a>
+    <a href="{% url 'accounts:notifications' %}" class="{% if active == 'notifications' %}is-active{% endif %}">
+      {% icon "bell" %} Notifications
+      {% if user.unread_notifications %}<span class="badge badge-info nav-count">{{ user.unread_notifications }}</span>{% endif %}
+    </a>
+    <div class="nav-sep"></div>
+    <a href="{% url 'accounts:profile' %}" class="{% if active == 'profile' %}is-active{% endif %}">{% icon "user" %} Profile settings</a>
+    <a href="{% url 'accounts:password_change' %}" class="{% if active == 'password' %}is-active{% endif %}">{% icon "lock" %} Password &amp; security</a>
+    {% if user.is_staff %}
+      <div class="nav-sep"></div>
+      <a href="{% url 'dashboard:overview' %}">{% icon "chart" %} Staff dashboard</a>
+    {% endif %}
+    <div class="nav-sep"></div>
+    <form action="{% url 'accounts:logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="menu-button" style="width:100%">{% icon "logout" %} Sign out</button>
+    </form>
+  </nav>
+</aside>

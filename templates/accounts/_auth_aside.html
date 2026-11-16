@@ -1,0 +1,25 @@
+{% load voltiq %}
+<aside class="auth-aside">
+  <div>
+    <a class="brand brand-light" href="{% url 'core:home' %}">
+      <span class="brand-mark">{% icon "zap" %}</span>
+      <span class="brand-text">VOLTI<span>Q</span></span>
+    </a>
+    <span class="eyebrow eyebrow-light">{% icon "sparkles" %} {{ aside_eyebrow|default:"Premium electronics, powered for life" }}</span>
+    <h2>{{ aside_title|default:"Gear that keeps up with your ambition." }}</h2>
+    <p>{{ aside_text|default:"Genuine products, honest NPR pricing and expert support from a team that actually uses the tech." }}</p>
+    <div class="auth-points">
+      <div class="auth-point">{% icon "shield" %}<span>Genuine stock with manufacturer warranty</span></div>
+      <div class="auth-point">{% icon "truck" %}<span>Fast, tracked delivery across all 7 provinces</span></div>
+      <div class="auth-point">{% icon "lock" %}<span>Secure eSewa, Khalti, bank &amp; COD payments</span></div>
+      <div class="auth-point">{% icon "headset" %}<span>Real after-sales support in Nepal</span></div>
+    </div>
+  </div>
+  <div class="auth-testimonial">
+    <p>“Ordered a laptop on Tuesday, had it in Pokhara by Thursday. The spec advice saved me from overspending.”</p>
+    <div class="testimonial-author">
+      <strong>Anisha R.</strong>
+      <small>Verified customer · Pokhara</small>
+    </div>
+  </div>
+</aside>

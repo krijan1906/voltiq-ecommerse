@@ -1,0 +1,198 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}{% if product %}Editing product #{{ product.pk }}{% else %}Create a new catalogue listing{% endif %}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:product_list' %}">{% icon "arrow-left" %} All products</a>
+  {% if product %}<a class="btn btn-ghost btn-sm" href="{{ product.get_absolute_url }}" target="_blank" rel="noopener">{% icon "external-link" %} View live</a>{% endif %}
+{% endblock %}
+
+{% block dash_content %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+
+  <div class="dash-grid" style="grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)">
+    <div>
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Basic information</h3></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.name wide=1 %}
+            {% include "dashboard/_field.html" with field=form.sku %}
+            {% include "dashboard/_field.html" with field=form.brand %}
+            {% include "dashboard/_field.html" with field=form.category %}
+            {% include "dashboard/_field.html" with field=form.condition %}
+            {% include "dashboard/_field.html" with field=form.color %}
+            {% include "dashboard/_field.html" with field=form.short_description wide=1 %}
+            {% include "dashboard/_field.html" with field=form.description wide=1 %}
+            {% include "dashboard/_field.html" with field=form.highlights wide=1 %}
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Pricing &amp; stock</h3></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.price %}
+            {% include "dashboard/_field.html" with field=form.discount_price %}
+            {% include "dashboard/_field.html" with field=form.cost_price %}
+            {% include "dashboard/_field.html" with field=form.stock_quantity %}
+            {% include "dashboard/_field.html" with field=form.low_stock_threshold %}
+            {% include "dashboard/_field.html" with field=form.warranty_info %}
+          </div>
+          {% if product %}
+            <div class="alert alert-info" style="margin-top:14px">
+              {% icon "info" %}
+              <div>Stock changes made here bypass the inventory audit trail. Use
+                <a href="{% url 'dashboard:inventory_adjust' product.pk %}">inventory adjustment</a> for audited corrections.</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Specifications &amp; facets</h3><p>Used for filtering and the product spec table</p></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.processor %}
+            {% include "dashboard/_field.html" with field=form.ram %}
+            {% include "dashboard/_field.html" with field=form.storage %}
+            {% include "dashboard/_field.html" with field=form.gpu %}
+            {% include "dashboard/_field.html" with field=form.display_size %}
+            {% include "dashboard/_field.html" with field=form.operating_system %}
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <div><h3>Detailed specification rows</h3><p>Category-specific fields shown on the product page</p></div>
+          <span class="badge badge-muted">{{ formset.total_form_count }} rows</span>
+        </div>
+        <div class="dash-card-body">
+          {{ formset.management_form }}
+          {% if formset.non_form_errors %}<div class="form-error-list">{{ formset.non_form_errors }}</div>{% endif %}
+          <div class="dash-formset">
+            <div class="dash-formset-head"><span>Name</span><span>Value</span><span>Unit</span><span>Order</span><span></span></div>
+            {% for row in formset %}
+              <div class="dash-formset-row">
+                {{ row.id }}
+                {{ row.name }}
+                {{ row.value }}
+                {{ row.unit }}
+                {{ row.sort_order }}
+                {% if row.DELETE %}
+                  <label class="dash-formset-del">{{ row.DELETE }} Remove</label>
+                {% endif %}
+              </div>
+              {% if row.errors %}<div class="form-error-list" style="margin:0">{{ row.errors }}</div>{% endif %}
+            {% endfor %}
+          </div>
+          {% if not category_hint %}<p class="dash-help" style="margin-top:10px">Leave blank rows empty — only filled rows are saved.</p>{% endif %}
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Search engine listing</h3><p>Optional — defaults to the product name and short description</p></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.meta_title wide=1 %}
+            {% include "dashboard/_field.html" with field=form.meta_description wide=1 %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Publishing</h3></div>
+        <div class="dash-form">
+          {% include "dashboard/_field.html" with field=form.is_active %}
+          {% include "dashboard/_field.html" with field=form.is_featured %}
+          {% include "dashboard/_field.html" with field=form.free_shipping %}
+          {% include "dashboard/_field.html" with field=form.allow_backorder %}
+        </div>
+        <div class="dash-form-foot">
+          <button class="btn btn-primary" type="submit">{% if product %}Save changes{% else %}Create product{% endif %}</button>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Product images</h3><p>Upload after saving — the first image becomes primary</p></div>
+        <div class="dash-card-body">
+          {% include "dashboard/_field.html" with field=form.images %}
+          <p class="dash-help" style="margin-top:8px">JPG, PNG or WEBP. Up to 8 images per product, max 5 MB each.</p>
+        </div>
+        <div class="dash-form-foot">
+          <button class="btn btn-primary" type="submit">{% if product %}Save changes{% else %}Create product{% endif %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% if product %}
+  <div class="dash-grid-2">
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Upload more images</h3></div>
+      <div class="dash-card-body">
+        <form action="{% url 'dashboard:product_image_upload' product.pk %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if image_form %}{% include "dashboard/_field.html" with field=image_form.images %}{% endif %}
+          <button class="btn btn-outline btn-sm" type="submit">{% icon "image" %} Upload images</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Danger zone</h3></div>
+      <div class="dash-card-body">
+        <p class="dash-help">Deactivating hides the product from the storefront. Deleting is permanent and removes its images.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <form action="{% url 'dashboard:product_toggle' product.pk %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-outline btn-sm" type="submit">{% if product.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+          </form>
+          <form action="{% url 'dashboard:product_delete' product.pk %}" method="post" data-confirm="Delete this product permanently?">
+            {% csrf_token %}
+            <button class="btn btn-ghost btn-sm text-red" type="submit">{% icon "trash" %} Delete product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Current images</h3><p>{{ product.images.count }} image{{ product.images.count|pluralize }} uploaded</p></div>
+    <div class="dash-card-body">
+      {% if product.images.all %}
+        <div class="dash-image-grid">
+          {% for image in product.images.all %}
+            <div class="dash-image-card">
+              <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
+              {% if image.is_primary %}<span class="badge badge-info">Primary</span>{% endif %}
+              <div class="dash-image-actions">
+                {% if not image.is_primary %}
+                  <form action="{% url 'dashboard:product_image_primary' product.pk image.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Make primary</button>
+                  </form>
+                {% endif %}
+                <form action="{% url 'dashboard:product_image_delete' product.pk image.pk %}" method="post" data-confirm="Remove this image?">
+                  {% csrf_token %}
+                  <button class="danger" type="submit">Delete</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="dash-help">No images uploaded yet. Products without images show a placeholder.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

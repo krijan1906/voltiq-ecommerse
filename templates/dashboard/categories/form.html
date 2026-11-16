@@ -1,0 +1,35 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Categories organise the storefront navigation and filters{% endblock %}
+{% block topbar_actions %}<a class="btn btn-outline btn-sm" href="{% url 'dashboard:category_list' %}">{% icon "arrow-left" %} All categories</a>{% endblock %}
+
+{% block dash_content %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Category details</h3></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.name %}
+        {% include "dashboard/_field.html" with field=form.parent %}
+        {% include "dashboard/_field.html" with field=form.icon %}
+        {% include "dashboard/_field.html" with field=form.sort_order %}
+        {% include "dashboard/_field.html" with field=form.description wide=1 %}
+        {% include "dashboard/_field.html" with field=form.image %}
+        <div class="form-group">
+          {% include "dashboard/_field.html" with field=form.is_active %}
+          {% include "dashboard/_field.html" with field=form.is_featured %}
+        </div>
+      </div>
+      <p class="dash-help">The icon accepts a name from the built-in icon set (e.g. <code>laptop</code>, <code>smartphone</code>, <code>gamepad</code>).</p>
+    </div>
+    <div class="dash-form-foot">
+      <a class="btn btn-ghost" href="{% url 'dashboard:category_list' %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">{% if category %}Save category{% else %}Create category{% endif %}</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

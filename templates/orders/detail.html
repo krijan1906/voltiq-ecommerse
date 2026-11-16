@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Order {{ order.order_number }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="orders-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <a href="{% url 'orders:list' %}">Orders</a>{% icon "chevron-right" %}
+      <span class="current">{{ order.order_number }}</span>
+    </nav>
+
+    <div class="order-detail-head">
+      <div>
+        <h1>Order {{ order.order_number }}</h1>
+        <p>Placed {{ order.created_at|date:"d M Y, g:i A" }} · {{ order.get_payment_method_display }}</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        {% include "orders/_status_badge.html" with order=order %}
+        <a class="btn btn-outline btn-sm" href="{% url 'orders:invoice' order.order_number %}">{% icon "download" %} Invoice</a>
+        <a class="btn btn-outline btn-sm" href="{% url 'orders:track' order.order_number %}">{% icon "truck" %} Track</a>
+      </div>
+    </div>
+
+    <div class="order-detail-layout">
+      <div>
+        <section class="order-panel">
+          <div class="order-panel-head">
+            <h2>Items ({{ order.item_count }})</h2>
+            <span class="badge {% if order.payment_status == 'paid' %}badge-success{% elif order.payment_status == 'failed' %}badge-danger{% else %}badge-warn{% endif %}">
+              {{ order.get_payment_status_display }}
+            </span>
+          </div>
+          <div class="order-panel-body">
+            {% for item in order.items.all %}
+              <div class="order-line">
+                <span class="order-line-media">
+                  {% if item.image_url %}
+                    <img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">
+                  {% else %}
+                    {% icon "laptop" %}
+                  {% endif %}
+                </span>
+                <span class="order-line-body">
+                  <strong>
+                    {% if item.product %}<a href="{{ item.product.get_absolute_url }}">{{ item.product_name }}</a>{% else %}{{ item.product_name }}{% endif %}
+                  </strong>
+                  <small>Qty {{ item.quantity }} · {{ item.sku }}{% if item.product and item.product.is_active %} · <a href="{{ item.product.get_absolute_url }}#reviews">Write a review</a>{% endif %}</small>
+                </span>
+                <span class="order-line-price">
+                  {{ item.line_total|npr }}
+                  <small>{{ item.unit_price|npr }} each</small>
+                </span>
+              </div>
+            {% endfor %}
+
+            <div style="margin-top:18px">
+              <div class="summary-row"><span>Subtotal</span><span>{{ order.subtotal|npr }}</span></div>
+              {% if order.discount_amount %}
+                <div class="summary-row discount"><span>Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</span><span>-{{ order.discount_amount|npr }}</span></div>
+              {% endif %}
+              <div class="summary-row"><span>Delivery — {{ order.shipping_method_name|default:"Standard" }}</span><span>{% if order.shipping_fee %}{{ order.shipping_fee|npr }}{% else %}Free{% endif %}</span></div>
+              {% if order.tax_amount %}<div class="summary-row"><span>Tax</span><span>{{ order.tax_amount|npr }}</span></div>{% endif %}
+              <div class="summary-row total"><span>Total</span><span>{{ order.total|npr }}</span></div>
+            </div>
+          </div>
+        </section>
+
+        {% if order.status_history.all %}
+          <section class="order-panel">
+            <div class="order-panel-head"><h2>Order activity</h2></div>
+            <div class="order-panel-body">
+              <div class="timeline">
+                {% for event in order.status_history.all %}
+                  <div class="timeline-item {% if forloop.last %}is-current{% else %}is-done{% endif %}">
+                    <strong>{{ event.get_status_display }}</strong>
+                    <small>{{ event.created_at|date:"d M Y, g:i A" }}{% if event.changed_by %} · by {{ event.changed_by.get_short_name }}{% endif %}</small>
+                    {% if event.note %}<p>{{ event.note }}</p>{% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </section>
+        {% endif %}
+
+        {% if order.customer_notes %}
+          <section class="order-panel">
+            <div class="order-panel-head"><h2>Your notes</h2></div>
+            <div class="order-panel-body"><p class="muted" style="margin:0;font-size:.85rem">{{ order.customer_notes|linebreaksbr }}</p></div>
+          </section>
+        {% endif %}
+      </div>
+
+      <aside class="order-side-summary">
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Delivery</h2></div>
+          <div class="order-panel-body">
+            <div class="addr-block">
+              <strong>{{ order.shipping_full_name }}</strong>
+              {{ order.shipping_street }}<br>
+              {{ order.shipping_city }}, {{ order.shipping_district }}<br>
+              {{ order.shipping_province|title }}{% if order.shipping_postal_code %} · {{ order.shipping_postal_code }}{% endif %}<br>
+              {{ order.shipping_country }}
+              <p class="muted" style="margin:8px 0 0">{% icon "phone" %} {{ order.shipping_phone }}</p>
+              <p class="muted" style="margin:2px 0 0">{% icon "mail" %} {{ order.email }}</p>
+            </div>
+            {% if order.tracking_number %}
+              <hr class="divider">
+              <div class="addr-block">
+                <strong>{% icon "truck" %} {{ order.courier|default:"Courier" }}</strong>
+                <span class="muted">Tracking: {{ order.tracking_number }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Payment</h2></div>
+          <div class="order-panel-body">
+            <dl class="detail-list">
+              <div><dt>Method</dt><dd>{{ order.get_payment_method_display }}</dd></div>
+              <div><dt>Status</dt><dd>{{ order.get_payment_status_display }}</dd></div>
+              <div><dt>Total</dt><dd>{{ order.total|npr }}</dd></div>
+            </dl>
+            {% if order.payments.all %}
+              <hr class="divider">
+              <dl class="detail-list">
+                {% for payment in order.payments.all|slice:":4" %}
+                  <div>
+                    <dt>{{ payment.get_gateway_display }}{% if payment.is_verified %} ✓{% endif %}</dt>
+                    <dd>{{ payment.get_status_display }}</dd>
+                  </div>
+                {% endfor %}
+              </dl>
+            {% endif %}
+            {% if order.can_pay %}
+              <a class="btn btn-primary btn-block" href="{% url 'orders:payment' order.order_number %}" style="margin-top:14px">
+                {% icon "credit-card" %} Pay {{ order.total|npr }}
+              </a>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Need help?</h2></div>
+          <div class="order-panel-body">
+            <p class="muted" style="font-size:.82rem;margin:0 0 10px">Quote order {{ order.order_number }} and our team will help right away.</p>
+            <a class="btn btn-outline btn-block" href="{% url 'core:contact' %}">{% icon "headset" %} Contact support</a>
+          </div>
+        </section>
+
+        <section class="order-panel">
+          <div class="order-panel-body" style="display:grid;gap:8px">
+            <form action="{% url 'orders:reorder' order.order_number %}" method="post">
+              {% csrf_token %}
+              <button class="btn btn-outline btn-block" type="submit">{% icon "refresh" %} Buy these items again</button>
+            </form>
+            {% if order.can_cancel %}
+              <form action="{% url 'orders:cancel' order.order_number %}" method="post" data-confirm="Cancel this order? Reserved stock will be released.">
+                {% csrf_token %}
+                <button class="btn btn-ghost btn-block text-red" type="submit">{% icon "x-circle" %} Cancel order</button>
+              </form>
+            {% endif %}
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

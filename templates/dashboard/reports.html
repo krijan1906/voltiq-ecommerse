@@ -1,0 +1,177 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Reports &amp; analytics{% endblock %}
+{% block page_title %}Reports &amp; analytics{% endblock %}
+{% block page_subtitle %}{{ start|date:"d M Y" }} – {{ end|date:"d M Y" }}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:export_orders_csv' %}">{% icon "download" %} Orders CSV</a>
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:export_newsletter_csv' %}">{% icon "mail" %} Newsletter CSV</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <label class="dash-help" for="report-from">From</label>
+    <input class="input" id="report-from" type="date" name="from" value="{{ start|date:'Y-m-d' }}" aria-label="Report start date">
+    <label class="dash-help" for="report-to">To</label>
+    <input class="input" id="report-to" type="date" name="to" value="{{ end|date:'Y-m-d' }}" aria-label="Report end date">
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Apply range</button>
+    <span class="spacer"></span>
+    <span class="dash-help">Paid orders only · maximum range 365 days</span>
+  </form>
+</div>
+
+<div class="dash-stats">
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "wallet" %}</span>
+    <strong>{{ revenue|npr }}</strong>
+    <span>Paid revenue</span>
+    <small>{{ order_count }} paid order{{ order_count|pluralize }}</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "shopping-bag" %}</span>
+    <strong>{{ aov|npr }}</strong>
+    <span>Average order value</span>
+    <small>Revenue ÷ paid orders</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "box" %}</span>
+    <strong>{{ units }}</strong>
+    <span>Units sold</span>
+    <small>Across all paid orders</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "users" %}</span>
+    <strong>{{ customers_new }}</strong>
+    <span>New customers</span>
+    <small>Joined in this period</small>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-card-head"><div><h3>Revenue &amp; orders</h3><p>Daily performance for the selected range</p></div></div>
+    <div class="dash-card-body"><div class="dash-chart"><canvas id="revenueChart" aria-label="Revenue and orders over time" role="img"></canvas></div></div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Payment mix</h3><p>Paid revenue by method</p></div>
+    <div class="dash-card-body">
+      {% if payment_breakdown %}
+        <div class="dash-chart is-sm"><canvas id="paymentChart" aria-label="Revenue by payment method" role="img"></canvas></div>
+        <div class="dash-legend">
+          {% for method in payment_breakdown %}
+            <div>
+              <span><i style="background:{% cycle '#60bb46' '#5c2d91' '#0b1220' '#0e7490' '#f59e0b' %}"></i>{{ method.payment_method|title }}</span>
+              <strong>{{ method.revenue|npr }} <span class="dash-help">· {{ method.count }}</span></strong>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "credit-card" %}<h4>No payments</h4><p>Paid payments will be broken down by gateway here.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid-2">
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Top products</h3><p>By paid revenue</p></div>
+    <div class="dash-card-body is-flush">
+      {% if top_products %}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Product</th><th class="num">Units</th><th class="num">Revenue</th></tr></thead>
+            <tbody>
+              {% for item in top_products %}
+                <tr>
+                  <td><strong>{{ item.product_name|truncatechars:40 }}</strong><span class="dash-sub">{{ item.sku }}</span></td>
+                  <td class="num">{{ item.units }}</td>
+                  <td class="num"><strong>{{ item.revenue|npr }}</strong></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "package" %}<h4>No sales in range</h4><p>Try widening the date range.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Category performance</h3><p>Revenue by category</p></div>
+    <div class="dash-card-body is-flush">
+      {% if categories %}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Category</th><th class="num">Units</th><th class="num">Revenue</th></tr></thead>
+            <tbody>
+              {% for category in categories %}
+                <tr>
+                  <td>{{ category.product__category__name|default:"Uncategorised" }}</td>
+                  <td class="num">{{ category.units }}</td>
+                  <td class="num"><strong>{{ category.revenue|npr }}</strong></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "grid" %}<h4>No category sales</h4><p>Category revenue appears once orders are paid.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid-2">
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Top customers</h3><p>By lifetime spend in range</p></div>
+    <div class="dash-card-body is-flush">
+      {% if top_customers %}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Customer</th><th class="num">Orders</th><th class="num">Spent</th></tr></thead>
+            <tbody>
+              {% for customer in top_customers %}
+                <tr>
+                  <td><a href="{% url 'dashboard:customer_detail' customer.pk %}" style="font-weight:600">{{ customer.get_full_name|default:customer.email }}</a><span class="dash-sub">{{ customer.email }}</span></td>
+                  <td class="num">{{ customer.order_count }}</td>
+                  <td class="num"><strong>{{ customer.spent|npr }}</strong></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "users" %}<h4>No customer activity</h4><p>Paid orders in this range will rank customers here.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Order status breakdown</h3><p>All orders created in range</p></div>
+    <div class="dash-card-body">
+      {% if status_values and status_values != "[]" %}
+        <div class="dash-chart is-sm"><canvas id="statusChart" aria-label="Order status breakdown" role="img"></canvas></div>
+      {% else %}
+        <div class="dash-empty">{% icon "shopping-bag" %}<h4>No orders</h4><p>No orders were created in the selected date range.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.VOLTIQ_CHARTS = {
+    labels: {{ chart_labels|safe }},
+    revenue: {{ chart_revenue|safe }},
+    orders: {{ chart_orders|safe }},
+    paymentLabels: {{ payment_labels|safe }},
+    paymentValues: {{ payment_values|safe }},
+    statusLabels: {{ status_labels|safe }},
+    statusValues: {{ status_values|safe }}
+  };
+</script>
+{% endblock %}

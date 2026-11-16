@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Payment history — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Payments</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="payments" %}
+
+      <div>
+        <div class="account-head">
+          <div><h1>Payment history</h1><p>Every online and manual payment attempt tied to your orders.</p></div>
+          <a class="btn btn-outline btn-sm" href="{% url 'orders:list' %}">{% icon "package" %} My orders</a>
+        </div>
+
+        <div class="alert alert-info" style="margin-bottom:18px">
+          {% icon "shield" %}
+          <div>Payments are verified server-side with the gateway. We store transaction references only — never card numbers, wallet PINs or OTPs.</div>
+        </div>
+
+        {% if payments %}
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Order</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th class="num">Amount</th>
+                  <th>Reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for payment in payments %}
+                  <tr>
+                    <td><span style="font-size:.8rem">{{ payment.initiated_at|date:"d M Y" }}<br><small class="muted">{{ payment.initiated_at|date:"g:i A" }}</small></span></td>
+                    <td><a href="{% url 'orders:detail' payment.order.order_number %}" style="font-weight:600">{{ payment.order.order_number }}</a></td>
+                    <td>
+                      <span class="badge badge-muted">{{ payment.get_gateway_display }}</span>
+                      <small class="muted" style="display:block">Attempt #{{ payment.attempt_number }}</small>
+                    </td>
+                    <td>
+                      <span class="badge {% if payment.status == 'success' %}badge-success{% elif payment.status == 'failed' or payment.status == 'cancelled' or payment.status == 'expired' %}badge-danger{% else %}badge-warn{% endif %}">
+                        {{ payment.get_status_display }}
+                      </span>
+                      {% if payment.is_verified %}<small class="text-green" style="display:block;margin-top:3px">Verified</small>{% endif %}
+                    </td>
+                    <td class="num"><strong>{{ payment.amount|npr }}</strong></td>
+                    <td><small class="muted" style="font-family:var(--font-mono,monospace);font-size:.7rem">{{ payment.transaction_ref|truncatechars:18 }}</small></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <span class="empty-icon">{% icon "credit-card" %}</span>
+            <h3>No payments yet</h3>
+            <p>When you pay for an order with eSewa, Khalti, bank transfer or COD, the record appears here.</p>
+            <a class="btn btn-primary" href="{% url 'products:list' %}">Start shopping</a>
+          </div>
+        {% endif %}
+
+        <div class="account-panel-card" style="margin-top:20px">
+          <h2>Payment help</h2>
+          <p class="muted" style="font-size:.84rem">Debited but the order shows unpaid? Don't pay twice — send us the order number and transaction reference and we'll reconcile it with the gateway.</p>
+          <a class="btn btn-outline btn-sm" href="{% url 'core:contact' %}">{% icon "headset" %} Contact support</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

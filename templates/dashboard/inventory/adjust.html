@@ -1,0 +1,98 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Adjust stock — {{ product.name }}{% endblock %}
+{% block page_title %}Adjust stock{% endblock %}
+{% block page_subtitle %}{{ product.name }} · {{ product.sku }}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:stock_history' %}?q={{ product.sku }}">{% icon "clock" %} Movement history</a>
+  <a class="btn btn-ghost btn-sm" href="{% url 'dashboard:inventory_list' %}">{% icon "arrow-left" %} Inventory</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-detail-grid">
+  <div>
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <div><h3>Record a stock adjustment</h3><p>Adjustments are written to the immutable stock ledger</p></div>
+        <span class="badge {% if product.stock_quantity == 0 %}badge-danger{% elif product.is_low_stock %}badge-warn{% else %}badge-success{% endif %}">{{ product.stock_quantity }} on hand</span>
+      </div>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="dash-form"><div class="form-error-list">{{ form.non_field_errors }}</div></div>{% endif %}
+        <div class="dash-form">
+          {{ form.product_id }}
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.new_quantity %}
+            {% include "dashboard/_field.html" with field=form.reason %}
+            {% include "dashboard/_field.html" with field=form.reference wide=1 %}
+          </div>
+          <p class="dash-help">Enter the total quantity on hand after this change. The difference is calculated and logged automatically with your account and the reason you provide.</p>
+        </div>
+        <div class="dash-form-foot">
+          <a class="btn btn-ghost" href="{% url 'dashboard:inventory_list' %}">Cancel</a>
+          <button class="btn btn-primary" type="submit">{% icon "check" %} Save adjustment</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Recent movements</h3><p>Latest 30 changes for this product</p></div>
+      <div class="dash-card-body is-flush">
+        {% if history %}
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead><tr><th>When</th><th>Reason</th><th class="num">Change</th><th class="num">After</th><th>By</th></tr></thead>
+              <tbody>
+                {% for entry in history %}
+                  <tr>
+                    <td>{{ entry.created_at|date:"d M Y" }}<span class="dash-sub">{{ entry.created_at|date:"g:i A" }}</span></td>
+                    <td>{{ entry.get_reason_display }}{% if entry.reference %}<span class="dash-sub">{{ entry.reference|truncatechars:36 }}</span>{% endif %}</td>
+                    <td class="num"><strong class="{% if entry.change > 0 %}text-green{% else %}text-red{% endif %}">{% if entry.change > 0 %}+{% endif %}{{ entry.change }}</strong></td>
+                    <td class="num">{{ entry.new_quantity }}</td>
+                    <td>{% if entry.changed_by %}{{ entry.changed_by.get_short_name }}{% elif entry.order %}{{ entry.order.order_number }}{% else %}System{% endif %}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="dash-empty" style="padding:26px">{% icon "clock" %}<h4>No movements yet</h4><p>Adjustments and sales will appear here.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Product</h3><a href="{% url 'dashboard:product_edit' product.pk %}">Edit</a></div>
+      <div class="dash-card-body">
+        <div class="dash-prod" style="margin-bottom:14px">
+          <span class="dash-thumb" style="width:58px;height:58px">{% if product.primary_image_url %}<img src="{{ product.primary_image_url }}" alt="">{% else %}{% icon "laptop" %}{% endif %}</span>
+          <div><strong style="white-space:normal">{{ product.name|truncatechars:60 }}</strong><small>{{ product.sku }}</small></div>
+        </div>
+        <div class="dash-kv">
+          <div><dt>Category</dt><dd>{{ product.category.name }}</dd></div>
+          <div><dt>Brand</dt><dd>{{ product.brand.name|default:"—" }}</dd></div>
+          <div><dt>Price</dt><dd>{{ product.current_price|npr }}</dd></div>
+          <div><dt>Threshold</dt><dd>{{ product.low_stock_threshold }}</dd></div>
+          <div><dt>On hand</dt><dd>{{ product.stock_quantity }}</dd></div>
+        </div>
+        <hr class="divider">
+        <a class="btn btn-outline btn-block btn-sm" href="{{ product.get_absolute_url }}" target="_blank" rel="noopener">{% icon "external-link" %} View on storefront</a>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Guidance</h3></div>
+      <div class="dash-card-body">
+        <p class="dash-help" style="line-height:1.7">
+          <strong>Restock</strong> — new units received from a supplier.<br>
+          <strong>Customer return</strong> — units returned to sellable stock.<br>
+          <strong>Manual adjustment</strong> — corrections after a stock count.<br>
+          <strong>Damage / loss</strong> — units removed from sellable stock.
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

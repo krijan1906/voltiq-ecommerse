@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Your wishlist — Voltiq{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Wishlist</span>
+    </nav>
+    <div class="page-header" style="padding-top:0">
+      <h1>Your wishlist</h1>
+      <p>{{ items|length }} saved product{{ items|length|pluralize }}. We'll tell you if prices drop or stock returns.</p>
+    </div>
+
+    {% if items %}
+      <div class="wishlist-grid" style="margin-top:20px">
+        {% for item in items %}
+          {% with product=item.product %}
+            <div>
+              <article class="product-card">
+                <div class="product-media">
+                  <a class="product-media-link" href="{{ product.get_absolute_url }}" aria-label="{{ product.name }}">
+                    {% if product.primary_image_url %}
+                      <img src="{{ product.primary_image_url }}" alt="{{ product.name }}" loading="lazy" width="400" height="400">
+                    {% else %}
+                      <span class="product-placeholder">{% icon "laptop" %}</span>
+                    {% endif %}
+                  </a>
+                  <div class="product-badges">
+                    {% if product.has_discount %}<span class="badge badge-sale">-{{ product.discount_percent }}%</span>{% endif %}
+                    {% if product.stock_quantity == 0 %}<span class="badge badge-muted">Out of stock</span>{% elif product.is_low_stock %}<span class="badge badge-warn">Only {{ product.stock_quantity }} left</span>{% endif %}
+                  </div>
+                  <form action="{% url 'wishlist:remove' item.id %}" method="post" style="position:absolute;top:9px;right:9px;z-index:3">
+                    {% csrf_token %}
+                    <button type="submit" class="wish-btn is-active" aria-label="Remove {{ product.name }} from wishlist">{% icon "heart" %}</button>
+                  </form>
+                </div>
+                <div class="product-body">
+                  <div class="product-kicker">
+                    <a href="{{ product.brand.get_absolute_url }}" class="product-brand">{{ product.brand.name }}</a>
+                  </div>
+                  <h3 class="product-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                  <div class="product-price-row">
+                    <div class="product-price">
+                      <strong>{{ product.current_price|npr }}</strong>
+                      {% if product.has_discount %}<del>{{ product.price|npr }}</del>{% endif %}
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <div class="wishlist-actions">
+                {% if product.in_stock %}
+                  <form action="{% url 'wishlist:move_to_cart' item.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">{% icon "cart" %} Move to cart</button>
+                  </form>
+                {% else %}
+                  <a class="btn btn-outline" href="{{ product.get_absolute_url }}">View details</a>
+                {% endif %}
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="margin-top:18px">
+        <span class="empty-icon">{% icon "heart" %}</span>
+        <h3>Your wishlist is empty</h3>
+        <p>Tap the heart on any product to save it here. Perfect for comparing specs and watching for discounts.</p>
+        <a class="btn btn-primary" href="{% url 'products:list' %}">Discover products {% icon "arrow-right" %}</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

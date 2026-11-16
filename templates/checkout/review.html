@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Checkout — Review order — Voltiq{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-head">
+      <h1>Review your order</h1>
+      <span class="checkout-secure">{% icon "lock" %} Secure checkout</span>
+    </div>
+    {% include "checkout/_steps.html" with step=step %}
+
+    <div class="checkout-layout">
+      <div>
+        {% if conflicts %}
+          <div class="alert alert-warning" style="margin-bottom:18px">
+            {% icon "alert-circle" %}
+            <div>
+              <strong>Stock has changed.</strong> Some items in your cart are no longer available in the requested quantity.
+              <a href="{% url 'cart:detail' %}">Review your cart</a> before continuing.
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="checkout-card">
+          <h2>Delivery &amp; contact details</h2>
+          <p class="card-lead">Everything look right? You can jump back to any step.</p>
+
+          <div class="review-blocks">
+            <div class="review-block">
+              <div>
+                <h4>Contact</h4>
+                <p>
+                  <strong>{{ state.contact.full_name }}</strong><br>
+                  {{ state.contact.email }} · {{ state.contact.phone }}
+                </p>
+              </div>
+              <a href="{% url 'checkout:contact' %}">Edit</a>
+            </div>
+
+            <div class="review-block">
+              <div>
+                <h4>Delivery address</h4>
+                <p>
+                  <strong>{{ address.full_name }}</strong> — {{ address.single_line }}<br>
+                  {{ address.phone }}{% if address.landmark %} · Near {{ address.landmark }}{% endif %}
+                </p>
+              </div>
+              <a href="{% url 'checkout:address' %}">Edit</a>
+            </div>
+
+            <div class="review-block">
+              <div>
+                <h4>Delivery method</h4>
+                <p>
+                  <strong>{{ shipping_method.name }}</strong> — {{ shipping_method.delivery_estimate }}<br>
+                  {% if shipping_method.description %}{{ shipping_method.description }}{% endif %}
+                </p>
+              </div>
+              <a href="{% url 'checkout:shipping' %}">Edit</a>
+            </div>
+
+            <div class="review-block">
+              <div>
+                <h4>Payment</h4>
+                <p>Choose eSewa, Khalti, cash on delivery or bank transfer on the next step.</p>
+              </div>
+              <span class="badge badge-muted">Next step</span>
+            </div>
+          </div>
+
+          <div style="margin-top:22px">
+            <h3 style="font-size:.95rem;margin-bottom:4px">Items in this order</h3>
+            <div class="order-preview-items" style="margin-top:12px;flex-wrap:wrap">
+              {% for item in items %}
+                <span class="order-preview-thumb" title="{{ item.product_name }}">
+                  {% if item.product.primary_image_url %}
+                    <img src="{{ item.product.primary_image_url }}" alt="{{ item.product_name }}" loading="lazy">
+                  {% else %}
+                    {% icon "laptop" %}
+                  {% endif %}
+                </span>
+              {% endfor %}
+              <span class="muted" style="font-size:.8rem">
+                {{ cart.item_count }} item{{ cart.item_count|pluralize }} · {{ cart.subtotal|npr }} subtotal
+              </span>
+            </div>
+          </div>
+
+          <div class="checkout-actions">
+            <a class="back-link" href="{% url 'checkout:shipping' %}">{% icon "arrow-left" %} Back to delivery</a>
+            {% if conflicts %}
+              <a class="btn btn-outline" href="{% url 'cart:detail' %}">Fix cart</a>
+            {% else %}
+              <a class="btn btn-primary" href="{% url 'checkout:payment' %}">Continue to payment {% icon "arrow-right" %}</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="checkout-card">
+          <h2>Have a coupon?</h2>
+          <p class="card-lead">Apply a valid code to save on this order.</p>
+          <form method="post" action="{% url 'checkout:review' %}" class="coupon-box" style="border:0;padding:0;background:transparent">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="apply_coupon">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              {{ coupon_form.code }}
+              <button class="btn btn-outline" type="submit">Apply code</button>
+            </div>
+          </form>
+          {% if cart.coupon %}
+            <div class="coupon-applied" style="margin-top:12px">
+              <strong>{% icon "check-circle" %} {{ cart.coupon.code }} applied — you save {{ cart.discount|npr }}</strong>
+              <form method="post" action="{% url 'checkout:review' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove_coupon">
+                <button class="btn btn-ghost btn-sm" type="submit">Remove</button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% include "checkout/_summary.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

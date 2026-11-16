@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Checkout — Contact — Voltiq{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-head">
+      <h1>Checkout</h1>
+      <span class="checkout-secure">{% icon "lock" %} Secure checkout</span>
+    </div>
+    {% include "checkout/_steps.html" with step=step %}
+
+    <div class="checkout-layout">
+      <div>
+        <div class="checkout-card">
+          <h2>Contact details</h2>
+          <p class="card-lead">We'll use these details to send order updates and delivery notifications.</p>
+
+          {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+              <div class="form-group span-2">
+                <label class="form-label" for="{{ form.full_name.id_for_label }}">Full name</label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}<span class="form-error">{{ form.full_name.errors.0 }}</span>{% endif %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="{{ form.email.id_for_label }}">Email address</label>
+                {{ form.email }}
+                {% if form.email.errors %}<span class="form-error">{{ form.email.errors.0 }}</span>{% endif %}
+                <span class="form-hint">Order confirmation and invoice will be sent here.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="{{ form.phone.id_for_label }}">Phone number</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<span class="form-error">{{ form.phone.errors.0 }}</span>{% endif %}
+                <span class="form-hint">Our courier will call this number.</span>
+              </div>
+            </div>
+
+            {% if not user.is_email_verified %}
+              <div class="alert alert-warning">{% icon "alert-circle" %} <span>Your email isn't verified yet. <a href="{% url 'accounts:verify_pending' %}">Verify it now</a> to complete checkout.</span></div>
+            {% endif %}
+
+            <div class="checkout-actions">
+              <a class="back-link" href="{% url 'cart:detail' %}">{% icon "arrow-left" %} Back to cart</a>
+              <button class="btn btn-primary" type="submit">Continue to address {% icon "arrow-right" %}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:16px">
+          {% icon "shield" %}
+          <div>Your information is transmitted securely and never sold. Read our <a href="{% url 'core:privacy' %}">privacy policy</a>.</div>
+        </div>
+      </div>
+
+      {% include "checkout/_summary.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

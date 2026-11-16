@@ -1,0 +1,102 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}Inventory{% endblock %}
+{% block page_subtitle %}Stock levels across your catalogue{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:stock_history' %}">{% icon "clock" %} Stock history</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-stats">
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "package" %}</span>
+    <strong>{{ page_obj.paginator.count }}</strong>
+    <span>Products tracked</span>
+    <small>All catalogue stock</small>
+  </div>
+  <div class="dash-stat is-warn">
+    <span class="dash-stat-icon">{% icon "alert-circle" %}</span>
+    <strong>{{ low_count }}</strong>
+    <span>Low stock</span>
+    <small>At or below threshold</small>
+  </div>
+  <div class="dash-stat is-danger">
+    <span class="dash-stat-icon">{% icon "x-circle" %}</span>
+    <strong>{{ out_count }}</strong>
+    <span>Out of stock</span>
+    <small>Needs restocking</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "refresh" %}</span>
+    <strong><a href="{% url 'dashboard:stock_history' %}" style="color:inherit">History</a></strong>
+    <span>Every stock change logged</span>
+    <small>Auditable movements</small>
+  </div>
+</div>
+
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <div class="dash-search">{% icon "search" %}<input class="input" type="search" name="q" value="{{ q }}" placeholder="Search product or SKU"></div>
+    <select class="select" name="filter" aria-label="Stock filter">
+      <option value="">All stock levels</option>
+      <option value="low" {% if filter == 'low' %}selected{% endif %}>Low stock only</option>
+      <option value="out" {% if filter == 'out' %}selected{% endif %}>Out of stock only</option>
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if q or filter %}<a class="btn btn-ghost" href="{% url 'dashboard:inventory_list' %}">Reset</a>{% endif %}
+    <span class="spacer"></span>
+    <a class="btn btn-outline" href="{% url 'dashboard:product_create' %}">{% icon "plus" %} Add product</a>
+  </form>
+
+  {% if products %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>Product</th><th>Category</th><th class="num">On hand</th><th class="num">Threshold</th><th>Status</th><th class="num">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td>
+                <div class="dash-prod">
+                  <span class="dash-thumb">{% if product.primary_image_url %}<img src="{{ product.primary_image_url }}" alt="">{% else %}{% icon "laptop" %}{% endif %}</span>
+                  <div><strong title="{{ product.name }}">{{ product.name|truncatechars:40 }}</strong><small>{{ product.sku }} · {{ product.brand.name|default:"No brand" }}</small></div>
+                </div>
+              </td>
+              <td>{{ product.category.name }}{% if not product.is_active %}<span class="dash-sub">Inactive</span>{% endif %}</td>
+              <td class="num"><span class="badge {% if product.stock_quantity == 0 %}badge-danger{% elif product.is_low_stock %}badge-warn{% else %}badge-success{% endif %}">{{ product.stock_quantity }}</span></td>
+              <td class="num">{{ product.low_stock_threshold }}</td>
+              <td>
+                {% if product.stock_quantity == 0 %}
+                  <span class="badge badge-danger">Out of stock</span>
+                {% elif product.is_low_stock %}
+                  <span class="badge badge-warn">Low stock</span>
+                {% else %}
+                  <span class="badge badge-success">Healthy</span>
+                {% endif %}
+                {% if product.allow_backorder %}<span class="dash-sub">Backorders allowed</span>{% endif %}
+              </td>
+              <td>
+                <div class="row-actions">
+                  <a href="{% url 'dashboard:inventory_adjust' product.pk %}">Adjust</a>
+                  <a href="{% url 'dashboard:product_edit' product.pk %}">Edit</a>
+                  <a href="{{ product.get_absolute_url }}" target="_blank" rel="noopener">View</a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "partials/pagination.html" %}
+  {% else %}
+    <div class="dash-empty">
+      {% icon "box" %}
+      <h4>No products found</h4>
+      <p>{% if q or filter %}No stock matches these filters.{% else %}Add products to begin tracking inventory.{% endif %}</p>
+      <a class="btn btn-primary btn-sm" href="{% url 'dashboard:inventory_list' %}">Clear filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

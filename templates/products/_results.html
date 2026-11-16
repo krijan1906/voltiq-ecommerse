@@ -1,0 +1,32 @@
+{% load voltiq %}
+{% if active_filters %}
+  <div class="active-filters">
+    <span class="muted" style="font-size:.76rem;font-weight:600">Active:</span>
+    {% for filter in active_filters %}
+      <a class="filter-chip" href="{{ filter.remove_url }}" data-catalog-link>
+        <span>{{ filter.label }}: {{ filter.value|truncatechars:28 }}</span>
+        {% icon "x" %}
+      </a>
+    {% endfor %}
+    <a class="filter-chip" href="{% url 'products:list' %}{% if query %}?q={{ query|urlencode }}{% endif %}" data-catalog-link style="background:var(--line);color:var(--slate)">Clear all</a>
+  </div>
+{% endif %}
+
+{% if products %}
+  <div class="product-grid" id="product-grid">
+    {% for product in products %}
+      {% include "partials/product_card.html" %}
+    {% endfor %}
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    {% include "partials/pagination.html" %}
+  {% endif %}
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">{% icon "search" %}</span>
+    <h3>No products match those filters</h3>
+    <p>Try removing a filter, widening your price range or searching for a different keyword.</p>
+    <a class="btn btn-primary" href="{% url 'products:list' %}">Browse all products</a>
+  </div>
+{% endif %}

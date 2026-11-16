@@ -1,0 +1,65 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Stock history{% endblock %}
+{% block page_title %}Stock history{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} movement{{ page_obj.paginator.count|pluralize }} recorded{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:inventory_list' %}">{% icon "box" %} Inventory</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <div class="dash-search">{% icon "search" %}<input class="input" type="search" name="q" value="{{ q }}" placeholder="Product, SKU or reference"></div>
+    <select class="select" name="reason" aria-label="Reason">
+      <option value="">All reasons</option>
+      {% for value, label in reasons %}<option value="{{ value }}" {% if reason == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if q or reason %}<a class="btn btn-ghost" href="{% url 'dashboard:stock_history' %}">Reset</a>{% endif %}
+  </form>
+
+  {% if history %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>When</th><th>Product</th><th>Reason</th><th class="num">Change</th><th class="num">Previous</th><th class="num">New</th><th>Reference / staff</th></tr>
+        </thead>
+        <tbody>
+          {% for entry in history %}
+            <tr>
+              <td>{{ entry.created_at|date:"d M Y" }}<span class="dash-sub">{{ entry.created_at|date:"g:i A" }}</span></td>
+              <td>
+                <div class="dash-prod">
+                  <div>
+                    <strong>{{ entry.product.name|truncatechars:34 }}</strong>
+                    <small><a href="{% url 'dashboard:inventory_adjust' entry.product.pk %}">{{ entry.product.sku }}</a></small>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge {% if entry.change > 0 %}badge-success{% else %}badge-muted{% endif %}">{{ entry.get_reason_display }}</span></td>
+              <td class="num"><strong class="{% if entry.change > 0 %}text-green{% else %}text-red{% endif %}">{% if entry.change > 0 %}+{% endif %}{{ entry.change }}</strong></td>
+              <td class="num">{{ entry.previous_quantity }}</td>
+              <td class="num">{{ entry.new_quantity }}</td>
+              <td>
+                {% if entry.reference %}{{ entry.reference|truncatechars:30 }}<span class="dash-sub">{% if entry.changed_by %}{{ entry.changed_by.get_short_name }}{% elif entry.order %}Order {{ entry.order.order_number }}{% endif %}</span>
+                {% elif entry.changed_by %}{{ entry.changed_by.get_short_name }}
+                {% elif entry.order %}<a href="{% url 'dashboard:order_detail' entry.order.order_number %}">{{ entry.order.order_number }}</a>
+                {% else %}<span class="dash-help">System</span>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "partials/pagination.html" %}
+  {% else %}
+    <div class="dash-empty">
+      {% icon "clock" %}
+      <h4>No stock movements</h4>
+      <p>{% if q or reason %}Nothing matches these filters.{% else %}Sales, restocks and adjustments will be recorded here.{% endif %}</p>
+      <a class="btn btn-outline btn-sm" href="{% url 'dashboard:stock_history' %}">Clear filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

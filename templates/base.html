@@ -1,0 +1,65 @@
+{% load static voltiq %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="description" content="{% block meta_description %}Shop premium laptops, smartphones, gaming gear, components and accessories at Voltiq — genuine products, expert support and fast delivery across Nepal.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Voltiq — Premium electronics, powered for life{% endblock %}">
+  <meta property="og:type" content="website">
+  <title>{% block title %}Voltiq — Premium Electronics Store in Nepal{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}" data-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+  <a class="skip-link" href="#main">Skip to content</a>
+  {% include "partials/icons.html" %}
+  {% include "partials/header.html" %}
+  <main id="main" class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "partials/footer.html" %}
+
+  {% include "partials/mobile_nav.html" %}
+
+  <div class="toast-stack" id="toast-stack" role="status" aria-live="polite">
+    {% for message in messages %}
+      <div class="toast toast-{{ message.tags|default:'info' }}" data-toast>
+        <span class="toast-icon">
+          {% if message.tags == 'success' %}{% icon "check-circle" %}{% elif message.tags == 'error' %}{% icon "alert-circle" %}{% elif message.tags == 'warning' %}{% icon "alert-circle" %}{% else %}{% icon "info" %}{% endif %}
+        </span>
+        <div class="toast-content">{{ message }}</div>
+        <button class="toast-close" type="button" data-toast-close aria-label="Dismiss notification">{% icon "x" %}</button>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if payment_simulation %}
+    <div class="simulation-flag" title="Set PAYMENT_SIMULATION=False for live payments">
+      {% icon "zap" %} Sandbox mode
+    </div>
+  {% endif %}
+
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">{% icon "chevron-down" %}</button>
+
+  <script>
+    window.VOLTIQ_CONFIG = {
+      cartAdd: "{% url 'cart:add' %}",
+      cartUpdate: "{% url 'cart:update' 0 %}",
+      cartRemove: "{% url 'cart:remove' 0 %}",
+      couponApply: "{% url 'cart:apply_coupon' %}",
+      couponRemove: "{% url 'cart:remove_coupon' %}",
+      wishlistToggle: "{% url 'wishlist:toggle' %}",
+      suggestions: "{% url 'products:suggestions' %}",
+      cartSummary: "{% url 'cart:summary' %}"
+    };
+  </script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

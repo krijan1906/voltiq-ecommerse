@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Verify your email — Voltiq{% endblock %}
+
+{% block content %}
+<div class="page-narrow">
+  <div class="panel" style="text-align:center">
+    <div class="verify-illustration">{% icon "mail" %}</div>
+    <h1>Verify your email</h1>
+    <p class="muted" style="font-size:.88rem;line-height:1.7">
+      We sent a verification link to <strong>{{ email }}</strong>.
+      Open it to unlock checkout, order updates and invoices.
+    </p>
+
+    {% if debug_url %}
+      <div class="debug-link" style="text-align:left">
+        <strong>Development mode:</strong> email delivery is not configured, so use this link directly:<br>
+        <a href="{{ debug_url }}">{{ debug_url }}</a>
+      </div>
+    {% endif %}
+
+    <div style="display:grid;gap:10px;margin-top:22px">
+      <form action="{% url 'accounts:resend_verification' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary btn-block" type="submit">{% icon "refresh" %} Resend verification email</button>
+      </form>
+      <a class="btn btn-outline btn-block" href="{% url 'accounts:dashboard' %}">I'll verify later</a>
+    </div>
+
+    <div class="alert alert-info" style="text-align:left;margin-top:22px">
+      {% icon "info" %}
+      <div>Can't find it? Check spam or promotions, and make sure <strong>{{ email }}</strong> is spelled correctly. Links expire for your security.</div>
+    </div>
+
+    <p class="muted" style="font-size:.76rem;margin-top:18px">
+      Wrong address? Update it in <a href="{% url 'accounts:profile' %}">profile settings</a> or <a href="{% url 'core:contact' %}">contact support</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}

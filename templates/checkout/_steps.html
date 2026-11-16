@@ -1,0 +1,18 @@
+{% load voltiq %}
+<div class="checkout-steps" aria-label="Checkout progress">
+  <div class="checkout-step {% if step > 1 %}is-done{% elif step == 1 %}is-active{% endif %}">
+    <span class="step-num">{% if step > 1 %}{% icon "check" %}{% else %}1{% endif %}</span><span class="step-label">Contact</span>
+  </div>
+  <div class="checkout-step {% if step > 2 %}is-done{% elif step == 2 %}is-active{% endif %}">
+    <span class="step-num">{% if step > 2 %}{% icon "check" %}{% else %}2{% endif %}</span><span class="step-label">Address</span>
+  </div>
+  <div class="checkout-step {% if step > 3 %}is-done{% elif step == 3 %}is-active{% endif %}">
+    <span class="step-num">{% if step > 3 %}{% icon "check" %}{% else %}3{% endif %}</span><span class="step-label">Delivery</span>
+  </div>
+  <div class="checkout-step {% if step > 4 %}is-done{% elif step == 4 %}is-active{% endif %}">
+    <span class="step-num">{% if step > 4 %}{% icon "check" %}{% else %}4{% endif %}</span><span class="step-label">Review</span>
+  </div>
+  <div class="checkout-step {% if step > 5 %}is-done{% elif step == 5 %}is-active{% endif %}">
+    <span class="step-num">{% if step > 5 %}{% icon "check" %}{% else %}5{% endif %}</span><span class="step-label">Payment</span>
+  </div>
+</div>

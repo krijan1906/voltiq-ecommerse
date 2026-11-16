@@ -1,0 +1,54 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Customers{% endblock %}
+{% block page_title %}Customers{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} registered customer{{ page_obj.paginator.count|pluralize }}{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <div class="dash-search">{% icon "search" %}<input class="input" type="search" name="q" value="{{ q }}" placeholder="Name, email or phone"></div>
+    <select class="select" name="status" aria-label="Status">
+      <option value="">All customers</option>
+      <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+      <option value="suspended" {% if status == 'suspended' %}selected{% endif %}>Suspended</option>
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if q or status %}<a class="btn btn-ghost" href="{% url 'dashboard:customer_list' %}">Reset</a>{% endif %}
+  </form>
+
+  {% if customers %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead><tr><th>Customer</th><th>Phone</th><th class="num">Orders</th><th class="num">Spent</th><th>Joined</th><th>Status</th><th class="num">Actions</th></tr></thead>
+        <tbody>
+          {% for customer in customers %}
+            <tr>
+              <td>
+                <div class="dash-prod">
+                  <span class="dash-thumb" style="border-radius:50%">{% if customer.avatar_url %}<img src="{{ customer.avatar_url }}" alt="">{% else %}{{ customer.initials }}{% endif %}</span>
+                  <div><strong>{{ customer.get_full_name }}</strong><small>{{ customer.email }}</small></div>
+                </div>
+              </td>
+              <td>{{ customer.phone|default:"—" }}</td>
+              <td class="num">{{ customer.order_count }}</td>
+              <td class="num"><strong>{{ customer.spent|default:0|npr }}</strong></td>
+              <td>{{ customer.date_joined|date:"d M Y" }}<span class="dash-sub">{{ customer.date_joined|timesince }} ago</span></td>
+              <td>
+                {% if customer.is_suspended %}<span class="badge badge-danger">Suspended</span>
+                {% elif customer.is_email_verified %}<span class="badge badge-success">Active</span>
+                {% else %}<span class="badge badge-warn">Unverified</span>{% endif %}
+                {% if customer.is_staff %}<span class="badge badge-purple">Staff</span>{% endif %}
+              </td>
+              <td><div class="row-actions"><a href="{% url 'dashboard:customer_detail' customer.pk %}">Open</a></div></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "partials/pagination.html" %}
+  {% else %}
+    <div class="dash-empty">{% icon "users" %}<h4>No customers found</h4><p>Try a different search term or clear the status filter.</p><a class="btn btn-outline btn-sm" href="{% url 'dashboard:customer_list' %}">Clear filters</a></div>
+  {% endif %}
+</div>
+{% endblock %}

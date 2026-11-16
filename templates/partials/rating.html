@@ -1,0 +1,5 @@
+{% load voltiq %}
+<span class="stars{% if large %} stars-lg{% endif %}" style="--rating: {{ rating|default:0 }}" role="img" aria-label="{{ rating|default:0 }} out of 5 stars">
+  <span></span>
+</span>
+{% if show_count %}<span class="rating-count">({{ count|default:0 }})</span>{% endif %}

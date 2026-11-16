@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}My orders — Voltiq{% endblock %}
+
+{% block content %}
+<div class="orders-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Orders</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="orders" %}
+
+      <div>
+        <div class="account-head">
+          <div>
+            <h1>My orders</h1>
+            <p>Track deliveries, download invoices and reorder your favourites.</p>
+          </div>
+          <a class="btn btn-primary btn-sm" href="{% url 'products:list' %}">{% icon "shopping-bag" %} Continue shopping</a>
+        </div>
+
+        <div class="order-tabs" role="tablist" aria-label="Filter orders by status">
+          <a class="order-tab {% if not status %}is-active{% endif %}" href="{% url 'orders:list' %}">All</a>
+          <a class="order-tab {% if status == 'pending' %}is-active{% endif %}" href="?status=pending">Pending</a>
+          <a class="order-tab {% if status == 'processing' %}is-active{% endif %}" href="?status=processing">Processing</a>
+          <a class="order-tab {% if status == 'shipped' %}is-active{% endif %}" href="?status=shipped">Shipped</a>
+          <a class="order-tab {% if status == 'delivered' %}is-active{% endif %}" href="?status=delivered">Delivered</a>
+          <a class="order-tab {% if status == 'cancelled' %}is-active{% endif %}" href="?status=cancelled">Cancelled</a>
+        </div>
+
+        {% if orders %}
+          <div class="order-list">
+            {% for order in orders %}
+              <article class="order-card">
+                <div class="order-card-head">
+                  <div>
+                    <span class="order-id">{{ order.order_number }}</span>
+                    <span class="order-date">· {{ order.created_at|date:"d M Y" }}</span>
+                  </div>
+                  <div class="order-status-wrap">
+                    {% include "orders/_status_badge.html" with order=order %}
+                    <span class="badge badge-muted">{{ order.get_payment_status_display }}</span>
+                  </div>
+                </div>
+                <div class="order-card-body">
+                  <div class="order-preview-items">
+                    {% for item in order.items.all|slice:":4" %}
+                      <span class="order-preview-thumb" title="{{ item.product_name }}">
+                        {% if item.image_url %}
+                          <img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">
+                        {% else %}
+                          {% icon "laptop" %}
+                        {% endif %}
+                      </span>
+                    {% endfor %}
+                    {% if order.items.all|length > 4 %}
+                      <span class="order-preview-more">+{{ order.items.all|length|add:"-4" }}</span>
+                    {% endif %}
+                    <span class="muted" style="font-size:.8rem;margin-left:4px">
+                      {{ order.item_count }} item{{ order.item_count|pluralize }} · {{ order.get_payment_method_display }}
+                    </span>
+                  </div>
+                  <div class="order-card-foot">
+                    <div class="order-total">
+                      Total <strong>{{ order.total|npr }}</strong>
+                    </div>
+                    <div class="order-actions">
+                      <a class="btn btn-outline btn-sm" href="{% url 'orders:track' order.order_number %}">{% icon "truck" %} Track</a>
+                      <a class="btn btn-outline btn-sm" href="{% url 'orders:detail' order.order_number %}">View details</a>
+                      {% if order.can_pay %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:payment' order.order_number %}">Pay now</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+          {% include "partials/pagination.html" %}
+        {% else %}
+          <div class="empty-state">
+            <span class="empty-icon">{% icon "package" %}</span>
+            <h3>{% if status %}No {{ status }} orders{% else %}No orders yet{% endif %}</h3>
+            <p>{% if status %}Try a different filter to see your order history.{% else %}When you place an order it will appear here with live delivery tracking.{% endif %}</p>
+            <a class="btn btn-primary" href="{% url 'products:list' %}">Start shopping {% icon "arrow-right" %}</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

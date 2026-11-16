@@ -1,0 +1,8 @@
+/* Voltiq storefront — modular stylesheet entry point.
+   Sections are split for maintainability; production can concatenate these. */
+@import url("tokens.css");
+@import url("layout.css");
+@import url("components.css");
+@import url("pages.css");
+@import url("account.css");
+@import url("responsive.css");

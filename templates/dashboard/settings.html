@@ -1,0 +1,125 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Store settings{% endblock %}
+{% block page_title %}Store settings{% endblock %}
+{% block page_subtitle %}Brand identity, contact details and delivery options{% endblock %}
+
+{% block dash_content %}
+<div class="dash-grid">
+  <div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="dash-card"><div class="dash-form"><div class="form-error-list">{{ form.non_field_errors }}</div></div></div>{% endif %}
+      <div class="dash-card">
+        <div class="dash-card-head"><div><h3>Storefront identity</h3><p>Shown in the header, footer and transactional emails</p></div></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.store_name %}
+            {% include "dashboard/_field.html" with field=form.tagline %}
+            {% include "dashboard/_field.html" with field=form.announcement wide=1 %}
+            {% include "dashboard/_field.html" with field=form.support_phone %}
+            {% include "dashboard/_field.html" with field=form.support_email %}
+            {% include "dashboard/_field.html" with field=form.address wide=1 %}
+          </div>
+        </div>
+        <div class="dash-form-foot">
+          <button class="btn btn-primary" type="submit">{% icon "check" %} Save store settings</button>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Social links</h3><p>Leave blank to hide an icon in the footer</p></div>
+        <div class="dash-form">
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=form.facebook_url %}
+            {% include "dashboard/_field.html" with field=form.instagram_url %}
+            {% include "dashboard/_field.html" with field=form.youtube_url %}
+            {% include "dashboard/_field.html" with field=form.tiktok_url %}
+          </div>
+        </div>
+        <div class="dash-form-foot">
+          <button class="btn btn-primary" type="submit">{% icon "check" %} Save social links</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <aside>
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Add delivery method</h3><p>Charges are in Nepali rupees</p></div>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="shipping">
+        <div class="dash-form">
+          {% if shipping_form.non_field_errors %}<div class="form-error-list">{{ shipping_form.non_field_errors }}</div>{% endif %}
+          {% include "dashboard/_field.html" with field=shipping_form.name %}
+          {% include "dashboard/_field.html" with field=shipping_form.code %}
+          {% include "dashboard/_field.html" with field=shipping_form.description %}
+          <div class="form-grid">
+            {% include "dashboard/_field.html" with field=shipping_form.charge %}
+            {% include "dashboard/_field.html" with field=shipping_form.free_over %}
+            {% include "dashboard/_field.html" with field=shipping_form.min_days %}
+            {% include "dashboard/_field.html" with field=shipping_form.max_days %}
+            {% include "dashboard/_field.html" with field=shipping_form.sort_order %}
+          </div>
+          {% include "dashboard/_field.html" with field=shipping_form.is_active %}
+        </div>
+        <div class="dash-form-foot">
+          <button class="btn btn-primary" type="submit">{% icon "plus" %} Add method</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Environment</h3></div>
+      <div class="dash-card-body">
+        <p class="dash-help" style="line-height:1.7">
+          Payment gateway credentials, bank account details, email and database configuration are managed through environment variables
+          (<code>.env</code>) so secrets never live in the database. See the deployment documentation for the full list.
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="dash-card">
+  <div class="dash-card-head">
+    <div><h3>Delivery methods</h3><p>{{ shipping_methods|length }} configured</p></div>
+    <a class="btn btn-outline btn-sm" href="{% url 'core:shipping' %}">{% icon "external-link" %} Shipping policy</a>
+  </div>
+  {% if shipping_methods %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead><tr><th>Method</th><th>Code</th><th class="num">Charge</th><th class="num">Free over</th><th>Estimate</th><th>Status</th><th class="num">Actions</th></tr></thead>
+        <tbody>
+          {% for method in shipping_methods %}
+            <tr>
+              <td><strong>{{ method.name }}</strong>{% if method.description %}<span class="dash-sub">{{ method.description|truncatechars:40 }}</span>{% endif %}</td>
+              <td><code style="font-size:.72rem">{{ method.code }}</code></td>
+              <td class="num">{{ method.charge|npr }}</td>
+              <td class="num">{% if method.free_over %}{{ method.free_over|npr }}{% else %}—{% endif %}</td>
+              <td>{{ method.delivery_estimate }}</td>
+              <td>{% if method.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-muted">Inactive</span>{% endif %}</td>
+              <td>
+                <div class="row-actions">
+                  <a href="{% url 'dashboard:shipping_edit' method.pk %}">Edit</a>
+                  <form action="{% url 'dashboard:shipping_delete' method.pk %}" method="post" data-confirm="Delete {{ method.name|escapejs }}? Methods used by orders are deactivated instead.">
+                    {% csrf_token %}
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">
+      {% icon "truck" %}
+      <h4>No delivery methods</h4>
+      <p>Add at least one method so customers can complete checkout.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

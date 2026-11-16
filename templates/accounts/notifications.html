@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Notifications — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Notifications</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="notifications" %}
+
+      <div>
+        <div class="account-head">
+          <div><h1>Notifications</h1><p>Order updates, payment confirmations and account alerts.</p></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn btn-outline btn-sm {% if request.GET.filter != 'unread' %}is-active{% endif %}" href="{% url 'accounts:notifications' %}">All</a>
+            <a class="btn btn-outline btn-sm {% if request.GET.filter == 'unread' %}is-active{% endif %}" href="?filter=unread">Unread</a>
+            <form action="{% url 'accounts:notifications_read_all' %}" method="post">
+              {% csrf_token %}
+              <button class="btn btn-ghost btn-sm" type="submit">{% icon "check" %} Mark all read</button>
+            </form>
+          </div>
+        </div>
+
+        {% if notifications %}
+          <div class="notification-list">
+            {% for notification in notifications %}
+              <div class="notification-item {% if not notification.is_read %}is-unread{% endif %}">
+                <span class="notification-icon notification-{{ notification.kind }}">
+                  {% if notification.kind == 'order' %}{% icon "package" %}{% elif notification.kind == 'payment' %}{% icon "credit-card" %}{% elif notification.kind == 'wishlist' %}{% icon "heart" %}{% elif notification.kind == 'promo' %}{% icon "tag" %}{% elif notification.kind == 'account' %}{% icon "user" %}{% else %}{% icon "bell" %}{% endif %}
+                </span>
+                <div class="notification-item-body">
+                  <strong>{{ notification.title }}</strong>
+                  <p>{{ notification.message }}</p>
+                  <small>{{ notification.created_at|date:"d M Y, g:i A" }} · {{ notification.created_at|timesince }} ago</small>
+                </div>
+                {% if notification.url %}
+                  <a class="btn btn-outline btn-sm" href="{{ notification.url }}">Open</a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <span class="empty-icon">{% icon "bell" %}</span>
+            <h3>{% if request.GET.filter == 'unread' %}No unread notifications{% else %}No notifications yet{% endif %}</h3>
+            <p>Order confirmations, delivery updates and payment receipts will show up here.</p>
+            <a class="btn btn-primary" href="{% url 'orders:list' %}">View my orders</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

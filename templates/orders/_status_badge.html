@@ -1,0 +1,4 @@
+{% load voltiq %}
+<span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' or order.status == 'refunded' %}badge-danger{% elif order.status == 'shipped' or order.status == 'out_for_delivery' %}badge-info{% elif order.status == 'processing' or order.status == 'confirmed' %}badge-purple{% else %}badge-warn{% endif %}">
+  {{ order.get_status_display }}
+</span>

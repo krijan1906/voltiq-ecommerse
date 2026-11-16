@@ -1,0 +1,102 @@
+{% load static voltiq %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="robots" content="noindex,nofollow">
+  <title>{% block title %}Dashboard{% endblock %} — Voltiq Admin</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="dash-body">
+  {% include "partials/icons.html" %}
+  <aside class="dash-sidebar" id="dash-sidebar" aria-label="Admin navigation">
+    <div class="dash-brand-row">
+      <a class="brand brand-light" href="{% url 'dashboard:overview' %}">
+        <span class="brand-mark">{% icon "zap" %}</span>
+        <span class="brand-text">VOLTI<span>Q</span></span>
+      </a>
+      <span class="dash-badge">Admin</span>
+      <button class="dash-sidebar-close" type="button" data-dash-close aria-label="Close menu">{% icon "x" %}</button>
+    </div>
+
+    <nav class="dash-nav">
+      <span class="dash-nav-label">Overview</span>
+      <a href="{% url 'dashboard:overview' %}" class="{% if request.resolver_match.url_name == 'overview' %}is-active{% endif %}">{% icon "dashboard" %} Dashboard</a>
+      <a href="{% url 'dashboard:reports' %}" class="{% if request.resolver_match.url_name == 'reports' %}is-active{% endif %}">{% icon "chart" %} Reports &amp; analytics</a>
+
+      <span class="dash-nav-label">Catalogue</span>
+      <a href="{% url 'dashboard:product_list' %}" class="{% if 'product' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "package" %} Products</a>
+      <a href="{% url 'dashboard:category_list' %}" class="{% if 'category' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "grid" %} Categories</a>
+      <a href="{% url 'dashboard:brand_list' %}" class="{% if 'brand' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "tag" %} Brands</a>
+      <a href="{% url 'dashboard:specfield_list' %}" class="{% if 'specfield' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "sliders" %} Spec fields</a>
+      <a href="{% url 'dashboard:inventory_list' %}" class="{% if 'inventory' in request.resolver_match.url_name or request.resolver_match.url_name == 'stock_history' %}is-active{% endif %}">{% icon "box" %} Inventory</a>
+
+      <span class="dash-nav-label">Sales</span>
+      <a href="{% url 'dashboard:order_list' %}" class="{% if 'order' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "shopping-bag" %} Orders</a>
+      <a href="{% url 'dashboard:customer_list' %}" class="{% if 'customer' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "users" %} Customers</a>
+      <a href="{% url 'dashboard:review_list' %}" class="{% if 'review' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "star" %} Reviews</a>
+      <a href="{% url 'dashboard:coupon_list' %}" class="{% if 'coupon' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "percent" %} Coupons</a>
+
+      <span class="dash-nav-label">Marketing &amp; inbox</span>
+      <a href="{% url 'dashboard:newsletter_list' %}" class="{% if request.resolver_match.url_name == 'newsletter_list' %}is-active{% endif %}">{% icon "mail" %} Newsletter</a>
+      <a href="{% url 'dashboard:contact_messages' %}" class="{% if request.resolver_match.url_name == 'contact_messages' %}is-active{% endif %}">{% icon "message" %} Messages</a>
+
+      <span class="dash-nav-label">Configuration</span>
+      <a href="{% url 'dashboard:store_settings' %}" class="{% if 'settings' in request.resolver_match.url_name or 'shipping' in request.resolver_match.url_name %}is-active{% endif %}">{% icon "settings" %} Store settings</a>
+      <a href="{% url 'core:home' %}" target="_blank" rel="noopener">{% icon "external-link" %} View storefront</a>
+    </nav>
+
+    <div class="dash-sidebar-foot">
+      <div class="dash-user">
+        <span class="avatar avatar-sm">{% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.initials }}{% endif %}</span>
+        <div><strong>{{ user.get_short_name|truncatechars:18 }}</strong><small>{{ user.get_role_display }}</small></div>
+      </div>
+      <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button class="dash-logout" type="submit">{% icon "logout" %} Sign out</button>
+      </form>
+    </div>
+  </aside>
+  <div class="dash-backdrop" data-dash-close hidden></div>
+
+  <div class="dash-shell">
+    <header class="dash-topbar">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <button class="dash-menu-btn" type="button" data-dash-open aria-label="Open menu" aria-controls="dash-sidebar">{% icon "menu" %}</button>
+        <div class="dash-title">
+          <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+          <p>{% block page_subtitle %}{% now "l, j F Y" %}{% endblock %}</p>
+        </div>
+      </div>
+      <div class="dash-topbar-actions">
+        {% block topbar_actions %}{% endblock %}
+        <a class="dash-icon-btn" href="{% url 'core:home' %}" target="_blank" rel="noopener" title="View storefront" aria-label="View storefront">{% icon "external-link" %}</a>
+        <a class="dash-icon-btn" href="{% url 'dashboard:contact_messages' %}" title="Messages" aria-label="Messages">{% icon "message" %}</a>
+        <span class="dash-avatar" title="{{ user.email }}">{% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.initials }}{% endif %}</span>
+      </div>
+    </header>
+
+    <main class="dash-main">
+      {% for message in messages %}
+        <div class="toast toast-{{ message.tags|default:'info' }}" data-toast style="position:static;margin-bottom:14px;animation:none">
+          <span class="toast-icon">{% if message.tags == 'success' %}{% icon "check-circle" %}{% elif message.tags == 'error' %}{% icon "alert-circle" %}{% else %}{% icon "info" %}{% endif %}</span>
+          <div class="toast-content">{{ message }}</div>
+          <button class="toast-close" type="button" data-toast-close aria-label="Dismiss">{% icon "x" %}</button>
+        </div>
+      {% endfor %}
+      {% block dash_content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="{% static 'js/dashboard.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

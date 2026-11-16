@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Profile settings — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Profile settings</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="profile" %}
+
+      <div>
+        <div class="account-head">
+          <div><h1>Profile settings</h1><p>Keep your contact details and preferences up to date.</p></div>
+          <a class="btn btn-outline btn-sm" href="{% url 'accounts:password_change' %}">{% icon "lock" %} Change password</a>
+        </div>
+
+        <section class="account-panel-card">
+          <div class="profile-avatar-row">
+            <span class="avatar avatar-lg">
+              {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.initials }}{% endif %}
+            </span>
+            <div>
+              <h3>{{ user.get_full_name }}</h3>
+              <p>{{ user.email }}{% if user.is_email_verified %} · <span class="text-green">Verified</span>{% else %} · <a href="{% url 'accounts:verify_pending' %}">Verify email</a>{% endif %}</p>
+              <p style="font-size:.76rem">Member since {{ user.date_joined|date:"F Y" }}</p>
+            </div>
+          </div>
+
+          {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="{{ form.first_name.id_for_label }}">First name</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}<span class="form-error">{{ form.first_name.errors.0 }}</span>{% endif %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="{{ form.last_name.id_for_label }}">Last name</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}<span class="form-error">{{ form.last_name.errors.0 }}</span>{% endif %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="{{ form.phone.id_for_label }}">Phone number</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<span class="form-error">{{ form.phone.errors.0 }}</span>{% endif %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="{{ form.avatar.id_for_label }}">Profile photo</label>
+                {{ form.avatar }}
+                {% if form.avatar.errors %}<span class="form-error">{{ form.avatar.errors.0 }}</span>{% endif %}
+                <span class="form-hint">JPG, PNG or WEBP. Square images look best.</span>
+              </div>
+              {% if user.avatar %}
+                <div class="form-group span-2">
+                  <label class="check-row">{{ form.remove_avatar }} <span>{{ form.remove_avatar.label }}</span></label>
+                </div>
+              {% endif %}
+            </div>
+
+            <label class="check-row" style="margin:18px 0">
+              {{ form.newsletter_opt_in }} <span>{{ form.newsletter_opt_in.label }}</span>
+            </label>
+
+            <div class="checkout-actions" style="margin-top:8px">
+              <span class="muted" style="font-size:.78rem">Email changes require support verification.</span>
+              <button class="btn btn-primary" type="submit">Save changes</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="account-panel-card">
+          <h2>Account &amp; security</h2>
+          <div class="settings-list">
+            <div class="settings-row">
+              <div><strong>Email address</strong><small>{{ user.email }} {% if user.is_email_verified %}· verified{% else %}· unverified{% endif %}</small></div>
+              <a class="btn btn-outline btn-sm" href="{% if user.is_email_verified %}{% url 'core:contact' %}{% else %}{% url 'accounts:verify_pending' %}{% endif %}">{% if user.is_email_verified %}Request change{% else %}Verify{% endif %}</a>
+            </div>
+            <div class="settings-row">
+              <div><strong>Password</strong><small>Use a unique password you don't reuse elsewhere.</small></div>
+              <a class="btn btn-outline btn-sm" href="{% url 'accounts:password_change' %}">Change</a>
+            </div>
+            <div class="settings-row">
+              <div><strong>Delivery addresses</strong><small>Manage saved shipping and billing addresses.</small></div>
+              <a class="btn btn-outline btn-sm" href="{% url 'accounts:addresses' %}">Manage</a>
+            </div>
+            <div class="settings-row">
+              <div><strong>Notifications</strong><small>Order updates, payments and offers.</small></div>
+              <a class="btn btn-outline btn-sm" href="{% url 'accounts:notifications' %}">View</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel-card">
+          <h2>Privacy &amp; data</h2>
+          <p class="muted" style="font-size:.84rem">You can request a copy or deletion of your personal data at any time. Order and tax records are retained where required by law.</p>
+          <a class="btn btn-outline btn-sm" href="{% url 'core:contact' %}">Request my data</a>
+          <a class="btn btn-ghost btn-sm" href="{% url 'core:privacy' %}">Read privacy policy</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

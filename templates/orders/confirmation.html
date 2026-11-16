@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Order {{ order.order_number }} confirmed — Voltiq{% endblock %}
+
+{% block content %}
+<div class="confirmation-page">
+  <div class="container">
+    <div class="confirmation-card">
+      <div class="success-mark">{% icon "check" %}</div>
+      <h1>Thank you, {{ order.full_name|truncatewords:2 }}!</h1>
+      <p>
+        {% if order.payment_status == 'paid' %}
+          Your payment was received and your order is confirmed. We'll email tracking details as soon as it ships.
+        {% elif order.payment_method == 'cod' %}
+          Your order is confirmed. Please keep {{ order.total|npr }} ready in cash when it arrives.
+        {% elif order.payment_method == 'bank' %}
+          Your order is reserved. Complete the bank transfer so our team can confirm it.
+        {% else %}
+          Your order has been created. Complete payment to confirm it.
+        {% endif %}
+      </p>
+
+      <div class="confirmation-number">
+        {% icon "package" %} {{ order.order_number }}
+      </div>
+
+      <div class="confirmation-details">
+        <div class="confirmation-detail">
+          <small>Order date</small>
+          <strong>{{ order.created_at|date:"d M Y, g:i A" }}</strong>
+        </div>
+        <div class="confirmation-detail">
+          <small>Payment</small>
+          <strong>{{ order.get_payment_method_display }} · {{ order.get_payment_status_display }}</strong>
+        </div>
+        <div class="confirmation-detail">
+          <small>Delivery</small>
+          <strong>{{ order.shipping_method_name|default:"Standard delivery" }}</strong>
+        </div>
+        <div class="confirmation-detail">
+          <small>Items</small>
+          <strong>{{ order.item_count }} item{{ order.item_count|pluralize }}</strong>
+        </div>
+        <div class="confirmation-detail">
+          <small>Total</small>
+          <strong>{{ order.total|npr }}</strong>
+        </div>
+        <div class="confirmation-detail">
+          <small>Shipping to</small>
+          <strong>{{ order.shipping_city }}, {{ order.shipping_district }}</strong>
+        </div>
+      </div>
+
+      <div class="order-panel" style="text-align:left;margin-bottom:24px">
+        <div class="order-panel-head">
+          <h2>Your items</h2>
+          <a href="{% url 'orders:detail' order.order_number %}">View order</a>
+        </div>
+        <div class="order-panel-body">
+          {% for item in order.items.all %}
+            <div class="order-line">
+              <span class="order-line-media">
+                {% if item.image_url %}
+                  <img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">
+                {% else %}
+                  {% icon "laptop" %}
+                {% endif %}
+              </span>
+              <span class="order-line-body">
+                <strong>{% if item.product %}<a href="{{ item.product.get_absolute_url }}">{{ item.product_name }}</a>{% else %}{{ item.product_name }}{% endif %}</strong>
+                <small>Qty {{ item.quantity }} · {{ item.sku }}</small>
+              </span>
+              <span class="order-line-price">{{ item.line_total|npr }}</span>
+            </div>
+          {% endfor %}
+          <div class="summary-row" style="margin-top:12px"><span>Subtotal</span><span>{{ order.subtotal|npr }}</span></div>
+          {% if order.discount_amount %}<div class="summary-row discount"><span>Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</span><span>-{{ order.discount_amount|npr }}</span></div>{% endif %}
+          <div class="summary-row"><span>Delivery</span><span>{% if order.shipping_fee %}{{ order.shipping_fee|npr }}{% else %}Free{% endif %}</span></div>
+          <div class="summary-row total"><span>Total</span><span>{{ order.total|npr }}</span></div>
+        </div>
+      </div>
+
+      <div class="confirmation-actions">
+        {% if order.payment_method == 'bank' and order.payment_status != 'paid' %}
+          <a class="btn btn-primary" href="{% url 'orders:payment' order.order_number %}">Complete payment {% icon "arrow-right" %}</a>
+        {% elif order.can_pay %}
+          <a class="btn btn-primary" href="{% url 'orders:payment' order.order_number %}">Pay now {% icon "arrow-right" %}</a>
+        {% endif %}
+        <a class="btn btn-outline" href="{% url 'orders:track' order.order_number %}">{% icon "truck" %} Track order</a>
+        <a class="btn btn-ghost" href="{% url 'products:list' %}">Continue shopping</a>
+      </div>
+
+      <p class="muted" style="font-size:.78rem;margin-top:22px;margin-bottom:0">
+        A confirmation was sent to <strong>{{ order.email }}</strong>.
+        Need help? <a href="{% url 'core:contact' %}">Contact support</a> with your order number.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

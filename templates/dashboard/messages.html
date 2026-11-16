@@ -1,0 +1,58 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Messages{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} contact message{{ page_obj.paginator.count|pluralize }}{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <select class="select" name="status" aria-label="Message status">
+      <option value="">Any status</option>
+      {% for value, label in statuses %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if status %}<a class="btn btn-ghost" href="{% url 'dashboard:contact_messages' %}">Reset</a>{% endif %}
+    <span class="spacer"></span>
+    <a class="btn btn-outline" href="{% url 'dashboard:contact_messages' %}?status=new">{% icon "message" %} New only</a>
+  </form>
+
+  {% if contact_messages %}
+    {% for message in contact_messages %}
+      <article class="dash-message">
+        <div class="dash-message-head">
+          <div>
+            <strong>{{ message.subject }}</strong>
+            <small>
+              {{ message.name }} ·
+              <a href="mailto:{{ message.email }}">{{ message.email }}</a>
+              {% if message.phone %} · {{ message.phone }}{% endif %}
+              · {{ message.created_at|date:"d M Y, g:i A" }}
+            </small>
+          </div>
+          <span class="badge {% if message.status == 'new' %}badge-info{% elif message.status == 'in_progress' %}badge-warn{% else %}badge-success{% endif %}">{{ message.get_status_display }}</span>
+        </div>
+        <p>{{ message.message }}</p>
+        <div class="dash-message-foot">
+          <form action="{% url 'dashboard:contact_message_status' message.pk %}" method="post" style="display:flex;gap:6px;align-items:center">
+            {% csrf_token %}
+            <select class="select" name="status" aria-label="Update message status">
+              {% for value, label in statuses %}<option value="{{ value }}" {% if message.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+            <button class="btn btn-outline btn-sm" type="submit">Update</button>
+          </form>
+          <a class="btn btn-ghost btn-sm" href="mailto:{{ message.email }}?subject=Re: {{ message.subject|urlencode }}">{% icon "mail" %} Reply by email</a>
+        </div>
+      </article>
+    {% endfor %}
+    <div style="padding:0 16px 14px">{% include "partials/pagination.html" %}</div>
+  {% else %}
+    <div class="dash-empty">
+      {% icon "message" %}
+      <h4>No messages found</h4>
+      <p>{% if status %}No messages match this status.{% else %}Messages sent through the storefront contact form will appear here.{% endif %}</p>
+      <a class="btn btn-outline btn-sm" href="{% url 'dashboard:contact_messages' %}">Clear filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Orders{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} order{{ page_obj.paginator.count|pluralize }} matching your filters{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:export_orders_csv' %}">{% icon "download" %} Export CSV</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <div class="dash-search">{% icon "search" %}<input class="input" type="search" name="q" value="{{ q }}" placeholder="Order, name, email or phone"></div>
+    <select class="select" name="status" aria-label="Order status">
+      <option value="">Any status</option>
+      {% for value, label in statuses %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select class="select" name="payment_status" aria-label="Payment status">
+      <option value="">Any payment</option>
+      {% for value, label in payment_statuses %}<option value="{{ value }}" {% if payment_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <input class="input" type="date" name="from" value="{{ date_from }}" aria-label="From date" style="min-width:140px">
+    <input class="input" type="date" name="to" value="{{ date_to }}" aria-label="To date" style="min-width:140px">
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if q or status or payment_status or date_from or date_to %}<a class="btn btn-ghost" href="{% url 'dashboard:order_list' %}">Reset</a>{% endif %}
+  </form>
+
+  {% if orders %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead><tr><th>Order</th><th>Customer</th><th>Placed</th><th>Status</th><th>Payment</th><th class="num">Total</th><th class="num">Actions</th></tr></thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td><a href="{% url 'dashboard:order_detail' order.order_number %}" style="font-weight:700;font-size:.79rem">{{ order.order_number }}</a><span class="dash-sub">{{ order.item_count }} item{{ order.item_count|pluralize }}</span></td>
+              <td>{{ order.full_name }}<span class="dash-sub">{{ order.email }}</span></td>
+              <td>{{ order.created_at|date:"d M Y" }}<span class="dash-sub">{{ order.created_at|date:"g:i A" }}</span></td>
+              <td><span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' or order.status == 'refunded' %}badge-danger{% elif order.status == 'shipped' or order.status == 'out_for_delivery' %}badge-info{% elif order.status == 'processing' or order.status == 'confirmed' %}badge-purple{% else %}badge-warn{% endif %}">{{ order.get_status_display }}</span></td>
+              <td><span class="badge {% if order.payment_status == 'paid' %}badge-success{% elif order.payment_status == 'failed' %}badge-danger{% else %}badge-muted{% endif %}">{{ order.get_payment_status_display }}</span><span class="dash-sub">{{ order.get_payment_method_display }}</span></td>
+              <td class="num"><strong>{{ order.total|npr }}</strong></td>
+              <td>
+                <div class="row-actions">
+                  <a href="{% url 'dashboard:order_detail' order.order_number %}">Open</a>
+                  <a href="{% url 'dashboard:order_invoice' order.order_number %}">Invoice</a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "partials/pagination.html" %}
+  {% else %}
+    <div class="dash-empty">{% icon "shopping-bag" %}<h4>No orders match</h4><p>Try a different status, payment filter or date range.</p><a class="btn btn-outline btn-sm" href="{% url 'dashboard:order_list' %}">Clear filters</a></div>
+  {% endif %}
+</div>
+{% endblock %}

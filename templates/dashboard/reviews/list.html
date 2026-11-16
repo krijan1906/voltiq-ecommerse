@@ -1,0 +1,74 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Reviews{% endblock %}
+{% block page_title %}Reviews{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} review{{ page_obj.paginator.count|pluralize }} · moderate customer feedback{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:review_list' %}?status=pending">{% icon "clock" %} Pending only</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <select class="select" name="status" aria-label="Approval status">
+      <option value="">Any status</option>
+      <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending approval</option>
+      <option value="approved" {% if status == 'approved' %}selected{% endif %}>Approved</option>
+    </select>
+    <select class="select" name="rating" aria-label="Rating">
+      <option value="">Any rating</option>
+      {% for value in "12345" %}
+        <option value="{{ value }}" {% if rating == value %}selected{% endif %}>{{ value }} star{{ value|add:"0"|pluralize }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if status or rating %}<a class="btn btn-ghost" href="{% url 'dashboard:review_list' %}">Reset</a>{% endif %}
+  </form>
+
+  {% if reviews %}
+    <div class="dash-card-body" style="padding:0">
+      {% for review in reviews %}
+        <article class="dash-message">
+          <div class="dash-message-head">
+            <div style="min-width:0">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="stars" style="--rating: {{ review.rating|star_percent }}" aria-label="{{ review.rating }} out of 5 stars"></span>
+                <strong>{{ review.title|truncatechars:70 }}</strong>
+                {% if review.is_verified_purchase %}<span class="badge badge-success">Verified purchase</span>{% endif %}
+                {% if review.is_approved %}<span class="badge badge-info">Approved</span>{% else %}<span class="badge badge-warn">Pending</span>{% endif %}
+              </div>
+              <small>
+                <a href="{{ review.product.get_absolute_url }}" target="_blank" rel="noopener">{{ review.product.name|truncatechars:46 }}</a>
+                · {{ review.user.get_full_name|default:review.user.email }} · {{ review.created_at|date:"d M Y, g:i A" }}
+              </small>
+            </div>
+            <div class="row-actions" style="justify-content:flex-end">
+              <form action="{% url 'dashboard:review_toggle' review.pk %}" method="post">
+                {% csrf_token %}
+                <button type="submit">{% if review.is_approved %}Unapprove{% else %}Approve{% endif %}</button>
+              </form>
+              <form action="{% url 'dashboard:review_delete' review.pk %}" method="post" data-confirm="Delete this review permanently?">
+                {% csrf_token %}
+                <button class="danger" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+          <p>{{ review.body|truncatewords:60 }}</p>
+          <div class="dash-message-foot">
+            <span class="dash-help">{{ review.helpful_count }} found this helpful</span>
+            <a class="dash-help" href="{% url 'dashboard:product_edit' review.product.pk %}">Manage product</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    <div style="padding:0 16px 14px">{% include "partials/pagination.html" %}</div>
+  {% else %}
+    <div class="dash-empty">
+      {% icon "star" %}
+      <h4>No reviews found</h4>
+      <p>{% if status or rating %}No reviews match these filters.{% else %}Customer reviews will appear here for moderation.{% endif %}</p>
+      <a class="btn btn-outline btn-sm" href="{% url 'dashboard:review_list' %}">Clear filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

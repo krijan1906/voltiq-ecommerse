@@ -1,0 +1,78 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Coupons{% endblock %}
+{% block page_title %}Coupons{% endblock %}
+{% block page_subtitle %}{{ page_obj.paginator.count }} coupon{{ page_obj.paginator.count|pluralize }} configured{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-primary btn-sm" href="{% url 'dashboard:coupon_create' %}">{% icon "plus" %} Create coupon</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  {% if coupons %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>Code</th><th>Discount</th><th class="num">Minimum</th><th>Validity</th><th class="num">Redemptions</th><th>Status</th><th class="num">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for coupon in coupons %}
+            <tr>
+              <td>
+                <strong style="font-size:.82rem;letter-spacing:.04em">{{ coupon.code }}</strong>
+                {% if coupon.description %}<span class="dash-sub">{{ coupon.description|truncatechars:38 }}</span>{% endif %}
+              </td>
+              <td>
+                {% if coupon.discount_type == 'percentage' %}
+                  <strong>{{ coupon.value|floatformat:"-2" }}%</strong>
+                {% else %}
+                  <strong>{{ coupon.value|npr }}</strong>
+                {% endif %}
+                {% if coupon.maximum_discount %}<span class="dash-sub">max {{ coupon.maximum_discount|npr }}</span>{% endif %}
+              </td>
+              <td class="num">{{ coupon.minimum_order_amount|npr }}</td>
+              <td>
+                {{ coupon.valid_from|date:"d M Y" }}
+                <span class="dash-sub">{% if coupon.valid_to %}to {{ coupon.valid_to|date:"d M Y" }}{% else %}No expiry{% endif %}</span>
+              </td>
+              <td class="num">
+                <strong>{{ coupon.used_count }}</strong>
+                <span class="dash-sub">{% if coupon.usage_limit %}of {{ coupon.usage_limit }}{% else %}unlimited{% endif %}</span>
+              </td>
+              <td>
+                {% if not coupon.is_active %}
+                  <span class="badge badge-muted">Inactive</span>
+                {% elif coupon.is_expired %}
+                  <span class="badge badge-danger">Expired</span>
+                {% elif coupon.usage_limit and coupon.used_count >= coupon.usage_limit %}
+                  <span class="badge badge-warn">Exhausted</span>
+                {% else %}
+                  <span class="badge badge-success">Active</span>
+                {% endif %}
+                <span class="dash-sub">{{ coupon.order_count }} order{{ coupon.order_count|pluralize }}</span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <a href="{% url 'dashboard:coupon_edit' coupon.pk %}">Edit</a>
+                  <form action="{% url 'dashboard:coupon_delete' coupon.pk %}" method="post" data-confirm="Delete coupon {{ coupon.code|escapejs }}? Existing orders keep their discount.">
+                    {% csrf_token %}
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:0 16px 14px">{% include "partials/pagination.html" %}</div>
+  {% else %}
+    <div class="dash-empty">
+      {% icon "percent" %}
+      <h4>No coupons yet</h4>
+      <p>Create percentage or fixed-amount coupons with usage limits and expiry dates.</p>
+      <a class="btn btn-primary btn-sm" href="{% url 'dashboard:coupon_create' %}">{% icon "plus" %} Create coupon</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% load static voltiq %}
+<div class="announcement-bar">
+  <div class="container announcement-inner">
+    <div class="announcement-copy">
+      {% icon "truck" %}
+      <span>{{ site.announcement|default:"Free delivery across Nepal on orders over Rs. 10,000" }}</span>
+    </div>
+    <div class="announcement-links">
+      <a href="{% url 'orders:list' %}">Track order</a>
+      <span class="dot-sep"></span>
+      <a href="{% url 'core:contact' %}">Help centre</a>
+      <span class="dot-sep"></span>
+      <a href="tel:{{ site.support_phone|default:'+9779800000000' }}" class="hide-sm">{{ site.support_phone|default:"+977 980-000-0000" }}</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header">
+  <div class="container header-main">
+    <button class="icon-btn nav-toggle" type="button" data-drawer-open aria-label="Open menu" aria-controls="mobile-drawer">
+      {% icon "menu" %}
+    </button>
+
+    <a class="brand" href="{% url 'core:home' %}" aria-label="{{ site.store_name|default:'Voltiq' }} home">
+      <span class="brand-mark">{% icon "zap" %}</span>
+      <span class="brand-text">VOLTI<span>Q</span></span>
+    </a>
+
+    <form class="header-search" id="search-form" action="{% url 'products:list' %}" method="get" role="search">
+      <div class="search-field">
+        {% icon "search" "icon search-icon" %}
+        <input id="site-search" type="search" name="q" placeholder="Search laptops, phones, GPUs…" value="{{ request.GET.q|default:'' }}" autocomplete="off" aria-label="Search products" aria-expanded="false" aria-controls="search-suggestions">
+        <kbd class="search-kbd">/</kbd>
+        <button type="submit" class="search-submit">Search</button>
+      </div>
+      <div class="search-panel" id="search-suggestions" hidden></div>
+    </form>
+
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <details class="popover user-menu">
+          <summary class="icon-btn header-action" aria-label="Notifications">
+            {% icon "bell" %}
+            {% if unread_notifications %}<span class="badge-dot" aria-label="{{ unread_notifications }} unread notifications"></span>{% endif %}
+          </summary>
+          <div class="popover-panel notifications-panel">
+            <div class="popover-head">
+              <strong>Notifications</strong>
+              <a href="{% url 'accounts:notifications' %}">View all</a>
+            </div>
+            {% for notification in nav_notifications %}
+              <a class="notification-row" href="{{ notification.url|default:'#' }}">
+                <span class="notification-icon notification-{{ notification.kind }}">{% icon "bell" %}</span>
+                <span>
+                  <strong>{{ notification.title }}</strong>
+                  <small>{{ notification.message|truncatechars:80 }}</small>
+                </span>
+              </a>
+            {% empty %}
+              <div class="popover-empty">You're all caught up.</div>
+            {% endfor %}
+          </div>
+        </details>
+
+        <details class="popover user-menu">
+          <summary class="account-trigger" aria-label="Account menu">
+            <span class="avatar avatar-sm">
+              {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.initials }}{% endif %}
+            </span>
+            <span class="account-trigger-copy hide-md">
+              <small>Hello, {{ user.get_short_name|truncatechars:16 }}</small>
+              <strong>My account</strong>
+            </span>
+            {% icon "chevron-down" "icon chevron" %}
+          </summary>
+          <div class="popover-panel account-panel">
+            <div class="account-panel-head">
+              <span class="avatar">{{ user.initials }}</span>
+              <div><strong>{{ user.get_full_name }}</strong><small>{{ user.email }}</small></div>
+            </div>
+            {% if not user.is_email_verified %}
+              <a href="{% url 'accounts:verify_pending' %}" class="verify-nudge">{% icon "alert-circle" %} Verify your email</a>
+            {% endif %}
+            <a href="{% url 'accounts:dashboard' %}">{% icon "dashboard" %} Account overview</a>
+            <a href="{% url 'orders:list' %}">{% icon "package" %} My orders</a>
+            <a href="{% url 'wishlist:detail' %}">{% icon "heart" %} Wishlist</a>
+            <a href="{% url 'accounts:profile' %}">{% icon "user" %} Profile settings</a>
+            <a href="{% url 'accounts:notifications' %}">{% icon "bell" %} Notifications {% if unread_notifications %}<span class="pill pill-brand">{{ unread_notifications }}</span>{% endif %}</a>
+            {% if user.is_staff %}
+              <div class="menu-divider"></div>
+              <a href="{% url 'dashboard:overview' %}">{% icon "chart" %} Staff dashboard</a>
+            {% endif %}
+            <div class="menu-divider"></div>
+            <form action="{% url 'accounts:logout' %}" method="post">{% csrf_token %}
+              <button type="submit" class="menu-button">{% icon "logout" %} Sign out</button>
+            </form>
+          </div>
+        </details>
+      {% else %}
+        <a class="header-login hide-sm" href="{% url 'accounts:login' %}">{% icon "user" %} Sign in</a>
+        <a class="btn btn-dark btn-sm hide-sm" href="{% url 'accounts:register' %}">Create account</a>
+      {% endif %}
+
+      <a class="icon-btn header-action" href="{% url 'wishlist:detail' %}" aria-label="Wishlist">
+        {% icon "heart" %}
+        <span class="count-badge {% if not wishlist_count %}is-zero{% endif %}" id="wishlist-count">{{ wishlist_count }}</span>
+      </a>
+      <a class="icon-btn header-action cart-action" href="{% url 'cart:detail' %}" aria-label="Shopping cart">
+        {% icon "cart" %}
+        <span class="count-badge {% if not cart_count %}is-zero{% endif %}" id="cart-count">{{ cart_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="category-nav" aria-label="Categories">
+    <div class="container category-nav-inner">
+      <div class="nav-mega">
+        <button class="nav-link nav-mega-trigger" type="button" aria-expanded="false">
+          {% icon "grid" %} All categories {% icon "chevron-down" "icon chevron" %}
+        </button>
+        <div class="mega-panel">
+          <div class="mega-grid">
+            {% for cat in nav_categories %}
+              <div class="mega-col">
+                <a class="mega-title" href="{{ cat.get_absolute_url }}">{{ cat.name }} {% icon "arrow-right" %}</a>
+                {% for child in cat.children.all|slice:":5" %}
+                  <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>
+                {% endfor %}
+              </div>
+            {% endfor %}
+            <div class="mega-promo">
+              <span class="eyebrow">{% icon "sparkles" %} Curated for you</span>
+              <h4>The new standard in mobile.</h4>
+              <p>Flagship cameras, all-day battery and 5G — explore the latest smartphones.</p>
+              <a class="btn btn-light btn-sm" href="{% url 'products:list' %}?category=smartphones">Shop smartphones {% icon "arrow-right" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="category-links">
+        {% for cat in nav_categories|slice:":7" %}
+          <a class="nav-link" href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+        {% endfor %}
+        <a class="nav-link nav-deal" href="{% url 'products:list' %}?discount=10&sort=price_asc">{% icon "fire" %} Deals</a>
+        <a class="nav-link" href="{% url 'products:list' %}?sort=newest">New arrivals</a>
+      </div>
+      <a class="nav-link nav-support" href="{% url 'core:contact' %}">{% icon "headset" %} Expert support</a>
+    </div>
+  </nav>
+</header>
+
+<div class="drawer-backdrop" data-drawer-close hidden></div>
+<aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true" aria-label="Mobile navigation">
+  <div class="drawer-head">
+    <a class="brand" href="{% url 'core:home' %}">
+      <span class="brand-mark">{% icon "zap" %}</span><span class="brand-text">VOLTI<span>Q</span></span>
+    </a>
+    <button class="icon-btn" type="button" data-drawer-close aria-label="Close menu">{% icon "x" %}</button>
+  </div>
+  <div class="drawer-body">
+    <form action="{% url 'products:list' %}" method="get" class="drawer-search">
+      {% icon "search" %}
+      <input type="search" name="q" placeholder="Search products" aria-label="Search products">
+      <button type="submit" class="btn btn-primary btn-sm">Go</button>
+    </form>
+    {% if user.is_authenticated %}
+      <div class="drawer-account">
+        <span class="avatar">{{ user.initials }}</span>
+        <div><strong>{{ user.get_full_name }}</strong><small>{{ user.email }}</small></div>
+      </div>
+      <div class="drawer-links">
+        <a href="{% url 'accounts:dashboard' %}">{% icon "dashboard" %} My account</a>
+        <a href="{% url 'orders:list' %}">{% icon "package" %} Orders</a>
+        <a href="{% url 'wishlist:detail' %}">{% icon "heart" %} Wishlist</a>
+        {% if user.is_staff %}<a href="{% url 'dashboard:overview' %}">{% icon "chart" %} Staff dashboard</a>{% endif %}
+      </div>
+    {% else %}
+      <div class="drawer-auth">
+        <a class="btn btn-primary btn-block" href="{% url 'accounts:login' %}">Sign in</a>
+        <a class="btn btn-outline btn-block" href="{% url 'accounts:register' %}">Create account</a>
+      </div>
+    {% endif %}
+    <div class="drawer-section">
+      <h4>Shop by category</h4>
+      {% for cat in nav_categories %}
+        <div class="drawer-cat">
+          <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+          {% if cat.children.exists %}
+            <button type="button" class="drawer-expand" data-expand aria-label="Show {{ cat.name }} subcategories">{% icon "chevron-down" %}</button>
+          {% endif %}
+        </div>
+        {% if cat.children.exists %}
+          <div class="drawer-sub" hidden>
+            {% for child in cat.children.all %}<a href="{{ child.get_absolute_url }}">{{ child.name }}</a>{% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="drawer-links">
+      <a href="{% url 'products:list' %}?sort=newest">New arrivals</a>
+      <a href="{% url 'products:list' %}?discount=10">Deals</a>
+      <a href="{% url 'core:about' %}">About Voltiq</a>
+      <a href="{% url 'core:contact' %}">Contact us</a>
+    </div>
+    {% if user.is_authenticated %}
+      <form action="{% url 'accounts:logout' %}" method="post" class="drawer-logout">{% csrf_token %}
+        <button class="btn btn-outline btn-block" type="submit">{% icon "logout" %} Sign out</button>
+      </form>
+    {% endif %}
+  </div>
+</aside>

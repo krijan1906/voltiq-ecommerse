@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}{{ product.meta_title|default:product.name }} — Voltiq{% endblock %}
+{% block meta_description %}{{ product.meta_description|default:product.short_description|default:product.name }}{% endblock %}
+{% block og_title %}{{ product.name }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="pdp">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>
+      {% icon "chevron-right" %}
+      <a href="{% url 'products:list' %}">Products</a>
+      {% icon "chevron-right" %}
+      <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
+      {% icon "chevron-right" %}
+      <span class="current">{{ product.name|truncatechars:48 }}</span>
+    </nav>
+
+    <div class="pdp-top">
+      <div class="pdp-gallery">
+        <div class="pdp-main-image">
+          {% if product.has_discount %}<span class="badge badge-sale pdp-badge">-{{ product.discount_percent }}% today</span>{% endif %}
+          {% if product.primary_image_url %}
+            <img id="pdp-main-image" src="{{ product.primary_image_url }}" alt="{{ product.name }}" width="620" height="570">
+          {% else %}
+            <span class="product-placeholder">{% icon "laptop" %}</span>
+          {% endif %}
+        </div>
+        {% if product.images.all %}
+          <div class="pdp-thumbs" aria-label="Product images">
+            {% for image in product.images.all %}
+              <button type="button" class="pdp-thumb {% if image.is_primary or forloop.first %}is-active{% endif %}" data-gallery-thumb="{{ image.image.url }}" aria-label="View image {{ forloop.counter }}">
+                <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" loading="lazy">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="pdp-info">
+        <a class="product-brand" href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
+        <h1 class="pdp-title">{{ product.name }}</h1>
+
+        <div class="pdp-meta">
+          {% if product.review_count %}
+            {% include "partials/rating.html" with rating=product.rating_avg %}
+            <span><strong>{{ product.rating_avg|floatformat:1 }}</strong> · {{ product.review_count }} review{{ product.review_count|pluralize }}</span>
+          {% else %}
+            <span>No reviews yet</span>
+          {% endif %}
+          <span class="divider-dot"></span>
+          <span>SKU: {{ product.sku }}</span>
+          <span class="divider-dot"></span>
+          <span class="{% if product.stock_quantity == 0 %}text-red{% elif product.is_low_stock %}text-amber{% else %}text-green{% endif %}" style="font-weight:600">
+            {{ product.stock_label }}
+          </span>
+        </div>
+
+        <div class="pdp-price-box">
+          <span class="pdp-price">{{ product.current_price|npr }}</span>
+          {% if product.has_discount %}
+            <del class="pdp-compare">{{ product.price|npr }}</del>
+            <span class="pdp-save">Save {{ product.savings|npr }} ({{ product.discount_percent }}%)</span>
+          {% endif %}
+          <p class="pdp-tax-note">Inclusive of all taxes. Free delivery on orders over Rs. 10,000.</p>
+        </div>
+
+        {% if product.highlight_list %}
+          <ul class="pdp-highlights">
+            {% for highlight in product.highlight_list %}<li>{{ highlight }}</li>{% endfor %}
+          </ul>
+        {% elif product.short_description %}
+          <p class="muted" style="font-size:.9rem">{{ product.short_description }}</p>
+        {% endif %}
+
+        {% if product.in_stock %}
+          <div class="pdp-buy-row">
+            <div class="counter" aria-label="Quantity">
+              <button type="button" data-qty-step="-1" aria-label="Decrease quantity">{% icon "minus" %}</button>
+              <input id="pdp-qty" type="number" value="1" min="1" max="{{ product.stock_quantity|default:99 }}" aria-label="Quantity">
+              <button type="button" data-qty-step="1" aria-label="Increase quantity">{% icon "plus" %}</button>
+            </div>
+            <button class="btn btn-primary btn-lg" type="button" data-add-to-cart="{{ product.id }}">
+              {% icon "cart" %} Add to cart
+            </button>
+          </div>
+        {% else %}
+          <div class="alert alert-warning">{% icon "alert-circle" %} <span>This product is currently out of stock. Save it to your wishlist and we'll notify you when it returns.</span></div>
+        {% endif %}
+
+        <div class="pdp-buy-actions">
+          <button class="btn btn-outline {% if product.id in wishlist_ids %}is-active{% endif %}" type="button" data-wishlist-toggle="{{ product.id }}" aria-pressed="{% if product.id in wishlist_ids %}true{% else %}false{% endif %}">
+            {% icon "heart" %} {% if product.id in wishlist_ids %}Saved{% else %}Save to wishlist{% endif %}
+          </button>
+          <a class="btn btn-ghost" href="{% url 'core:contact' %}">{% icon "headset" %} Ask an expert</a>
+        </div>
+
+        <div class="pdp-perks">
+          <div class="pdp-perk">{% icon "truck" %}<div><strong>Delivery across Nepal</strong>Kathmandu Valley in 1–2 days · 3–7 days nationwide</div></div>
+          <div class="pdp-perk">{% icon "shield" %}<div><strong>{{ product.warranty_info }}</strong>Official warranty with local service support</div></div>
+          <div class="pdp-perk">{% icon "return" %}<div><strong>7-day returns</strong>Unopened products in original packaging</div></div>
+          <div class="pdp-perk">{% icon "credit-card" %}<div><strong>Flexible payment</strong>eSewa, Khalti, bank transfer or cash on delivery</div></div>
+        </div>
+
+        {% if product.ram or product.storage or product.processor or product.display_size %}
+          <div class="pdp-mini-specs">
+            {% if product.processor %}<div class="pdp-mini-spec"><small>Processor</small><strong>{{ product.processor }}</strong></div>{% endif %}
+            {% if product.ram %}<div class="pdp-mini-spec"><small>Memory</small><strong>{{ product.ram }}</strong></div>{% endif %}
+            {% if product.storage %}<div class="pdp-mini-spec"><small>Storage</small><strong>{{ product.storage }}</strong></div>{% endif %}
+            {% if product.display_size %}<div class="pdp-mini-spec"><small>Display</small><strong>{{ product.display_size }}</strong></div>{% endif %}
+            {% if product.gpu %}<div class="pdp-mini-spec"><small>Graphics</small><strong>{{ product.gpu }}</strong></div>{% endif %}
+            {% if product.operating_system %}<div class="pdp-mini-spec"><small>Operating system</small><strong>{{ product.operating_system }}</strong></div>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="pdp-tabs">
+      <div class="tab-nav" role="tablist">
+        <button class="tab-link is-active" type="button" data-tab="description" role="tab" aria-selected="true">Description</button>
+        <button class="tab-link" type="button" data-tab="specs" role="tab" aria-selected="false">Specifications</button>
+        <button class="tab-link" type="button" data-tab="reviews" role="tab" aria-selected="false">Reviews ({{ product.review_count }})</button>
+        <button class="tab-link" type="button" data-tab="shipping" role="tab" aria-selected="false">Delivery &amp; warranty</button>
+      </div>
+
+      <div class="tab-panel is-active" data-tab-panel="description" role="tabpanel">
+        <div class="prose">
+          {{ product.description|linebreaks }}
+          {% if product.highlight_list %}
+            <h3>Why you'll love it</h3>
+            <ul>{% for highlight in product.highlight_list %}<li>{{ highlight }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="specs" role="tabpanel">
+        {% if specification_groups %}
+          <div class="spec-groups">
+            {% for group, specs in specification_groups.items %}
+              <table class="spec-table">
+                <caption>{{ group }}</caption>
+                <tbody>
+                  {% for spec in specs %}
+                    <tr><th scope="row">{{ spec.name }}</th><td>{{ spec.display_value }}</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">Detailed specifications are being added for this product. Contact our team for full technical details.</p>
+        {% endif %}
+      </div>
+
+      <div class="tab-panel" data-tab-panel="reviews" role="tabpanel">
+        <div class="reviews-layout" id="reviews">
+          <div class="rating-summary">
+            <div class="rating-score">{{ product.rating_avg|floatformat:1 }}</div>
+            {% include "partials/rating.html" with rating=product.rating_avg large=True %}
+            <p>Based on {{ product.review_count }} verified review{{ product.review_count|pluralize }}</p>
+            <div class="rating-bars">
+              {% for row in rating_breakdown %}
+                <div class="rating-bar">
+                  <span class="bar-label">{{ row.stars }}★</span>
+                  <span class="bar-track"><span class="bar-fill" style="width: {{ row.percent }}%"></span></span>
+                  <span class="bar-count">{{ row.count }}</span>
+                </div>
+              {% endfor %}
+            </div>
+            {% if can_review %}
+              <a class="btn btn-primary btn-sm btn-block" style="margin-top:16px" href="{% url 'reviews:add' product.slug %}">
+                {% if user_review %}Edit your review{% else %}Write a review{% endif %}
+              </a>
+            {% elif user.is_authenticated %}
+              <p class="muted" style="font-size:.75rem;margin:14px 0 0">Only verified buyers can review this product.</p>
+            {% else %}
+              <a class="btn btn-outline btn-sm btn-block" style="margin-top:16px" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Sign in to review</a>
+            {% endif %}
+          </div>
+
+          <div>
+            {% if user_review %}
+              <div class="review-cta">
+                <p><strong>Your review is published.</strong> Thank you for helping other shoppers.</p>
+                <div style="display:flex;gap:8px">
+                  <a class="btn btn-outline btn-sm" href="{% url 'reviews:edit' user_review.pk %}">Edit</a>
+                  <form action="{% url 'reviews:delete' user_review.pk %}" method="post" data-confirm="Delete your review?">{% csrf_token %}
+                    <button class="btn btn-danger-soft btn-sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </div>
+            {% endif %}
+            <div class="review-list">
+              {% for review in reviews %}
+                <article class="review-card">
+                  <div class="review-head">
+                    <div class="review-author">
+                      <span class="avatar avatar-sm">{{ review.user.initials }}</span>
+                      <div>
+                        <strong>{{ review.user.get_full_name }}</strong>
+                        <small>{{ review.created_at|date:"d M Y" }}</small>
+                      </div>
+                    </div>
+                    {% include "partials/rating.html" with rating=review.rating %}
+                    {% if review.is_verified_purchase %}<span class="badge badge-success">{% icon "check-circle" %} Verified purchase</span>{% endif %}
+                  </div>
+                  <h4 class="review-title">{{ review.title }}</h4>
+                  <p class="review-body">{{ review.body|linebreaksbr }}</p>
+                </article>
+              {% empty %}
+                <div class="empty-state" style="padding:36px 20px">
+                  <span class="empty-icon">{% icon "message" %}</span>
+                  <h3>No reviews yet</h3>
+                  <p>Be the first to share your experience with this product.</p>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="shipping" role="tabpanel">
+        <div class="prose">
+          <h3>Delivery</h3>
+          <p>We deliver to all seven provinces of Nepal. Orders within Kathmandu Valley typically arrive in 1–2 business days, while other districts take 3–7 business days. Free standard delivery applies on orders over Rs. 10,000.</p>
+          <h3>Warranty</h3>
+          <p>{{ product.warranty_info }}. Warranty covers manufacturing defects only. Physical damage, liquid damage and unauthorised repairs are excluded. Keep your invoice — it is your warranty proof.</p>
+          <h3>Returns</h3>
+          <p>Unopened products in original packaging can be returned within 7 days of delivery. If your product arrives faulty, contact support within 7 days for a replacement or refund.</p>
+          <p><a class="link-arrow" href="{% url 'core:returns' %}">Read the full returns policy {% icon "arrow-right" %}</a></p>
+        </div>
+      </div>
+    </div>
+
+    {% if related_products %}
+      <section class="related-section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">{% icon "sparkles" %} You may also like</span>
+            <h2>Similar products</h2>
+          </div>
+          <a class="link-arrow" href="{{ product.category.get_absolute_url }}">More in {{ product.category.name }} {% icon "arrow-right" %}</a>
+        </div>
+        <div class="product-grid">
+          {% for product in related_products|slice:":4" %}
+            {% include "partials/product_card.html" %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if recent_products %}
+      <section class="related-section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">{% icon "clock" %} Recently viewed</span>
+            <h2>Pick up where you left off</h2>
+          </div>
+        </div>
+        <div class="product-grid">
+          {% for product in recent_products|slice:":4" %}
+            {% include "partials/product_card.html" %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

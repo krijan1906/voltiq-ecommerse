@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Sign in — Voltiq{% endblock %}
+{% block meta_description %}Sign in to your Voltiq account to track orders, manage addresses and check out faster.{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  {% include "accounts/_auth_aside.html" with aside_title="Welcome back to better tech." aside_text="Pick up where you left off — saved addresses, live order tracking and your wishlist are waiting." %}
+
+  <div class="auth-main">
+    <div class="auth-card">
+      <h1>Sign in</h1>
+      <p>New to Voltiq? <a href="{% url 'accounts:register' %}">Create an account</a> in under a minute.</p>
+
+      {% if form.non_field_errors %}
+        <div class="form-error-list">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.username.id_for_label }}">Email address</label>
+          {{ form.username }}
+          {% if form.username.errors %}<span class="form-error">{{ form.username.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+            <a href="{% url 'accounts:password_reset' %}" style="font-size:.78rem;font-weight:600">Forgot password?</a>
+          </div>
+          <div class="password-wrap" style="position:relative">
+            {{ form.password }}
+            <button type="button" class="pw-toggle" data-password-toggle="{{ form.password.id_for_label }}" aria-label="Show password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);cursor:pointer">{% icon "eye" %}</button>
+          </div>
+          {% if form.password.errors %}<span class="form-error">{{ form.password.errors.0 }}</span>{% endif %}
+        </div>
+
+        <label class="check-row" style="margin:14px 0 18px">
+          {{ form.remember_me }} <span>{{ form.remember_me.label }}</span>
+        </label>
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Sign in {% icon "arrow-right" %}</button>
+      </form>
+
+      <div class="auth-divider">or continue with</div>
+      <div class="payment-method-badges" style="justify-content:center">
+        <span class="pay-badge">eSewa</span>
+        <span class="pay-badge">Khalti</span>
+        <span class="pay-badge">COD</span>
+      </div>
+      <p class="muted" style="font-size:.74rem;text-align:center;margin-top:10px">Payment options appear at checkout — sign in with either method.</p>
+
+      <p class="auth-alt">Protected by rate limiting and secure session cookies.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

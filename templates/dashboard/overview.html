@@ -1,0 +1,206 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+{% block page_subtitle %}Store performance at a glance{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-primary btn-sm" href="{% url 'dashboard:product_create' %}">{% icon "plus" %} Add product</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-page-head">
+  <div>
+    <h2>Welcome back, {{ user.get_short_name }}</h2>
+    <p>Here's how Voltiq is performing today.</p>
+  </div>
+  <div class="dash-actions">
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:export_orders_csv' %}">{% icon "download" %} Orders CSV</a>
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:reports' %}">{% icon "chart" %} Full report</a>
+  </div>
+</div>
+
+<div class="dash-stats">
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "wallet" %}</span>
+    <strong>{{ summary.revenue_month|npr }}</strong>
+    <span>Revenue this month</span>
+    <small>Today: {{ summary.revenue_today|npr }}</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "shopping-bag" %}</span>
+    <strong>{{ summary.orders_total }}</strong>
+    <span>Total orders</span>
+    <small>{{ summary.orders_pending }} awaiting action</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "users" %}</span>
+    <strong>{{ summary.customers_total }}</strong>
+    <span>Customers</span>
+    <small>{{ summary.aov|npr }} average order value</small>
+  </div>
+  <div class="dash-stat {% if summary.low_stock or summary.out_of_stock %}is-warn{% endif %}">
+    <span class="dash-stat-icon">{% icon "box" %}</span>
+    <strong>{{ summary.products_total }}</strong>
+    <span>Active products</span>
+    <small>{{ summary.low_stock }} low · {{ summary.out_of_stock }} out of stock</small>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-card-head">
+      <div><h3>Revenue &amp; orders</h3><p>Last 30 days</p></div>
+      <span class="badge badge-success">{{ summary.revenue_week|npr }} this week</span>
+    </div>
+    <div class="dash-card-body"><div class="dash-chart"><canvas id="revenueChart" aria-label="Revenue and orders chart" role="img"></canvas></div></div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Order status</h3><a href="{% url 'dashboard:order_list' %}">All orders</a></div>
+    <div class="dash-card-body"><div class="dash-chart is-sm"><canvas id="statusChart" aria-label="Order status distribution" role="img"></canvas></div></div>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-card-head">
+      <h3>Recent orders</h3>
+      <a href="{% url 'dashboard:order_list' %}">View all</a>
+    </div>
+    <div class="dash-card-body is-flush">
+      {% if recent_orders %}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th class="num">Total</th><th></th></tr></thead>
+            <tbody>
+              {% for order in recent_orders %}
+                <tr>
+                  <td>
+                    <a href="{% url 'dashboard:order_detail' order.order_number %}" style="font-weight:700;font-size:.79rem">{{ order.order_number }}</a>
+                    <span class="dash-sub">{{ order.created_at|date:"d M, g:i A" }}</span>
+                  </td>
+                  <td>{{ order.full_name }}<span class="dash-sub">{{ order.email }}</span></td>
+                  <td>
+                    <span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' or order.status == 'refunded' %}badge-danger{% elif order.status == 'shipped' %}badge-info{% else %}badge-warn{% endif %}">{{ order.get_status_display }}</span>
+                    <span class="dash-sub">{{ order.get_payment_status_display }}</span>
+                  </td>
+                  <td class="num"><strong>{{ order.total|npr }}</strong></td>
+                  <td class="num"><a href="{% url 'dashboard:order_detail' order.order_number %}" class="btn btn-ghost btn-sm">Open</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "shopping-bag" %}<h4>No orders yet</h4><p>Orders will appear here as customers check out.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head">
+      <h3>Low stock alerts</h3>
+      <a href="{% url 'dashboard:inventory_list' %}?filter=low">Inventory</a>
+    </div>
+    <div class="dash-card-body {% if low_stock_products %}is-flush{% endif %}">
+      {% if low_stock_products %}
+        <div class="dash-table-wrap">
+          <table class="dash-table" style="min-width:0">
+            <tbody>
+              {% for product in low_stock_products %}
+                <tr>
+                  <td>
+                    <div class="dash-prod">
+                      <span class="dash-thumb">{% if product.primary_image_url %}<img src="{{ product.primary_image_url }}" alt="">{% else %}{% icon "laptop" %}{% endif %}</span>
+                      <div><strong>{{ product.name|truncatechars:34 }}</strong><small>{{ product.sku }}</small></div>
+                    </div>
+                  </td>
+                  <td class="num">
+                    <span class="badge {% if product.stock_quantity == 0 %}badge-danger{% else %}badge-warn{% endif %}">{{ product.stock_quantity }} left</span>
+                  </td>
+                  <td class="num"><a href="{% url 'dashboard:inventory_adjust' product.pk %}" class="btn btn-ghost btn-sm">Adjust</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "check-circle" %}<h4>Stock levels look healthy</h4><p>No products are at or below their low-stock threshold.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Top products</h3><p>By paid revenue</p></div>
+    <div class="dash-card-body is-flush">
+      {% if top_products %}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Product</th><th class="num">Units</th><th class="num">Revenue</th></tr></thead>
+            <tbody>
+              {% for item in top_products %}
+                <tr><td>{{ item.product_name|truncatechars:44 }}</td><td class="num">{{ item.units }}</td><td class="num"><strong>{{ item.revenue|npr }}</strong></td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "package" %}<h4>No sales data</h4><p>Top sellers appear once orders are paid.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Recent payments</h3><a href="{% url 'dashboard:order_list' %}?payment_status=paid">Paid orders</a></div>
+    <div class="dash-card-body is-flush">
+      {% if recent_payments %}
+        <div class="dash-table-wrap">
+          <table class="dash-table" style="min-width:0">
+            <tbody>
+              {% for payment in recent_payments %}
+                <tr>
+                  <td>
+                    <strong style="font-size:.78rem">{{ payment.get_gateway_display }}</strong>
+                    <span class="dash-sub">{{ payment.order.order_number }} · {{ payment.completed_at|date:"d M, g:i A" }}</span>
+                  </td>
+                  <td class="num"><strong>{{ payment.amount|npr }}</strong><span class="dash-sub">{% if payment.is_verified %}Verified{% else %}Pending{% endif %}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="dash-empty">{% icon "credit-card" %}<h4>No payments yet</h4><p>Successful gateway payments will be listed here.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="dash-card">
+  <div class="dash-card-head">
+    <h3>Needs attention</h3>
+    <p>{{ pending_reviews }} review{{ pending_reviews|pluralize }} awaiting moderation</p>
+  </div>
+  <div class="dash-card-body" style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:order_list' %}?status=pending">{% icon "clock" %} Pending orders ({{ summary.orders_pending }})</a>
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:inventory_list' %}?filter=low">{% icon "alert-circle" %} Low stock ({{ summary.low_stock }})</a>
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:inventory_list' %}?filter=out">{% icon "x-circle" %} Out of stock ({{ summary.out_of_stock }})</a>
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:review_list' %}?status=pending">{% icon "star" %} Pending reviews ({{ pending_reviews }})</a>
+    <a class="btn btn-outline btn-sm" href="{% url 'dashboard:contact_messages' %}?status=new">{% icon "message" %} New messages</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.VOLTIQ_CHARTS = {
+    labels: {{ chart_labels|safe }},
+    revenue: {{ chart_revenue|safe }},
+    orders: {{ chart_orders|safe }},
+    statusLabels: {{ status_labels|safe }},
+    statusValues: {{ status_values|safe }}
+  };
+</script>
+{% endblock %}

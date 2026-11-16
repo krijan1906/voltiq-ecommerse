@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:addresses' %}">Addresses</a>{% icon "chevron-right" %}
+      <span class="current">{{ title }}</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="addresses" %}
+
+      <div>
+        <div class="account-head">
+          <div><h1>{{ title }}</h1><p>Accurate details help our courier find you the first time.</p></div>
+          <a class="btn btn-ghost btn-sm" href="{% url 'accounts:addresses' %}">{% icon "arrow-left" %} Back to addresses</a>
+        </div>
+
+        <section class="account-panel-card">
+          {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <div class="form-grid">
+              {% for field in form %}
+                {% if field.name == "is_default" %}
+                  <div class="form-group span-2">
+                    <label class="check-row">{{ field }} <span>{{ field.label }}</span></label>
+                    {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+                    <span class="form-hint">Use this address as the default at checkout.</span>
+                  </div>
+                {% else %}
+                  <div class="form-group {% if field.name == 'street_address' or field.name == 'landmark' %}span-2{% endif %}">
+                    <label class="form-label" for="{{ field.id_for_label }}">
+                      {{ field.label }}{% if field.field.required %} <span class="text-red">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+                    {% if field.help_text %}<span class="form-hint">{{ field.help_text }}</span>{% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="checkout-actions">
+              <a class="back-link" href="{% url 'accounts:addresses' %}">{% icon "arrow-left" %} Cancel</a>
+              <button class="btn btn-primary" type="submit">{% if address %}Save address{% else %}Add address{% endif %} {% icon "arrow-right" %}</button>
+            </div>
+          </form>
+        </section>
+
+        {% if address %}
+          <div class="alert alert-info">
+            {% icon "info" %}
+            <div>Editing this address updates it for future orders. Past order delivery records stay unchanged for accuracy.</div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

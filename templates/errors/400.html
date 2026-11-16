@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Bad request — Voltiq{% endblock %}
+{% block content %}
+<div class="error-page">
+  <div class="error-inner">
+    <div class="error-code">400</div>
+    <h1>That request didn't look right</h1>
+    <p>The browser sent something we couldn't process. Check the address or head back to the store.</p>
+    <div class="error-actions">
+      <a class="btn btn-primary" href="{% url 'core:home' %}">{% icon "home" %} Back home</a>
+      <a class="btn btn-outline" href="{% url 'core:contact' %}">Contact support</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

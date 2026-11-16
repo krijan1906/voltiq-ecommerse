@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}{{ page_title }} — Voltiq{% endblock %}
+{% block meta_description %}Browse {{ page_title|lower }} at Voltiq. Genuine electronics with warranty, expert support and fast delivery across Nepal.{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>
+      {% icon "chevron-right" %}
+      {% if selected_category %}
+        <a href="{% url 'products:list' %}">Products</a>
+        {% icon "chevron-right" %}
+        <span class="current">{{ selected_category.name }}</span>
+      {% else %}
+        <span class="current">{{ page_title }}</span>
+      {% endif %}
+    </nav>
+
+    <div class="page-header" style="padding-top:0">
+      <h1>{{ page_title }}</h1>
+      <p>
+        {% if query %}Showing matches for “{{ query }}”. {% endif %}
+        {{ total_results }} product{{ total_results|pluralize }} available with genuine warranty and nationwide delivery.
+      </p>
+    </div>
+
+    <div class="catalog-layout" style="margin-top:22px">
+      <aside class="filters" id="filters-panel" aria-label="Product filters">
+        <div class="filters-head">
+          <h3>{% icon "sliders" %} Filters</h3>
+          <div style="display:flex;gap:10px;align-items:center">
+            <a class="filters-clear" href="{% url 'products:list' %}{% if query %}?q={{ query|urlencode }}{% endif %}">Clear all</a>
+            <button type="button" class="icon-btn filters-close" data-filter-close aria-label="Close filters" style="display:none">{% icon "x" %}</button>
+          </div>
+        </div>
+
+        <form id="filter-form" action="{% url 'products:list' %}" method="get">
+          {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+          <button type="submit" class="sr-only">Apply filters</button>
+
+          <details class="filter-group" open>
+            <summary>Category {% icon "chevron-down" %}</summary>
+            <div class="filter-options" style="margin-top:10px">
+              <select class="select" name="category" aria-label="Filter by category" style="min-height:40px;font-size:.82rem">
+                <option value="">All categories</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.slug }}" {% if selected_category and selected_category.slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                  {% for child in cat.children.all %}
+                    <option value="{{ child.slug }}" {% if selected_category and selected_category.slug == child.slug %}selected{% endif %}>&nbsp;&nbsp;— {{ child.name }}</option>
+                  {% endfor %}
+                {% endfor %}
+              </select>
+            </div>
+          </details>
+
+          <details class="filter-group" open>
+            <summary>Price {% icon "chevron-down" %}</summary>
+            <div class="price-range">
+              <input class="input" type="number" name="min_price" min="0" step="100" placeholder="Min" value="{{ min_price }}" aria-label="Minimum price">
+              <span>to</span>
+              <input class="input" type="number" name="max_price" min="0" step="100" placeholder="Max" value="{{ max_price }}" aria-label="Maximum price">
+            </div>
+            <button class="btn btn-outline btn-sm btn-block filter-apply" type="submit">Apply price</button>
+          </details>
+
+          <details class="filter-group" {% if selected_brands %}open{% endif %}>
+            <summary>Brand {% icon "chevron-down" %}</summary>
+            <div class="filter-options filter-scroll">
+              {% for brand in brands %}
+                <label class="filter-option">
+                  <input type="checkbox" name="brand" value="{{ brand.slug }}" {% if brand.slug in selected_brands %}checked{% endif %}>
+                  <span>{{ brand.name }}</span>
+                  <span class="opt-count">{{ brand.product_total }}</span>
+                </label>
+              {% empty %}
+                <span class="muted" style="font-size:.8rem">No brands yet.</span>
+              {% endfor %}
+            </div>
+          </details>
+
+          {% if facets.rams %}
+            <details class="filter-group" {% if selected_rams %}open{% endif %}>
+              <summary>RAM {% icon "chevron-down" %}</summary>
+              <div class="filter-options filter-scroll">
+                {% for value in facets.rams %}
+                  <label class="filter-option">
+                    <input type="checkbox" name="ram" value="{{ value }}" {% if value in selected_rams %}checked{% endif %}>
+                    <span>{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if facets.storages %}
+            <details class="filter-group" {% if selected_storages %}open{% endif %}>
+              <summary>Storage {% icon "chevron-down" %}</summary>
+              <div class="filter-options filter-scroll">
+                {% for value in facets.storages %}
+                  <label class="filter-option">
+                    <input type="checkbox" name="storage" value="{{ value }}" {% if value in selected_storages %}checked{% endif %}>
+                    <span>{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if facets.processors %}
+            <details class="filter-group" {% if selected_processors %}open{% endif %}>
+              <summary>Processor {% icon "chevron-down" %}</summary>
+              <div class="filter-options filter-scroll">
+                {% for value in facets.processors %}
+                  <label class="filter-option">
+                    <input type="checkbox" name="processor" value="{{ value }}" {% if value in selected_processors %}checked{% endif %}>
+                    <span>{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if facets.gpus %}
+            <details class="filter-group" {% if selected_gpus %}open{% endif %}>
+              <summary>Graphics {% icon "chevron-down" %}</summary>
+              <div class="filter-options filter-scroll">
+                {% for value in facets.gpus %}
+                  <label class="filter-option">
+                    <input type="checkbox" name="gpu" value="{{ value }}" {% if value in selected_gpus %}checked{% endif %}>
+                    <span>{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            </details>
+          {% endif %}
+
+          <details class="filter-group" {% if selected_rating %}open{% endif %}>
+            <summary>Customer rating {% icon "chevron-down" %}</summary>
+            <div class="filter-options rating-filter">
+              {% for stars in "54321"|make_list %}
+                <label class="filter-option">
+                  <input type="radio" name="rating" value="{{ stars }}" {% if selected_rating == stars %}checked{% endif %}>
+                  <span class="stars" style="--rating: {{ stars|multiply:20 }}"></span>
+                  <span>&amp; up</span>
+                </label>
+              {% endfor %}
+            </div>
+          </details>
+
+          <details class="filter-group" {% if availability or discount or selected_condition %}open{% endif %}>
+            <summary>Availability &amp; offers {% icon "chevron-down" %}</summary>
+            <div class="filter-options" style="gap:10px;margin-top:10px">
+              <select class="select" name="availability" aria-label="Availability" style="min-height:40px;font-size:.82rem">
+                <option value="">Any availability</option>
+                <option value="in_stock" {% if availability == "in_stock" %}selected{% endif %}>In stock only</option>
+                <option value="out_of_stock" {% if availability == "out_of_stock" %}selected{% endif %}>Out of stock</option>
+              </select>
+              <select class="select" name="discount" aria-label="Discount" style="min-height:40px;font-size:.82rem">
+                <option value="">Any discount</option>
+                <option value="10" {% if discount == "10" %}selected{% endif %}>10% off or more</option>
+                <option value="20" {% if discount == "20" %}selected{% endif %}>20% off or more</option>
+                <option value="30" {% if discount == "30" %}selected{% endif %}>30% off or more</option>
+              </select>
+              <select class="select" name="condition" aria-label="Condition" style="min-height:40px;font-size:.82rem">
+                <option value="">Any condition</option>
+                {% for value, label in facets.conditions %}
+                  <option value="{{ value }}" {% if selected_condition == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </details>
+
+          <button class="btn btn-primary btn-block" type="submit" style="margin-top:14px">Show results</button>
+        </form>
+      </aside>
+
+      <div class="catalog-main">
+        <div class="catalog-toolbar">
+          <button class="btn btn-outline btn-sm mobile-filter-btn" type="button" data-filter-open>{% icon "filter" %} Filters</button>
+          <span class="catalog-count"><strong data-total-results>{{ total_results }}</strong> products</span>
+          <div class="catalog-sort">
+            <label for="sort-select">Sort by</label>
+            <select class="select" id="sort-select" name="sort" form="filter-form" aria-label="Sort products">
+              <option value="recommended" {% if sort == "recommended" %}selected{% endif %}>Recommended</option>
+              <option value="popular" {% if sort == "popular" %}selected{% endif %}>Most popular</option>
+              <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest first</option>
+              <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Price: low to high</option>
+              <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Price: high to low</option>
+              <option value="rating" {% if sort == "rating" %}selected{% endif %}>Highest rated</option>
+              <option value="bestselling" {% if sort == "bestselling" %}selected{% endif %}>Bestselling</option>
+            </select>
+            <div class="view-toggle" aria-label="View mode">
+              <button type="button" data-view="grid" class="is-active" aria-label="Grid view">{% icon "grid" %}</button>
+              <button type="button" data-view="list" aria-label="List view">{% icon "list" %}</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="catalog-results" class="catalog-results" aria-live="polite">
+          {% include "products/_results.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

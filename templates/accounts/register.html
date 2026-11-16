@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Create an account — Voltiq{% endblock %}
+{% block meta_description %}Create your free Voltiq account for faster checkout, order tracking, wishlists and exclusive electronics deals.{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  {% include "accounts/_auth_aside.html" with aside_eyebrow="Join Voltiq" aside_title="Your next upgrade starts here." aside_text="Create an account for faster checkout, live delivery tracking and a wishlist that follows you across devices." %}
+
+  <div class="auth-main">
+    <div class="auth-card">
+      <h1>Create your account</h1>
+      <p>Already have one? <a href="{% url 'accounts:login' %}">Sign in</a>.</p>
+
+      {% if form.non_field_errors %}
+        <div class="form-error-list">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="{{ form.first_name.id_for_label }}">First name <span class="text-red">*</span></label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}<span class="form-error">{{ form.first_name.errors.0 }}</span>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.last_name.id_for_label }}">Last name</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}<span class="form-error">{{ form.last_name.errors.0 }}</span>{% endif %}
+          </div>
+          <div class="form-group span-2">
+            <label class="form-label" for="{{ form.email.id_for_label }}">Email address <span class="text-red">*</span></label>
+            {{ form.email }}
+            {% if form.email.errors %}<span class="form-error">{{ form.email.errors.0 }}</span>{% endif %}
+            <span class="form-hint">We'll send a verification link — checkout unlocks once verified.</span>
+          </div>
+          <div class="form-group span-2">
+            <label class="form-label" for="{{ form.phone.id_for_label }}">Phone number</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<span class="form-error">{{ form.phone.errors.0 }}</span>{% endif %}
+            <span class="form-hint">Optional, but helps the courier reach you.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.password1.id_for_label }}">Password <span class="text-red">*</span></label>
+            <div style="position:relative">
+              {{ form.password1 }}
+              <button type="button" data-password-toggle="{{ form.password1.id_for_label }}" aria-label="Show password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);cursor:pointer">{% icon "eye" %}</button>
+            </div>
+            {% if form.password1.errors %}<span class="form-error">{{ form.password1.errors.0 }}</span>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="{{ form.password2.id_for_label }}">Confirm password <span class="text-red">*</span></label>
+            <div style="position:relative">
+              {{ form.password2 }}
+              <button type="button" data-password-toggle="{{ form.password2.id_for_label }}" aria-label="Show password" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);cursor:pointer">{% icon "eye" %}</button>
+            </div>
+            {% if form.password2.errors %}<span class="form-error">{{ form.password2.errors.0 }}</span>{% endif %}
+          </div>
+        </div>
+
+        <ul class="password-rules">
+          <li>At least 8 characters — longer is stronger.</li>
+          <li>Mix letters, numbers and symbols; avoid your name or email.</li>
+        </ul>
+
+        <label class="check-row" style="margin:16px 0 10px">
+          {{ form.newsletter }} <span>{{ form.newsletter.label }}</span>
+        </label>
+        <label class="check-row" style="margin-bottom:18px">
+          {{ form.terms }}
+          <span>I agree to the <a href="{% url 'core:terms' %}" target="_blank" rel="noopener">Terms of Service</a> and <a href="{% url 'core:privacy' %}" target="_blank" rel="noopener">Privacy Policy</a>. <span class="text-red">*</span></span>
+        </label>
+        {% if form.terms.errors %}<span class="form-error" style="display:block;margin-bottom:12px">{{ form.terms.errors.0 }}</span>{% endif %}
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Create account {% icon "arrow-right" %}</button>
+      </form>
+
+      <p class="auth-alt">We'll never sell your data. Unsubscribe from marketing anytime.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

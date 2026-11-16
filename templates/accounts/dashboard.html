@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}My account — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <span class="current">My account</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="dashboard" %}
+
+      <div>
+        <div class="account-head">
+          <div>
+            <h1>Hello, {{ user.get_short_name }}</h1>
+            <p>Here's what's happening with your Voltiq account.</p>
+          </div>
+          <a class="btn btn-primary btn-sm" href="{% url 'products:list' %}">{% icon "shopping-bag" %} Shop new arrivals</a>
+        </div>
+
+        {% if not user.is_email_verified %}
+          <div class="alert alert-warning" style="margin-bottom:18px">
+            {% icon "alert-circle" %}
+            <div><strong>Verify your email to unlock checkout.</strong> Check your inbox for the link. <a href="{% url 'accounts:verify_pending' %}">Resend or view status</a>.</div>
+          </div>
+        {% endif %}
+
+        <div class="account-stats">
+          <a class="account-stat" href="{% url 'orders:list' %}">
+            <span class="stat-icon">{% icon "package" %}</span>
+            <strong>{{ order_count }}</strong>
+            <span>Total orders</span>
+          </a>
+          <a class="account-stat" href="{% url 'accounts:payments' %}">
+            <span class="stat-icon">{% icon "credit-card" %}</span>
+            <strong>{{ paid_total|npr }}</strong>
+            <span>Lifetime spend</span>
+          </a>
+          <a class="account-stat" href="{% url 'wishlist:detail' %}">
+            <span class="stat-icon">{% icon "heart" %}</span>
+            <strong>{{ wishlist_count }}</strong>
+            <span>Wishlist items</span>
+          </a>
+          <a class="account-stat" href="{% url 'orders:list' %}?status=pending">
+            <span class="stat-icon">{% icon "clock" %}</span>
+            <strong>{{ pending_payments }}</strong>
+            <span>Pending payments</span>
+          </a>
+        </div>
+
+        <section class="account-panel-card">
+          <div class="panel-head">
+            <h2>Recent orders</h2>
+            <a href="{% url 'orders:list' %}" style="font-size:.8rem;font-weight:600">View all</a>
+          </div>
+          {% if recent_orders %}
+            <div class="order-list">
+              {% for order in recent_orders %}
+                <article class="order-card">
+                  <div class="order-card-head">
+                    <div>
+                      <span class="order-id">{{ order.order_number }}</span>
+                      <span class="order-date">· {{ order.created_at|date:"d M Y" }}</span>
+                    </div>
+                    {% include "orders/_status_badge.html" with order=order %}
+                  </div>
+                  <div class="order-card-body">
+                    <div class="order-preview-items">
+                      {% for item in order.items.all|slice:":3" %}
+                        <span class="order-preview-thumb" title="{{ item.product_name }}">
+                          {% if item.image_url %}<img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">{% else %}{% icon "laptop" %}{% endif %}
+                        </span>
+                      {% endfor %}
+                      <span class="muted" style="font-size:.8rem;margin-left:4px">{{ order.item_count }} item{{ order.item_count|pluralize }}</span>
+                    </div>
+                    <div class="order-card-foot">
+                      <div class="order-total">Total <strong>{{ order.total|npr }}</strong></div>
+                      <div class="order-actions">
+                        <a class="btn btn-outline btn-sm" href="{% url 'orders:track' order.order_number %}">Track</a>
+                        <a class="btn btn-outline btn-sm" href="{% url 'orders:detail' order.order_number %}">Details</a>
+                        {% if order.can_pay %}<a class="btn btn-primary btn-sm" href="{% url 'orders:payment' order.order_number %}">Pay now</a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state" style="padding:30px 10px">
+              <span class="empty-icon">{% icon "package" %}</span>
+              <h3>No orders yet</h3>
+              <p>Your first upgrade is one click away. Browse curated laptops, phones and gaming gear.</p>
+              <a class="btn btn-primary btn-sm" href="{% url 'products:list' %}">Start shopping</a>
+            </div>
+          {% endif %}
+        </section>
+
+        <div class="split-layout">
+          <section class="account-panel-card">
+            <div class="panel-head">
+              <h2>Saved addresses</h2>
+              <a href="{% url 'accounts:addresses' %}" style="font-size:.8rem;font-weight:600">Manage</a>
+            </div>
+            {% if addresses %}
+              <div class="address-grid" style="grid-template-columns:1fr">
+                {% for address in addresses %}
+                  <div class="address-box {% if address.is_default %}is-default{% endif %}">
+                    <div class="address-box-head">
+                      <strong>{{ address.label }}</strong>
+                      {% if address.is_default %}<span class="badge badge-info">Default</span>{% endif %}
+                    </div>
+                    <p>{{ address.full_name }} · {{ address.single_line }}<br>{{ address.phone }}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="muted" style="font-size:.84rem">No saved addresses yet. Add one to speed up checkout.</p>
+              <a class="btn btn-outline btn-sm" href="{% url 'accounts:address_create' %}">{% icon "plus" %} Add address</a>
+            {% endif %}
+          </section>
+
+          <section class="account-panel-card">
+            <div class="panel-head">
+              <h2>Notifications</h2>
+              <a href="{% url 'accounts:notifications' %}" style="font-size:.8rem;font-weight:600">View all</a>
+            </div>
+            {% if notifications %}
+              <div class="notification-list" style="border:0">
+                {% for notification in notifications|slice:":3" %}
+                  <a class="notification-item {% if not notification.is_read %}is-unread{% endif %}" href="{{ notification.url|default:'#' }}" style="text-decoration:none">
+                    <span class="notification-icon notification-{{ notification.kind }}">{% icon "bell" %}</span>
+                    <span class="notification-item-body">
+                      <strong>{{ notification.title }}</strong>
+                      <p>{{ notification.message|truncatechars:70 }}</p>
+                      <small>{{ notification.created_at|timesince }} ago</small>
+                    </span>
+                  </a>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="muted" style="font-size:.84rem">You're all caught up. Order updates and offers will appear here.</p>
+            {% endif %}
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

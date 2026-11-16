@@ -1,0 +1,82 @@
+{% load static voltiq %}
+<footer class="site-footer">
+  <div class="footer-newsletter">
+    <div class="container footer-newsletter-inner">
+      <div>
+        <span class="eyebrow eyebrow-light">{% icon "sparkles" %} The insider list</span>
+        <h3>Get first access to drops, deals and guides.</h3>
+        <p>Join 20,000+ smart shoppers. No spam, unsubscribe anytime.</p>
+      </div>
+      <form class="newsletter-form" action="{% url 'core:newsletter_subscribe' %}" method="post" data-newsletter-form>
+        {% csrf_token %}
+        <div class="newsletter-input">
+          {% icon "mail" %}
+          <input type="email" name="email" placeholder="Enter your email address" required aria-label="Email address">
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </div>
+        <small class="newsletter-note">By subscribing you agree to our <a href="{% url 'core:privacy' %}">Privacy Policy</a>.</small>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-main">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="{% url 'core:home' %}">
+          <span class="brand-mark">{% icon "zap" %}</span>
+          <span class="brand-text">VOLTI<span>Q</span></span>
+        </a>
+        <p>Premium electronics, powered for life. Genuine products, expert advice and dependable after-sales support across Nepal.</p>
+        <div class="footer-contact">
+          <a href="tel:{{ site.support_phone|default:'+9779800000000' }}">{% icon "phone" %} {{ site.support_phone|default:"+977 980-000-0000" }}</a>
+          <a href="mailto:{{ site.support_email|default:'support@voltiq.com.np' }}">{% icon "mail" %} {{ site.support_email|default:"support@voltiq.com.np" }}</a>
+          <span>{% icon "map-pin" %} {{ site.address|default:"Durbar Marg, Kathmandu 44600, Nepal" }}</span>
+        </div>
+        <div class="social-links">
+          <a href="{{ site.facebook_url|default:'#' }}" aria-label="Facebook" {% if site.facebook_url %}target="_blank" rel="noopener"{% endif %}>{% icon "facebook" %}</a>
+          <a href="{{ site.instagram_url|default:'#' }}" aria-label="Instagram" {% if site.instagram_url %}target="_blank" rel="noopener"{% endif %}>{% icon "instagram" %}</a>
+          <a href="{{ site.youtube_url|default:'#' }}" aria-label="YouTube" {% if site.youtube_url %}target="_blank" rel="noopener"{% endif %}>{% icon "youtube" %}</a>
+          <a href="{{ site.tiktok_url|default:'#' }}" aria-label="TikTok" {% if site.tiktok_url %}target="_blank" rel="noopener"{% endif %}>{% icon "tiktok" %}</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Shop</h4>
+        {% for cat in nav_categories|slice:":6" %}
+          <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+        {% endfor %}
+        <a href="{% url 'products:list' %}?sort=newest">New arrivals</a>
+        <a href="{% url 'products:list' %}?discount=10">Deals & offers</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Customer care</h4>
+        <a href="{% url 'core:contact' %}">Contact us</a>
+        <a href="{% url 'core:faq' %}">FAQs</a>
+        <a href="{% url 'core:shipping' %}">Shipping & delivery</a>
+        <a href="{% url 'core:returns' %}">Returns & refunds</a>
+        <a href="{% url 'orders:list' %}">Track your order</a>
+        <a href="{% url 'accounts:addresses' %}">Manage addresses</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="{% url 'core:about' %}">About Voltiq</a>
+        <a href="{% url 'core:privacy' %}">Privacy policy</a>
+        <a href="{% url 'core:terms' %}">Terms of service</a>
+        <a href="{% url 'core:contact' %}">Corporate enquiries</a>
+        <a href="{% url 'core:contact' %}">Careers</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© {{ current_year }} {{ site.store_name|default:"Voltiq" }}. All rights reserved. Built for Nepal.</p>
+      <div class="payment-badges" aria-label="Accepted payment methods">
+        <span class="pay-badge">eSewa</span>
+        <span class="pay-badge">Khalti</span>
+        <span class="pay-badge">VISA</span>
+        <span class="pay-badge">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Fields map to the detailed specification table on product pages{% endblock %}
+{% block topbar_actions %}<a class="btn btn-outline btn-sm" href="{% url 'dashboard:specfield_list' %}">{% icon "arrow-left" %} All fields</a>{% endblock %}
+
+{% block dash_content %}
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Field definition</h3></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.category %}
+        {% include "dashboard/_field.html" with field=form.label %}
+        {% include "dashboard/_field.html" with field=form.key %}
+        {% include "dashboard/_field.html" with field=form.unit %}
+        {% include "dashboard/_field.html" with field=form.input_type %}
+        {% include "dashboard/_field.html" with field=form.sort_order %}
+        {% include "dashboard/_field.html" with field=form.options wide=1 %}
+        {% include "dashboard/_field.html" with field=form.is_filterable wide=1 %}
+      </div>
+      <div class="alert alert-info" style="margin-top:18px">
+        {% icon "info" %}
+        <div><strong>Key</strong> is the machine name (lowercase, no spaces), for example <code>refresh_rate</code>. For select fields, comma-separate the options. Filterable fields can power catalogue facets.</div>
+      </div>
+    </div>
+    <div class="dash-form-foot">
+      <a class="btn btn-ghost" href="{% url 'dashboard:specfield_list' %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">{% if field %}Save field{% else %}Create field{% endif %}</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

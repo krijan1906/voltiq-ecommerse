@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Track order {{ order.order_number }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="orders-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'orders:list' %}">Orders</a>{% icon "chevron-right" %}
+      <span class="current">Track {{ order.order_number }}</span>
+    </nav>
+
+    <div class="order-detail-head">
+      <div>
+        <h1>Track your order</h1>
+        <p>{{ order.order_number }} · placed {{ order.created_at|date:"d M Y" }}</p>
+      </div>
+      {% include "orders/_status_badge.html" with order=order %}
+    </div>
+
+    <div class="split-layout">
+      <div>
+        <section class="order-panel">
+          <div class="order-panel-head">
+            <h2>{% if order.status == 'cancelled' %}Order cancelled{% elif order.status == 'refunded' %}Order refunded{% else %}Delivery progress{% endif %}</h2>
+            {% if order.tracking_number %}<span class="badge badge-info">{{ order.courier|default:"Courier" }} · {{ order.tracking_number }}</span>{% endif %}
+          </div>
+          <div class="order-panel-body">
+            {% if order.status == 'cancelled' or order.status == 'refunded' %}
+              <div class="alert alert-warning" style="margin-bottom:0">
+                {% icon "alert-circle" %}
+                <div>This order was {{ order.get_status_display|lower }}. If you were charged, any refund is processed to your original payment method within 5–7 business days.</div>
+              </div>
+            {% else %}
+              <div class="timeline">
+                <div class="timeline-item {% if order.status_index >= 1 %}is-done{% elif order.status_index == 0 %}is-current{% endif %}">
+                  <strong>Order placed</strong>
+                  <small>{{ order.created_at|date:"d M Y, g:i A" }}</small>
+                  <p>We received your order and reserved your items.</p>
+                </div>
+                <div class="timeline-item {% if order.status_index >= 2 %}is-done{% elif order.status_index == 1 %}is-current{% endif %}">
+                  <strong>Confirmed</strong>
+                  <small>{% if order.confirmed_at %}{{ order.confirmed_at|date:"d M Y, g:i A" }}{% else %}Pending{% endif %}</small>
+                  <p>Payment verified and stock allocated.</p>
+                </div>
+                <div class="timeline-item {% if order.status_index >= 3 %}is-done{% elif order.status_index == 2 %}is-current{% endif %}">
+                  <strong>Packing &amp; processing</strong>
+                  <small>{% if order.status_index >= 2 %}In progress{% else %}Waiting{% endif %}</small>
+                  <p>Your order is being prepared and quality-checked.</p>
+                </div>
+                <div class="timeline-item {% if order.status_index >= 4 %}is-done{% elif order.status_index == 3 %}is-current{% endif %}">
+                  <strong>Shipped</strong>
+                  <small>{% if order.shipped_at %}{{ order.shipped_at|date:"d M Y, g:i A" }}{% else %}Pending{% endif %}</small>
+                  <p>{% if order.tracking_number %}Tracking {{ order.tracking_number }} with {{ order.courier|default:"our courier" }}.{% else %}Handed to our delivery partner.{% endif %}</p>
+                </div>
+                <div class="timeline-item {% if order.status_index >= 5 %}is-done{% elif order.status_index == 4 %}is-current{% endif %}">
+                  <strong>Out for delivery</strong>
+                  <small>{% if order.status_index >= 4 %}On the way{% else %}Pending{% endif %}</small>
+                  <p>Our rider will call {{ order.shipping_phone }} before arrival.</p>
+                </div>
+                <div class="timeline-item {% if order.status_index >= 5 %}is-current{% endif %}">
+                  <strong>Delivered</strong>
+                  <small>{% if order.delivered_at %}{{ order.delivered_at|date:"d M Y, g:i A" }}{% else %}Pending{% endif %}</small>
+                  <p>Enjoy your new gear. Need help? We're one message away.</p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Items in this delivery</h2></div>
+          <div class="order-panel-body">
+            {% for item in order.items.all %}
+              <div class="order-line">
+                <span class="order-line-media">
+                  {% if item.image_url %}<img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">{% else %}{% icon "laptop" %}{% endif %}
+                </span>
+                <span class="order-line-body">
+                  <strong>{{ item.product_name }}</strong>
+                  <small>Qty {{ item.quantity }} · {{ item.sku }}</small>
+                </span>
+                <span class="order-line-price">{{ item.line_total|npr }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Delivery address</h2></div>
+          <div class="order-panel-body">
+            <div class="addr-block">
+              <strong>{{ order.shipping_full_name }}</strong>
+              {{ order.shipping_street }}<br>
+              {{ order.shipping_city }}, {{ order.shipping_district }}<br>
+              {{ order.shipping_province|title }}<br>
+              <span class="muted">{% icon "phone" %} {{ order.shipping_phone }}</span>
+            </div>
+          </div>
+        </section>
+        <section class="order-panel">
+          <div class="order-panel-head"><h2>Summary</h2></div>
+          <div class="order-panel-body">
+            <dl class="detail-list">
+              <div><dt>Items</dt><dd>{{ order.item_count }}</dd></div>
+              <div><dt>Delivery</dt><dd>{{ order.shipping_method_name|default:"Standard" }}</dd></div>
+              <div><dt>Payment</dt><dd>{{ order.get_payment_status_display }}</dd></div>
+              <div><dt>Total</dt><dd>{{ order.total|npr }}</dd></div>
+            </dl>
+            <a class="btn btn-outline btn-block" href="{% url 'orders:detail' order.order_number %}" style="margin-top:14px">Order details</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

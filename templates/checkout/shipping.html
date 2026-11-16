@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Checkout — Delivery method — Voltiq{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-head">
+      <h1>Checkout</h1>
+      <span class="checkout-secure">{% icon "lock" %} Secure checkout</span>
+    </div>
+    {% include "checkout/_steps.html" with step=step %}
+
+    <div class="checkout-layout">
+      <div>
+        <div class="checkout-card">
+          <h2>Delivery method</h2>
+          <p class="card-lead">Choose how quickly you'd like your order delivered.</p>
+
+          <div class="review-block" style="margin-bottom:18px">
+            <div>
+              <h4>Delivering to</h4>
+              <p><strong>{{ address.full_name }}</strong> — {{ address.single_line }}<br>
+              {{ address.phone }}</p>
+            </div>
+            <a href="{% url 'checkout:address' %}">Change</a>
+          </div>
+
+          {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="radio-cards">
+              {% for method in methods %}
+                <label class="radio-card">
+                  <input type="radio" name="shipping_method" value="{{ method.pk }}"
+                    {% if form.shipping_method.value|stringformat:"s" == method.pk|stringformat:"s" %}checked{% endif %} required>
+                  <span class="radio-dot"></span>
+                  <span class="radio-card-body">
+                    <strong>{{ method.name }}</strong>
+                    <small>{{ method.description|default:method.delivery_estimate }} · {{ method.delivery_estimate }}</small>
+                  </span>
+                  <span class="radio-card-price">
+                    {% if method.charge %}{{ method.charge|npr }}{% else %}Free{% endif %}
+                  </span>
+                </label>
+              {% endfor %}
+            </div>
+            {% if form.shipping_method.errors %}<span class="form-error">{{ form.shipping_method.errors.0 }}</span>{% endif %}
+
+            <div class="checkout-actions">
+              <a class="back-link" href="{% url 'checkout:address' %}">{% icon "arrow-left" %} Back to address</a>
+              <button class="btn btn-primary" type="submit">Review order {% icon "arrow-right" %}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:16px">
+          {% icon "truck" %}
+          <div><strong>Free standard delivery</strong> applies automatically on orders over {{ free_shipping_threshold|default:10000|npr }}.</div>
+        </div>
+      </div>
+
+      {% include "checkout/_summary.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

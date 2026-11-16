@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Sandbox payment simulator — Voltiq{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+  <div class="container">
+    <div class="payment-card">
+      <div class="payment-card-head">
+        <h1>{% icon "zap" %} Payment simulator</h1>
+        <p>Development sandbox for order {{ order.order_number }}</p>
+      </div>
+      <div class="payment-card-body">
+        <div class="simulator-box">
+          <strong>{% icon "alert-circle" %} No real payment will be taken</strong>
+          The {{ payment.get_gateway_display }} gateway has no credentials configured for this environment, so Voltiq
+          is using its local simulator. Choose the outcome below to test both success and failure flows.
+          Set <code>PAYMENT_SIMULATION=False</code> and add live gateway credentials for production.
+        </div>
+
+        <div class="payment-amount">
+          <span>{{ payment.get_gateway_display }} · {{ order.order_number }}</span>
+          <strong>{{ payment.amount|npr }}</strong>
+        </div>
+
+        <dl class="detail-list" style="margin-bottom:20px">
+          <div><dt>Transaction reference</dt><dd style="font-family:var(--font-mono,monospace);font-size:.74rem">{{ payment.transaction_ref }}</dd></div>
+          <div><dt>Attempt</dt><dd>#{{ payment.attempt_number }}</dd></div>
+          <div><dt>Status</dt><dd>{{ payment.get_status_display }}</dd></div>
+        </dl>
+
+        <form method="post" style="display:grid;gap:10px">
+          {% csrf_token %}
+          <button class="btn btn-primary btn-block" type="submit" name="outcome" value="success">
+            {% icon "check-circle" %} Simulate successful payment
+          </button>
+          <button class="btn btn-outline btn-block" type="submit" name="outcome" value="failure">
+            {% icon "x-circle" %} Simulate failed payment
+          </button>
+        </form>
+      </div>
+      <div class="payment-card-foot">
+        <a class="btn btn-ghost btn-sm" href="{% url 'orders:detail' order.order_number %}">Cancel and return to order</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Edit delivery method{% endblock %}
+{% block page_title %}Edit delivery method{% endblock %}
+{% block page_subtitle %}{{ method.name }} · {{ method.code }}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:store_settings' %}">{% icon "arrow-left" %} Store settings</a>
+{% endblock %}
+
+{% block dash_content %}
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="dash-card"><div class="dash-form"><div class="form-error-list">{{ form.non_field_errors }}</div></div></div>{% endif %}
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Delivery method</h3><p>{{ method.orders.count }} order{{ method.orders.count|pluralize }} used this method</p></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.name %}
+        {% include "dashboard/_field.html" with field=form.code %}
+        {% include "dashboard/_field.html" with field=form.description wide=1 %}
+        {% include "dashboard/_field.html" with field=form.charge %}
+        {% include "dashboard/_field.html" with field=form.free_over %}
+        {% include "dashboard/_field.html" with field=form.min_days %}
+        {% include "dashboard/_field.html" with field=form.max_days %}
+        {% include "dashboard/_field.html" with field=form.sort_order %}
+      </div>
+      {% include "dashboard/_field.html" with field=form.is_active %}
+      <p class="dash-help">Leave “free over” blank to always charge the delivery fee. Minimum and maximum days are shown to customers at checkout.</p>
+    </div>
+    <div class="dash-form-foot">
+      <a class="btn btn-ghost" href="{% url 'dashboard:store_settings' %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">Save delivery method</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

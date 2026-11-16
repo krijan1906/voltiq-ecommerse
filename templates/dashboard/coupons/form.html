@@ -1,0 +1,46 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Discount codes are validated server-side at checkout{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-outline btn-sm" href="{% url 'dashboard:coupon_list' %}">{% icon "arrow-left" %} All coupons</a>
+{% endblock %}
+
+{% block dash_content %}
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="dash-card"><div class="dash-form"><div class="form-error-list">{{ form.non_field_errors }}</div></div></div>{% endif %}
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Coupon details</h3><p>Codes are stored uppercase and must be unique</p></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.code %}
+        {% include "dashboard/_field.html" with field=form.discount_type %}
+        {% include "dashboard/_field.html" with field=form.value %}
+        {% include "dashboard/_field.html" with field=form.maximum_discount %}
+        {% include "dashboard/_field.html" with field=form.minimum_order_amount %}
+        {% include "dashboard/_field.html" with field=form.description wide=1 %}
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Validity &amp; limits</h3></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.valid_from %}
+        {% include "dashboard/_field.html" with field=form.valid_to %}
+        {% include "dashboard/_field.html" with field=form.usage_limit %}
+        {% include "dashboard/_field.html" with field=form.per_user_limit %}
+      </div>
+      {% include "dashboard/_field.html" with field=form.is_active %}
+      <p class="dash-help">Leave the maximum discount blank for uncapped percentage coupons. Leave “valid to” blank for a coupon that never expires.</p>
+    </div>
+    <div class="dash-form-foot">
+      <a class="btn btn-ghost" href="{% url 'dashboard:coupon_list' %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">{% if coupon %}Save coupon{% else %}Create coupon{% endif %}</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

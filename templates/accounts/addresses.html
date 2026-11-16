@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}My addresses — Voltiq{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{% url 'accounts:dashboard' %}">My account</a>{% icon "chevron-right" %}
+      <span class="current">Addresses</span>
+    </nav>
+
+    <div class="account-layout">
+      {% include "accounts/_sidebar.html" with active="addresses" %}
+
+      <div>
+        <div class="account-head">
+          <div><h1>Delivery addresses</h1><p>Saved addresses appear automatically at checkout.</p></div>
+          <a class="btn btn-primary btn-sm" href="{% url 'accounts:address_create' %}">{% icon "plus" %} Add address</a>
+        </div>
+
+        {% if addresses %}
+          <div class="address-grid">
+            {% for address in addresses %}
+              <div class="address-box {% if address.is_default %}is-default{% endif %}">
+                <div class="address-box-head">
+                  <strong>{{ address.label }}</strong>
+                  {% if address.is_default %}<span class="badge badge-info">Default</span>{% endif %}
+                  <span class="badge badge-muted">{{ address.get_address_type_display }}</span>
+                </div>
+                <p>
+                  <strong style="color:var(--ink);font-size:.84rem">{{ address.full_name }}</strong><br>
+                  {{ address.street_address }}{% if address.landmark %}, near {{ address.landmark }}{% endif %}<br>
+                  {{ address.city }}, {{ address.district }}<br>
+                  {{ address.province|title }}{% if address.postal_code %} · {{ address.postal_code }}{% endif %}<br>
+                  {{ address.country }}<br>
+                  <span style="font-size:.78rem">{% icon "phone" %} {{ address.phone }}{% if address.alternate_phone %} · {{ address.alternate_phone }}{% endif %}</span>
+                </p>
+                <div class="address-box-actions">
+                  <a href="{% url 'accounts:address_edit' address.pk %}">Edit</a>
+                  {% if not address.is_default %}
+                    <form action="{% url 'accounts:address_set_default' address.pk %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit">Set as default</button>
+                    </form>
+                  {% endif %}
+                  <form action="{% url 'accounts:address_delete' address.pk %}" method="post" data-confirm="Remove this address? This cannot be undone.">
+                    {% csrf_token %}
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+            <a class="add-address-card" href="{% url 'accounts:address_create' %}">
+              {% icon "plus" %}
+              <span>Add a new address</span>
+            </a>
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <span class="empty-icon">{% icon "map-pin" %}</span>
+            <h3>No saved addresses</h3>
+            <p>Add a delivery address now and checkout will be quicker next time.</p>
+            <a class="btn btn-primary" href="{% url 'accounts:address_create' %}">{% icon "plus" %} Add your first address</a>
+          </div>
+        {% endif %}
+
+        <div class="alert alert-info" style="margin-top:20px">
+          {% icon "info" %}
+          <div>We deliver to all seven provinces. For remote districts, our team may call to confirm the best courier route.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

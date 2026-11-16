@@ -1,0 +1,22 @@
+{% load voltiq %}
+<nav class="mobile-nav" aria-label="Mobile quick navigation">
+  <div class="mobile-nav-inner">
+    <a href="{% url 'core:home' %}" class="{% active_link request 'core:home' %}">
+      {% icon "home" %}<span>Home</span>
+    </a>
+    <a href="{% url 'products:list' %}" class="{% active_link request 'products:list' %}">
+      {% icon "grid" %}<span>Shop</span>
+    </a>
+    <a href="{% url 'wishlist:detail' %}" class="{% active_link request 'wishlist:detail' %}">
+      {% icon "heart" %}<span>Wishlist</span>
+      <span class="count-badge {% if not wishlist_count %}is-zero{% endif %}" id="wishlist-count-mobile">{{ wishlist_count }}</span>
+    </a>
+    <a href="{% url 'cart:detail' %}" class="{% active_link request 'cart:detail' %}">
+      {% icon "cart" %}<span>Cart</span>
+      <span class="count-badge {% if not cart_count %}is-zero{% endif %}" id="cart-count-mobile">{{ cart_count }}</span>
+    </a>
+    <a href="{% if user.is_authenticated %}{% url 'accounts:dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}">
+      {% icon "user" %}<span>Account</span>
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}About Voltiq — Premium electronics for Nepal{% endblock %}
+{% block meta_description %}Voltiq exists to make genuine, premium electronics accessible across Nepal — with expert advice, fair prices and dependable after-sales support.{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+  <div class="container">
+    <span class="eyebrow eyebrow-light">{% icon "zap" %} Our story</span>
+    <h1>Premium electronics, powered for life.</h1>
+    <p>Voltiq is a Nepal-first electronics store built by engineers and enthusiasts who were tired of guesswork, grey-market imports and after-sales runarounds.</p>
+  </div>
+</section>
+
+<div class="container" style="padding-top:44px">
+  <div class="about-split" style="margin-bottom:56px">
+    <div>
+      <span class="eyebrow">{% icon "sparkles" %} Why we exist</span>
+      <h2 style="font-size:1.8rem;margin:10px 0 12px">Buying tech should feel confident, not risky.</h2>
+      <p class="muted" style="line-height:1.75">
+        Every product we stock is sourced through authorised channels, checked by our team and backed by the
+        manufacturer's warranty. We publish real specifications, honest pricing in NPR and clear delivery estimates —
+        so you can compare properly and buy once.
+      </p>
+      <p class="muted" style="line-height:1.75">
+        From a first laptop for a student in Biratnagar to a workstation for a studio in Lalitpur, we help you choose
+        the right tool and keep it running. That's the whole idea: premium electronics, powered for life.
+      </p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <a class="btn btn-primary" href="{% url 'products:list' %}">Explore the store {% icon "arrow-right" %}</a>
+        <a class="btn btn-outline" href="{% url 'core:contact' %}">Talk to an expert</a>
+      </div>
+    </div>
+    <div class="stats-band" style="margin:0">
+      <div class="stat"><strong>7</strong><span>Provinces delivered</span></div>
+      <div class="stat"><strong>100%</strong><span>Genuine products</span></div>
+      <div class="stat"><strong>1–2</strong><span>Day valley delivery</span></div>
+      <div class="stat"><strong>4.8/5</strong><span>Customer rating</span></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:56px">
+    <div class="page-header" style="padding-top:0;text-align:center;max-width:620px;margin:0 auto 26px">
+      <h2 style="font-size:1.7rem">What we stand for</h2>
+      <p>Four simple commitments behind every order.</p>
+    </div>
+    <div class="about-values">
+      <div class="value-card">
+        <span class="value-icon">{% icon "shield" %}</span>
+        <h3>Genuine, warranted stock</h3>
+        <p>Authorised distribution, serial-verified inventory and manufacturer warranty on every device.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">{% icon "tag" %}</span>
+        <h3>Honest NPR pricing</h3>
+        <p>Tax-inclusive prices, transparent delivery fees and real discounts — no inflated "was" prices.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">{% icon "truck" %}</span>
+        <h3>Nationwide, tracked delivery</h3>
+        <p>Fast Kathmandu Valley dispatch and reliable courier partners across all seven provinces.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">{% icon "headset" %}</span>
+        <h3>After-sales that answers</h3>
+        <p>Real technicians on call for setup, warranty claims and repairs — before and after the sale.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">{% icon "lock" %}</span>
+        <h3>Secure local payments</h3>
+        <p>eSewa, Khalti, bank transfer and cash on delivery, with server-side verification and no card storage.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">{% icon "users" %}</span>
+        <h3>Built in Nepal</h3>
+        <p>A local team, local support hours and a store that understands Nepal's power, climate and connectivity.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="promo-card promo-card-dark" style="margin-bottom:56px">
+    <div>
+      <span class="eyebrow eyebrow-light">{% icon "headset" %} Expert help, free</span>
+      <h2 style="color:#fff;margin:8px 0">Not sure which spec fits your work?</h2>
+      <p style="color:#a9b8cd;max-width:520px">Tell us your budget and what you do — we'll shortlist two or three honest options, including what you don't need to pay for.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'core:contact' %}">Ask an expert {% icon "arrow-right" %}</a>
+  </div>
+</div>
+{% endblock %}

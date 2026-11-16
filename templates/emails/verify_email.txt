@@ -1,0 +1,13 @@
+Hi {{ user.get_short_name|default:user.email }},
+
+Welcome to {{ site_name }} — premium electronics, powered for life.
+
+Confirm your email address to activate your account and unlock checkout:
+
+{{ url }}
+
+This link expires in 3 days. If you didn't create a {{ site_name }} account, you can ignore this email.
+
+For help, contact support@voltiq.com.np.
+
+— Team {{ site_name }}

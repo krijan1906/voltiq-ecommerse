@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Your cart — Voltiq{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}<span class="current">Shopping cart</span>
+    </nav>
+    <div class="page-header" style="padding-top:0">
+      <h1>Your shopping cart</h1>
+      <p>{% if items %}{{ cart.item_count }} item{{ cart.item_count|pluralize }} ready for checkout.{% else %}Your cart is waiting to be filled.{% endif %}</p>
+    </div>
+
+    {% if conflicts %}
+      <div class="alert alert-warning">
+        {% icon "alert-circle" %}
+        <div><strong>Some quantities exceed available stock.</strong> Please update the highlighted items before checkout.</div>
+      </div>
+    {% endif %}
+
+    {% if items %}
+      <div class="cart-layout" style="margin-top:18px">
+        <div>
+          <div class="cart-items">
+            <div class="cart-items-head">
+              <h2>Cart items</h2>
+              <a class="link-arrow" href="{% url 'products:list' %}">Continue shopping {% icon "arrow-right" %}</a>
+            </div>
+            {% for item in items %}
+              <div class="cart-item {% if item.exceeds_stock %}is-conflict{% endif %}" data-cart-row="{{ item.id }}" data-unit-price="{{ item.unit_price }}">
+                <a class="cart-item-media" href="{{ item.product.get_absolute_url }}">
+                  {% if item.product.primary_image_url %}
+                    <img src="{{ item.product.primary_image_url }}" alt="{{ item.product.name }}" loading="lazy">
+                  {% else %}
+                    <span class="product-placeholder">{% icon "laptop" %}</span>
+                  {% endif %}
+                </a>
+                <div class="cart-item-body">
+                  <span class="cart-item-brand">{{ item.product.brand.name }}</span>
+                  <h3 class="cart-item-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></h3>
+                  <div class="cart-item-meta">
+                    {% if item.product.ram %}<span>{{ item.product.ram }}</span>{% endif %}
+                    {% if item.product.storage %}<span>{{ item.product.storage }}</span>{% endif %}
+                    <span>SKU {{ item.product.sku }}</span>
+                  </div>
+                  <div class="cart-item-controls">
+                    <div class="counter" aria-label="Quantity for {{ item.product.name }}">
+                      <button type="button" data-qty-step="-1" aria-label="Decrease quantity">{% icon "minus" %}</button>
+                      <input type="number" data-cart-qty value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity|default:99 }}" aria-label="Quantity">
+                      <button type="button" data-qty-step="1" aria-label="Increase quantity">{% icon "plus" %}</button>
+                    </div>
+                    <button type="button" class="cart-item-remove" data-cart-remove>{% icon "trash" %} Remove</button>
+                  </div>
+                  {% if item.exceeds_stock %}
+                    <div class="cart-conflict">{% icon "alert-circle" %} Only {{ item.product.stock_quantity }} left in stock — reduce quantity to continue.</div>
+                  {% elif item.product.is_low_stock %}
+                    <div class="cart-conflict" style="color:var(--amber-600)">{% icon "clock" %} Only {{ item.product.stock_quantity }} left at this price.</div>
+                  {% endif %}
+                </div>
+                <div class="cart-item-price">
+                  <strong data-line-total>{{ item.line_total|npr }}</strong>
+                  {% if item.product.has_discount %}<del>{{ item.product.price|npr }}</del>{% endif %}
+                  <small>{{ item.unit_price|npr }} each</small>
+                </div>
+              </div>
+            {% endfor %}
+            <div class="coupon-box">
+              {% if cart.coupon %}
+                <div class="coupon-applied">
+                  <span><strong>{% icon "tag" %} {{ cart.coupon.code }}</strong> applied — you save {{ cart.discount|npr }}.</span>
+                  <button type="button" class="btn btn-ghost btn-sm" data-coupon-remove>Remove coupon</button>
+                </div>
+              {% else %}
+                <form data-coupon-apply action="{% url 'cart:apply_coupon' %}" method="post">
+                  {% csrf_token %}
+                  <input class="input" type="text" name="code" placeholder="Have a promo code? Enter it here" aria-label="Coupon code">
+                  <button class="btn btn-dark" type="submit">Apply</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top:16px">
+            {% icon "shield" %}
+            <div><strong>Shop with confidence.</strong> Secure checkout, genuine products, and free returns within 7 days on unopened items.</div>
+          </div>
+        </div>
+
+        <aside class="cart-summary" aria-label="Order summary">
+          <div class="cart-summary-head"><h2>Order summary</h2></div>
+          <div class="shipping-progress">
+            {% if free_shipping_remaining %}
+              <p>Add <strong>{{ free_shipping_remaining|npr }}</strong> more for <strong>free delivery</strong>.</p>
+            {% else %}
+              <p>{% icon "check-circle" %} You've unlocked <strong>free delivery</strong>.</p>
+            {% endif %}
+            <div class="bar"><span style="width: {{ free_shipping_progress }}%"></span></div>
+          </div>
+          <div class="cart-summary-body">
+            <div class="summary-row"><span>Subtotal</span><span data-cart-subtotal>{{ cart.subtotal|npr }}</span></div>
+            {% if cart.discount %}
+              <div class="summary-row discount"><span>Coupon discount</span><span data-cart-discount>-{{ cart.discount|npr }}</span></div>
+            {% else %}
+              <div class="summary-row discount" hidden><span>Coupon discount</span><span data-cart-discount>Rs. 0</span></div>
+            {% endif %}
+            <div class="summary-row"><span>Delivery</span><span data-cart-shipping>{% if cart.shipping_fee %}{{ cart.shipping_fee|npr }}{% else %}Free{% endif %}</span></div>
+            <div class="summary-row total"><span>Total</span><span data-cart-total>{{ cart.total|npr }}</span></div>
+            <a class="btn btn-primary btn-lg btn-block" href="{% url 'checkout:contact' %}">
+              {% icon "lock" %} Secure checkout
+            </a>
+            <a class="btn btn-ghost btn-block" href="{% url 'products:list' %}">Continue shopping</a>
+          </div>
+          <div class="cart-summary-foot">
+            <span class="secure-note">{% icon "shield" %} 256-bit encrypted checkout</span>
+            <div class="payment-badges">
+              <span class="pay-badge">eSewa</span>
+              <span class="pay-badge">Khalti</span>
+              <span class="pay-badge">Bank</span>
+              <span class="pay-badge">COD</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    {% else %}
+      <div class="empty-state" style="margin-top:18px">
+        <span class="empty-icon">{% icon "cart" %}</span>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added anything yet. Explore our latest arrivals and today's best deals.</p>
+        <div class="cart-empty-actions">
+          <a class="btn btn-primary" href="{% url 'products:list' %}">Start shopping {% icon "arrow-right" %}</a>
+          <a class="btn btn-outline" href="{% url 'products:list' %}?discount=10">View deals</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if recommended %}
+<section class="section bg-white">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "sparkles" %} Complete your setup</span>
+        <h2>You might also need</h2>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=bestselling">Shop bestsellers {% icon "arrow-right" %}</a>
+    </div>
+    <div class="product-grid">
+      {% for product in recommended %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

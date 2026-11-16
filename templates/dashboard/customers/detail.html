@@ -1,0 +1,161 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ customer.get_full_name }}{% endblock %}
+{% block page_title %}{{ customer.get_full_name }}{% endblock %}
+{% block page_subtitle %}{{ customer.email }} · joined {{ customer.date_joined|date:"d M Y" }}{% endblock %}
+{% block topbar_actions %}
+  <a class="btn btn-ghost btn-sm" href="{% url 'dashboard:customer_list' %}">{% icon "arrow-left" %} All customers</a>
+{% endblock %}
+
+{% block dash_content %}
+<div class="dash-stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "wallet" %}</span>
+    <strong>{{ spent|npr }}</strong>
+    <span>Lifetime spend</span>
+    <small>{{ orders|length }} recent order{{ orders|length|pluralize }}</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon">{% icon "package" %}</span>
+    <strong>{{ customer.orders.count }}</strong>
+    <span>Total orders</span>
+    <small>{{ customer.addresses.count }} saved address{{ customer.addresses.count|pluralize:"es" }}</small>
+  </div>
+  <div class="dash-stat {% if customer.is_suspended %}is-danger{% endif %}">
+    <span class="dash-stat-icon">{% icon "user-check" %}</span>
+    <strong>{% if customer.is_suspended %}Suspended{% else %}Active{% endif %}</strong>
+    <span>Account status</span>
+    <small>{% if customer.is_email_verified %}Email verified{% else %}Email unverified{% endif %}</small>
+  </div>
+</div>
+
+<div class="dash-detail-grid">
+  <div>
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <h3>Recent orders</h3>
+        <a href="{% url 'dashboard:order_list' %}?q={{ customer.email|urlencode }}">All matching orders</a>
+      </div>
+      <div class="dash-card-body is-flush">
+        {% if orders %}
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Payment</th><th class="num">Total</th></tr></thead>
+              <tbody>
+                {% for order in orders %}
+                  <tr>
+                    <td><a href="{% url 'dashboard:order_detail' order.order_number %}" style="font-weight:700;font-size:.79rem">{{ order.order_number }}</a><span class="dash-sub">{{ order.item_count }} item{{ order.item_count|pluralize }}</span></td>
+                    <td>{{ order.created_at|date:"d M Y" }}</td>
+                    <td><span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' or order.status == 'refunded' %}badge-danger{% else %}badge-info{% endif %}">{{ order.get_status_display }}</span></td>
+                    <td>{{ order.get_payment_status_display }}</td>
+                    <td class="num"><strong>{{ order.total|npr }}</strong></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="dash-empty" style="padding:26px">{% icon "package" %}<h4>No orders</h4><p>This customer hasn't completed an order yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Addresses</h3></div>
+      <div class="dash-card-body">
+        {% if addresses %}
+          <div class="dash-grid-2">
+            {% for address in addresses %}
+              <div class="dash-address" style="border:1px solid var(--line);border-radius:9px;padding:13px">
+                <strong>{{ address.label }}{% if address.is_default %} · Default{% endif %}</strong><br>
+                {{ address.full_name }}<br>
+                {{ address.single_line }}<br>
+                {{ address.phone }}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="dash-help">No saved addresses.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Reviews</h3></div>
+      <div class="dash-card-body is-flush">
+        {% if reviews %}
+          <div class="dash-table-wrap">
+            <table class="dash-table">
+              <thead><tr><th>Product</th><th>Rating</th><th>Excerpt</th><th>Status</th></tr></thead>
+              <tbody>
+                {% for review in reviews %}
+                  <tr>
+                    <td>{{ review.product.name|truncatechars:34 }}</td>
+                    <td><span class="badge badge-warn">{{ review.rating }}★</span></td>
+                    <td><span class="dash-sub">{{ review.title|truncatechars:46 }}</span></td>
+                    <td>{% if review.is_approved %}<span class="badge badge-success">Approved</span>{% else %}<span class="badge badge-warn">Pending</span>{% endif %}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="dash-empty" style="padding:26px">{% icon "star" %}<h4>No reviews</h4><p>This customer hasn't reviewed a product yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>Contact</h3></div>
+      <div class="dash-card-body">
+        <div class="dash-kv">
+          <div><dt>Email</dt><dd>{{ customer.email }}</dd></div>
+          <div><dt>Phone</dt><dd>{{ customer.phone|default:"—" }}</dd></div>
+          <div><dt>Role</dt><dd>{{ customer.get_role_display }}</dd></div>
+          <div><dt>Email verified</dt><dd>{% if customer.is_email_verified %}Yes{% else %}No{% endif %}</dd></div>
+          <div><dt>Last login</dt><dd>{{ customer.last_login|date:"d M Y, g:i A"|default:"Never" }}</dd></div>
+        </div>
+        <a class="btn btn-outline btn-block btn-sm" href="mailto:{{ customer.email }}" style="margin-top:12px">{% icon "mail" %} Email customer</a>
+      </div>
+    </div>
+
+    {% if user.is_administrator %}
+      <div class="dash-card">
+        <div class="dash-card-head"><h3>Access control</h3><span class="badge badge-purple">Admin only</span></div>
+        <div class="dash-card-body">
+          {% if not customer.is_superuser %}
+            <form action="{% url 'dashboard:customer_set_role' customer.pk %}" method="post">
+              {% csrf_token %}
+              <label class="form-label" for="role-select">Role</label>
+              <select class="select" name="role" id="role-select" style="margin-bottom:9px">
+                <option value="customer" {% if customer.role == 'customer' %}selected{% endif %}>Customer</option>
+                <option value="staff" {% if customer.role == 'staff' %}selected{% endif %}>Staff</option>
+                <option value="admin" {% if customer.role == 'admin' %}selected{% endif %}>Administrator</option>
+              </select>
+              <button class="btn btn-outline btn-block btn-sm" type="submit">Update role</button>
+            </form>
+            <hr class="divider">
+            <form action="{% url 'dashboard:customer_toggle_suspension' customer.pk %}" method="post" {% if not customer.is_suspended %}data-confirm="Suspend this customer? They will be unable to sign in."{% endif %}>
+              {% csrf_token %}
+              {% if not customer.is_suspended %}
+                <label class="form-label" for="suspend-reason">Reason</label>
+                <input class="input" type="text" name="reason" id="suspend-reason" placeholder="Optional internal note" style="margin-bottom:9px">
+              {% endif %}
+              <button class="btn {% if customer.is_suspended %}btn-primary{% else %}btn-ghost text-red{% endif %} btn-block btn-sm" type="submit">
+                {% if customer.is_suspended %}Restore account{% else %}Suspend account{% endif %}
+              </button>
+            </form>
+            {% if customer.is_suspended and customer.suspension_reason %}
+              <p class="dash-help" style="margin-top:8px">Suspension reason: {{ customer.suspension_reason }}</p>
+            {% endif %}
+          {% else %}
+            <p class="dash-help">Superuser accounts cannot be modified from the dashboard.</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

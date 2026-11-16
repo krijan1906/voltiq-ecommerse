@@ -1,0 +1,50 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Categories{% endblock %}
+{% block page_title %}Categories{% endblock %}
+{% block page_subtitle %}{{ categories|length }} categories in the catalogue{% endblock %}
+{% block topbar_actions %}<a class="btn btn-primary btn-sm" href="{% url 'dashboard:category_create' %}">{% icon "plus" %} Add category</a>{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <div class="dash-card-head">
+    <div><h3>Catalogue structure</h3><p>Two levels are supported — top-level categories and subcategories.</p></div>
+    <a class="btn btn-ghost btn-sm" href="{% url 'dashboard:specfield_list' %}">{% icon "sliders" %} Specification schema</a>
+  </div>
+  {% if categories %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead><tr><th>Category</th><th>Parent</th><th class="num">Products</th><th>Featured</th><th>Status</th><th class="num">Actions</th></tr></thead>
+        <tbody>
+          {% for category in categories %}
+            <tr>
+              <td>
+                <div class="dash-prod">
+                  <span class="dash-thumb">{% if category.image %}<img src="{{ category.image.url }}" alt="">{% else %}{% icon category.icon|default:"grid" %}{% endif %}</span>
+                  <div><strong>{{ category.name }}</strong><small>{{ category.slug }}</small></div>
+                </div>
+              </td>
+              <td>{{ category.parent.name|default:"—" }}</td>
+              <td class="num"><span class="badge badge-muted">{{ category.product_count }}</span></td>
+              <td>{% if category.is_featured %}<span class="badge badge-featured">Featured</span>{% else %}<span class="muted">—</span>{% endif %}</td>
+              <td>{% if category.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-muted">Hidden</span>{% endif %}</td>
+              <td>
+                <div class="row-actions">
+                  <a href="{{ category.get_absolute_url }}" target="_blank" rel="noopener">View</a>
+                  <a href="{% url 'dashboard:category_edit' category.pk %}">Edit</a>
+                  <form action="{% url 'dashboard:category_delete' category.pk %}" method="post" data-confirm="Delete {{ category.name|escapejs }}? Categories with products are protected.">
+                    {% csrf_token %}
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">{% icon "grid" %}<h4>No categories yet</h4><p>Create top-level categories first, then add subcategories.</p><a class="btn btn-primary btn-sm" href="{% url 'dashboard:category_create' %}">Add category</a></div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}{{ policy.title }} — Voltiq{% endblock %}
+{% block meta_description %}{{ policy.intro }}{% endblock %}
+
+{% block content %}
+<div class="policy-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <span class="current">{{ policy.title }}</span>
+    </nav>
+
+    <div class="page-header" style="padding-top:0">
+      <span class="eyebrow">{{ policy.eyebrow }}</span>
+      <h1>{{ policy.title }}</h1>
+      <p>{{ policy.intro }}</p>
+      <small class="muted" style="font-size:.76rem">Last updated {% now "F Y" %} · Questions? <a href="{% url 'core:contact' %}">Contact us</a>.</small>
+    </div>
+
+    <div class="policy-layout" style="margin-top:24px">
+      <aside class="policy-toc">
+        <h4>On this page</h4>
+        {% for heading, body in policy.sections %}
+          <a href="#section-{{ forloop.counter }}">{{ heading }}</a>
+        {% endfor %}
+        <hr class="divider" style="margin:14px 0">
+        <a href="{% url 'core:faq' %}">All FAQs</a>
+        <a href="{% url 'core:contact' %}">Contact support</a>
+      </aside>
+
+      <article class="policy-body prose">
+        {% for heading, body in policy.sections %}
+          <h2 id="section-{{ forloop.counter }}">{{ heading }}</h2>
+          <p>{{ body }}</p>
+        {% endfor %}
+
+        <div class="alert alert-info" style="margin-top:30px">
+          {% icon "info" %}
+          <div>
+            This policy is written in plain language for clarity. If anything is unclear, email
+            <a href="mailto:{{ site.support_email|default:'support@voltiq.com.np' }}">{{ site.support_email|default:"support@voltiq.com.np" }}</a>
+            and we'll explain it.
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+{% endblock %}

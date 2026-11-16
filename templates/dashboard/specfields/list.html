@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}Specification fields{% endblock %}
+{% block page_title %}Specification fields{% endblock %}
+{% block page_subtitle %}Dynamic, category-specific fields used on product pages and filters{% endblock %}
+{% block topbar_actions %}<a class="btn btn-primary btn-sm" href="{% url 'dashboard:specfield_create' %}">{% icon "plus" %} Add field</a>{% endblock %}
+
+{% block dash_content %}
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <select class="select" name="category" aria-label="Category">
+      <option value="">All categories</option>
+      {% for cat in categories %}<option value="{{ cat.slug }}" {% if category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-dark" type="submit">{% icon "filter" %} Filter</button>
+    {% if category %}<a class="btn btn-ghost" href="{% url 'dashboard:specfield_list' %}">Reset</a>{% endif %}
+    <span class="spacer"></span>
+    <a class="btn btn-outline" href="{% url 'dashboard:category_list' %}">{% icon "grid" %} Categories</a>
+  </form>
+
+  {% if fields %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead><tr><th>Label</th><th>Category</th><th>Key</th><th>Type</th><th>Options</th><th>Filterable</th><th class="num">Actions</th></tr></thead>
+        <tbody>
+          {% for field in fields %}
+            <tr>
+              <td><strong>{{ field.label }}</strong><span class="dash-sub">{{ field.unit|default:"No unit" }}</span></td>
+              <td>{{ field.category.name }}</td>
+              <td><code style="font-size:.72rem">{{ field.key }}</code></td>
+              <td><span class="badge badge-muted">{{ field.get_input_type_display|default:field.input_type }}</span></td>
+              <td><span class="dash-sub">{{ field.options|default:"—"|truncatechars:38 }}</span></td>
+              <td>{% if field.is_filterable %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-muted">No</span>{% endif %}</td>
+              <td>
+                <div class="row-actions">
+                  <a href="{% url 'dashboard:specfield_edit' field.pk %}">Edit</a>
+                  <form action="{% url 'dashboard:specfield_delete' field.pk %}" method="post" data-confirm="Delete this specification field? Existing saved values remain on products but the field stops being editable.">
+                    {% csrf_token %}
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">{% icon "sliders" %}<h4>No specification fields</h4><p>Define fields per category — for example RAM, storage or screen size.</p><a class="btn btn-primary btn-sm" href="{% url 'dashboard:specfield_create' %}">Add field</a></div>
+  {% endif %}
+</div>
+{% endblock %}

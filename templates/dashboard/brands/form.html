@@ -1,0 +1,32 @@
+{% extends "dashboard/base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Brands appear on product cards, filters and the brand directory{% endblock %}
+{% block topbar_actions %}<a class="btn btn-outline btn-sm" href="{% url 'dashboard:brand_list' %}">{% icon "arrow-left" %} All brands</a>{% endblock %}
+
+{% block dash_content %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Brand details</h3></div>
+    <div class="dash-form">
+      <div class="form-grid">
+        {% include "dashboard/_field.html" with field=form.name %}
+        {% include "dashboard/_field.html" with field=form.website %}
+        {% include "dashboard/_field.html" with field=form.logo %}
+        {% include "dashboard/_field.html" with field=form.description wide=1 %}
+        <div class="form-group">
+          {% include "dashboard/_field.html" with field=form.is_active %}
+          {% include "dashboard/_field.html" with field=form.is_featured %}
+        </div>
+      </div>
+    </div>
+    <div class="dash-form-foot">
+      <a class="btn btn-ghost" href="{% url 'dashboard:brand_list' %}">Cancel</a>
+      <button class="btn btn-primary" type="submit">{% if brand %}Save brand{% else %}Create brand{% endif %}</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

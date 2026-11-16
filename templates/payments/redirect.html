@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Redirecting to payment — Voltiq{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+  <div class="container">
+    <div class="payment-card">
+      <div class="payment-card-head">
+        <h1>Taking you to the payment gateway</h1>
+        <p>{% if message %}{{ message }}{% else %}Please wait while we connect you securely.{% endif %}</p>
+      </div>
+      <div class="payment-card-body">
+        {% if payment_simulation %}
+          <div class="simulator-box">
+            <strong>{% icon "zap" %} Sandbox mode</strong>
+            This is a development gateway session. No real money will be charged.
+          </div>
+        {% endif %}
+        <div class="payment-amount">
+          <span>Order {{ order.order_number }}</span>
+          <strong>{{ order.total|npr }}</strong>
+        </div>
+        <p class="muted" style="font-size:.85rem">
+          You are being redirected to a secure payment page. Do not close this window.
+        </p>
+        <form id="gateway-form" method="post" action="{{ form_url }}" style="display:none">
+          {% for name, value in form_fields.items %}
+            <input type="hidden" name="{{ name }}" value="{{ value }}">
+          {% endfor %}
+          <button class="btn btn-primary" type="submit">Continue to payment {% icon "arrow-right" %}</button>
+        </form>
+        <noscript>
+          <div class="alert alert-warning">{% icon "alert-circle" %} <span>JavaScript is disabled. Use the button below to continue to the gateway.</span></div>
+          <form method="post" action="{{ form_url }}">
+            {% for name, value in form_fields.items %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+            <button class="btn btn-primary" type="submit">Continue to payment</button>
+          </form>
+        </noscript>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("gateway-form");
+    if (form) { form.submit(); }
+  });
+</script>
+{% endblock %}

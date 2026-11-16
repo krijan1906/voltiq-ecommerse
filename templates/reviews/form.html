@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}{{ title }} — {{ product.name }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="review-form-page">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'core:home' %}">{% icon "home" %}</a>{% icon "chevron-right" %}
+      <a href="{{ product.get_absolute_url }}">{{ product.name|truncatechars:42 }}</a>{% icon "chevron-right" %}
+      <span class="current">{{ title }}</span>
+    </nav>
+
+    <div class="review-form">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px">
+        <span class="checkout-item-media" style="width:64px;height:64px">
+          {% if product.primary_image_url %}
+            <img src="{{ product.primary_image_url }}" alt="{{ product.name }}">
+          {% else %}
+            {% icon "laptop" %}
+          {% endif %}
+        </span>
+        <div>
+          <h1 style="font-size:1.3rem;margin-bottom:2px">{{ title }}</h1>
+          <p class="muted" style="font-size:.82rem;margin:0">{{ product.name }}</p>
+        </div>
+      </div>
+
+      {% if verified %}
+        <div class="alert alert-success" style="margin-bottom:18px">
+          {% icon "check-circle" %} <div><strong>Verified purchase.</strong> Your review will carry a verified badge.</div>
+        </div>
+      {% endif %}
+
+      {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <span class="form-label">Your rating <span class="text-red">*</span></span>
+          <div class="rating-input" role="radiogroup" aria-label="Your rating">
+            {% for radio in form.rating %}
+              <input type="radio" name="{{ form.rating.html_name }}" value="{{ radio.data.value }}"
+                id="{{ radio.id_for_label }}" {% if radio.data.selected %}checked{% endif %} required>
+              <label for="{{ radio.id_for_label }}" title="{{ radio.data.label }}">{% icon "star" %}</label>
+            {% endfor %}
+          </div>
+          {% if form.rating.errors %}<span class="form-error">{{ form.rating.errors.0 }}</span>{% endif %}
+          <span class="form-hint">Choose 1 star (terrible) to 5 stars (excellent).</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.title.id_for_label }}">Review title <span class="text-red">*</span></label>
+          {{ form.title }}
+          {% if form.title.errors %}<span class="form-error">{{ form.title.errors.0 }}</span>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.body.id_for_label }}">{{ form.body.label }} <span class="text-red">*</span></label>
+          {{ form.body }}
+          {% if form.body.errors %}<span class="form-error">{{ form.body.errors.0 }}</span>{% endif %}
+          <span class="form-hint">Be specific and fair — mention performance, build quality and value.</span>
+        </div>
+
+        <div class="checkout-actions">
+          <a class="back-link" href="{{ product.get_absolute_url }}#reviews">{% icon "arrow-left" %} Back to product</a>
+          <button class="btn btn-primary" type="submit">{% if review %}Update review{% else %}Publish review{% endif %} {% icon "arrow-right" %}</button>
+        </div>
+      </form>
+
+      {% if review %}
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+          <form action="{% url 'reviews:delete' review.pk %}" method="post" data-confirm="Delete this review permanently?">
+            {% csrf_token %}
+            <button class="btn btn-ghost btn-sm text-red" type="submit">{% icon "trash" %} Delete my review</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Checkout — Delivery address — Voltiq{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-head">
+      <h1>Checkout</h1>
+      <span class="checkout-secure">{% icon "lock" %} Secure checkout</span>
+    </div>
+    {% include "checkout/_steps.html" with step=step %}
+
+    <div class="checkout-layout">
+      <div>
+        <div class="checkout-card">
+          <h2>Delivery address</h2>
+          <p class="card-lead">Choose where you'd like your order delivered.</p>
+
+          {% if addresses %}
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="existing">
+              <div class="address-options">
+                {% for address in addresses %}
+                  <label class="address-card">
+                    <input type="radio" name="address_id" value="{{ address.pk }}" {% if selected_id == address.pk %}checked{% endif %} required>
+                    <span class="radio-dot"></span>
+                    <span class="address-card-body">
+                      <strong>
+                        {{ address.full_name }}
+                        <span class="badge badge-muted">{{ address.label }}</span>
+                        {% if address.is_default %}<span class="badge badge-info">Default</span>{% endif %}
+                      </strong>
+                      <p>{{ address.single_line }}{% if address.landmark %} · Near {{ address.landmark }}{% endif %}{% if address.postal_code %} · {{ address.postal_code }}{% endif %}</p>
+                      <p class="addr-phone">{% icon "phone" %} {{ address.phone }}</p>
+                    </span>
+                  </label>
+                {% endfor %}
+              </div>
+              <div class="checkout-actions">
+                <a class="back-link" href="{% url 'checkout:contact' %}">{% icon "arrow-left" %} Back to contact</a>
+                <button class="btn btn-primary" type="submit">Continue to delivery {% icon "arrow-right" %}</button>
+              </div>
+            </form>
+          {% else %}
+            <div class="alert alert-info">{% icon "info" %} <span>No saved addresses yet. Add your delivery address below to continue.</span></div>
+          {% endif %}
+
+          <div style="margin-top:{{ addresses|yesno:'18px,0' }}">
+            {% if addresses %}
+              <button class="btn btn-outline btn-sm new-address-toggle" type="button" data-new-address aria-expanded="false" aria-controls="new-address-panel">
+                {% icon "plus" %} Use a new address
+              </button>
+            {% endif %}
+            <div class="new-address-panel {% if not addresses %}is-open{% endif %}" id="new-address-panel">
+              {% if addresses %}<h3 style="font-size:.98rem;margin-bottom:14px">New delivery address</h3>{% endif %}
+              <form method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="new">
+                <div class="form-grid">
+                  {% for field in new_address_form %}
+                    {% if field.name == "is_default" %}
+                      <div class="form-group span-2">
+                        <label class="check-row">{{ field }} <span>{{ field.label }}</span></label>
+                        {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+                      </div>
+                    {% else %}
+                      <div class="form-group {% if field.name == 'street_address' or field.name == 'landmark' %}span-2{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-red">*</span>{% endif %}</label>
+                        {{ field }}
+                        {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="checkout-actions">
+                  <a class="back-link" href="{% url 'checkout:contact' %}">{% icon "arrow-left" %} Back</a>
+                  <button class="btn btn-primary" type="submit">Save &amp; continue {% icon "arrow-right" %}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "checkout/_summary.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

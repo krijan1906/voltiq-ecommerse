@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Contact us — Voltiq{% endblock %}
+{% block meta_description %}Talk to the Voltiq team about orders, products, payments or after-sales support. We reply within one business day.{% endblock %}
+
+{% block content %}
+<section class="support-hero">
+  <div class="container">
+    <span class="eyebrow eyebrow-light">{% icon "headset" %} We're here to help</span>
+    <h1>Questions? Real people, real answers.</h1>
+    <p>Product advice, order updates or a tricky warranty claim — our Kathmandu-based team is ready.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="support-layout">
+    <aside class="support-side">
+      <h3>Get in touch</h3>
+      <div class="support-contact-item">
+        {% icon "phone" %}
+        <div><strong>Call us</strong><span>{{ site.support_phone|default:"+977 980-000-0000" }}</span><br><small>Sun–Fri, 9:00–18:00 NPT</small></div>
+      </div>
+      <div class="support-contact-item">
+        {% icon "mail" %}
+        <div><strong>Email</strong><span>{{ site.support_email|default:"support@voltiq.com.np" }}</span><br><small>Replies within one business day</small></div>
+      </div>
+      <div class="support-contact-item">
+        {% icon "map-pin" %}
+        <div><strong>Visit the store</strong><span>{{ site.address|default:"Durbar Marg, Kathmandu 44600, Nepal" }}</span></div>
+      </div>
+      <div class="support-contact-item">
+        {% icon "message" %}
+        <div><strong>Order help?</strong><span>Include your order number for faster service.</span></div>
+      </div>
+      <div class="support-contact-item">
+        {% icon "clock" %}
+        <div><strong>Response time</strong><span>Usually under 4 working hours.</span></div>
+      </div>
+    </aside>
+
+    <div>
+      <div class="contact-form">
+        <h2 style="font-size:1.2rem;margin-bottom:4px">Send us a message</h2>
+        <p class="muted" style="font-size:.85rem;margin-bottom:20px">Fill in the form and we'll get back to you by email.</p>
+
+        {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.name.id_for_label }}">Your name <span class="text-red">*</span></label>
+              {{ form.name }}
+              {% if form.name.errors %}<span class="form-error">{{ form.name.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.email.id_for_label }}">Email address <span class="text-red">*</span></label>
+              {{ form.email }}
+              {% if form.email.errors %}<span class="form-error">{{ form.email.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.phone.id_for_label }}">Phone number</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<span class="form-error">{{ form.phone.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.subject.id_for_label }}">Subject <span class="text-red">*</span></label>
+              {{ form.subject }}
+              {% if form.subject.errors %}<span class="form-error">{{ form.subject.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group span-2">
+              <label class="form-label" for="{{ form.message.id_for_label }}">How can we help? <span class="text-red">*</span></label>
+              {{ form.message }}
+              {% if form.message.errors %}<span class="form-error">{{ form.message.errors.0 }}</span>{% endif %}
+              <span class="form-hint">Never share passwords, PINs, OTPs or full card numbers.</span>
+            </div>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit">Send message {% icon "arrow-right" %}</button>
+            <span class="muted" style="font-size:.76rem">By sending you agree to our <a href="{% url 'core:privacy' %}">privacy policy</a>.</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:18px">
+        {% icon "info" %}
+        <div>Looking for delivery times or the return window? Check the <a href="{% url 'core:faq' %}">FAQ</a>, <a href="{% url 'core:shipping' %}">shipping</a> and <a href="{% url 'core:returns' %}">returns</a> pages first — most answers are there.</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

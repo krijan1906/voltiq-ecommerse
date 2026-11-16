@@ -1,0 +1,41 @@
+{% load voltiq %}
+<aside class="checkout-summary" aria-label="Order summary">
+  <div class="cart-summary-head">
+    <h2>Order summary</h2>
+    <a href="{% url 'cart:detail' %}" style="font-size:.78rem;font-weight:600">Edit cart</a>
+  </div>
+  <div class="cart-summary-body">
+    <div class="checkout-items">
+      {% for item in cart.items.all %}
+        <div class="checkout-item">
+          <span class="checkout-item-media">
+            {% if item.product.primary_image_url %}
+              <img src="{{ item.product.primary_image_url }}" alt="{{ item.product.name }}" loading="lazy">
+            {% else %}
+              {% icon "laptop" %}
+            {% endif %}
+          </span>
+          <span class="checkout-item-body">
+            <strong>{{ item.product.name|truncatechars:48 }}</strong>
+            <small>Qty {{ item.quantity }}{% if item.product.brand %} · {{ item.product.brand.name }}{% endif %}</small>
+          </span>
+          <span class="checkout-item-price">{{ item.line_total|npr }}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <hr class="divider">
+    <div class="summary-row"><span>Subtotal</span><span>{{ cart.subtotal|npr }}</span></div>
+    {% if cart.discount %}<div class="summary-row discount"><span>Discount ({{ cart.coupon.code }})</span><span>-{{ cart.discount|npr }}</span></div>{% endif %}
+    <div class="summary-row"><span>Delivery</span><span>{% if cart.shipping_fee %}{{ cart.shipping_fee|npr }}{% else %}Free{% endif %}</span></div>
+    <div class="summary-row total"><span>Total</span><span>{{ cart.total|npr }}</span></div>
+  </div>
+  <div class="cart-summary-foot">
+    <span class="secure-note">{% icon "lock" %} Secure, encrypted checkout</span>
+    <div class="payment-badges">
+      <span class="pay-badge">eSewa</span>
+      <span class="pay-badge">Khalti</span>
+      <span class="pay-badge">Bank</span>
+      <span class="pay-badge">COD</span>
+    </div>
+  </div>
+</aside>

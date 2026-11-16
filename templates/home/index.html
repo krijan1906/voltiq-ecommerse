@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% load static voltiq %}
+
+{% block title %}Voltiq — Premium electronics, powered for life{% endblock %}
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+{% with hero=hero_products.0 %}
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow">{% icon "sparkles" %} Nepal's premium tech destination</span>
+      <h1>Technology that moves <span class="accent">your world</span> forward.</h1>
+      <p class="hero-lead">Genuine laptops, smartphones, gaming gear and components — curated by experts, backed by real warranty support and delivered across all seven provinces.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'products:list' %}">Shop the collection {% icon "arrow-right" %}</a>
+        <a class="btn btn-white-outline btn-lg" href="{% url 'products:list' %}?sort=newest">New arrivals</a>
+      </div>
+      <div class="hero-perks">
+        <span class="hero-perk">{% icon "shield" %} 100% genuine products</span>
+        <span class="hero-perk">{% icon "truck" %} Free delivery over Rs. 10,000</span>
+        <span class="hero-perk">{% icon "return" %} 7-day easy returns</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-glow"></div>
+      <div class="hero-device">
+        {% if hero and hero.primary_image_url %}
+          <img src="{{ hero.primary_image_url }}" alt="{{ hero.name }}" width="430" height="360">
+        {% else %}
+          <div class="hero-fallback">{% icon "laptop" %}</div>
+        {% endif %}
+      </div>
+      <div class="hero-float-card hero-float-1">
+        <span class="float-icon">{% icon "check-circle" %}</span>
+        <div><strong>Verified authentic</strong><small>Official Nepal warranty</small></div>
+      </div>
+      <div class="hero-float-card hero-float-2">
+        <span class="float-icon">{% icon "zap" %}</span>
+        <div><strong>Fast dispatch</strong><small>Same-day in Kathmandu</small></div>
+      </div>
+      {% if deals %}
+        <div class="hero-float-card hero-float-3">
+          <span class="float-icon">{% icon "tag" %}</span>
+          <div><strong>Up to {{ deals.0.discount_percent }}% off</strong><small>This week's deals</small></div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+<div class="trust-strip">
+  <div class="container trust-grid">
+    <div class="trust-item">
+      <span class="trust-icon">{% icon "truck" %}</span>
+      <div><strong>Free delivery</strong><small>On orders over Rs. 10,000</small></div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">{% icon "shield" %}</span>
+      <div><strong>Genuine guarantee</strong><small>Authorised distribution</small></div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">{% icon "return" %}</span>
+      <div><strong>7-day returns</strong><small>Hassle-free process</small></div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">{% icon "headset" %}</span>
+      <div><strong>Expert support</strong><small>Real humans, 7 days a week</small></div>
+    </div>
+  </div>
+</div>
+
+{% if categories %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "grid" %} Browse the store</span>
+        <h2>Shop by category</h2>
+        <p>Everything from flagship phones to custom desktop components.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}">View all products {% icon "arrow-right" %}</a>
+    </div>
+    <div class="category-grid">
+      {% for cat in categories|slice:":6" %}
+        <a class="category-tile" href="{{ cat.get_absolute_url }}">
+          <span class="cat-arrow">{% icon "arrow-up-right" %}</span>
+          <span class="cat-icon">{% icon cat.icon|default:"chip" %}</span>
+          <strong>{{ cat.name }}</strong>
+          <small>{{ cat.all_product_count }} product{{ cat.all_product_count|pluralize }}</small>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if deals %}
+<section class="section-tight">
+  <div class="container">
+    <div class="deal-banner">
+      <div>
+        <span class="eyebrow">{% icon "fire" %} Limited-time offers</span>
+        <h2>Deals that disappear at midnight.</h2>
+        <p>Hand-picked markdowns on laptops, phones, audio and gaming gear. Stock is limited — when it's gone, it's gone.</p>
+        <div class="countdown" data-countdown="{{ deal_ends_at }}" aria-label="Deal countdown">
+          <div class="countdown-unit"><strong data-days>02</strong><small>Days</small></div>
+          <div class="countdown-unit"><strong data-hours>00</strong><small>Hours</small></div>
+          <div class="countdown-unit"><strong data-minutes>00</strong><small>Mins</small></div>
+          <div class="countdown-unit"><strong data-seconds>00</strong><small>Secs</small></div>
+        </div>
+      </div>
+      <div class="deal-banner-visual">
+        <a class="btn btn-amber btn-lg" href="{% url 'products:list' %}?discount=10&sort=price_asc">Shop all deals {% icon "arrow-right" %}</a>
+      </div>
+    </div>
+    <div class="product-grid" style="margin-top:20px">
+      {% for product in deals|slice:":4" %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if trending %}
+<section class="section bg-white">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "fire" %} Trending now</span>
+        <h2>What Nepal is buying</h2>
+        <p>The most-viewed and highest-rated tech this week.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=popular">Explore trending {% icon "arrow-right" %}</a>
+    </div>
+    <div class="product-grid">
+      {% for product in trending|slice:":8" %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="promo-grid">
+      <div class="promo-card">
+        <span class="promo-art"></span>
+        <span class="eyebrow">{% icon "laptop" %} Work without limits</span>
+        <h3>Laptops built for creators and coders.</h3>
+        <p>From ultraportable productivity machines to desktop-class gaming rigs.</p>
+        <a class="btn btn-dark btn-sm" href="{% url 'products:list' %}?category=laptops">Shop laptops {% icon "arrow-right" %}</a>
+      </div>
+      <div class="promo-card promo-card-dark">
+        <span class="promo-art" style="background:linear-gradient(145deg,#f59e0b,#b45309)"></span>
+        <span class="eyebrow eyebrow-light">{% icon "gamepad" %} Level up</span>
+        <h3>Gaming gear that keeps up with you.</h3>
+        <p>High-refresh monitors, mechanical keyboards and GPUs that deliver every frame.</p>
+        <a class="btn btn-amber btn-sm" href="{% url 'products:list' %}?category=gaming">Shop gaming {% icon "arrow-right" %}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if bestsellers %}
+<section class="section bg-white">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "star" %} Customer favourites</span>
+        <h2>Bestsellers</h2>
+        <p>Proven performers, loved by thousands of customers.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=bestselling">All bestsellers {% icon "arrow-right" %}</a>
+    </div>
+    <div class="product-grid">
+      {% for product in bestsellers|slice:":4" %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if new_arrivals %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "sparkles" %} Just landed</span>
+        <h2>New arrivals</h2>
+        <p>The latest releases, fresh in the Voltiq warehouse.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=newest">See what's new {% icon "arrow-right" %}</a>
+    </div>
+    <div class="product-grid">
+      {% for product in latest|slice:":4" %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if brands %}
+<section class="section-tight bg-white">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "shield" %} Authorised retail partner</span>
+        <h2>Shop trusted brands</h2>
+      </div>
+    </div>
+    <div class="brand-grid">
+      {% for brand in brands|slice:":12" %}
+        <a class="brand-tile" href="{{ brand.get_absolute_url }}">
+          {% if brand.logo %}<img src="{{ brand.logo.url }}" alt="{{ brand.name }}" loading="lazy">{% else %}{{ brand.name }}{% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "message" %} Verified reviews</span>
+        <h2>Loved by customers across Nepal</h2>
+        <p>Real feedback from shoppers who bought and used these products.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=rating">Top-rated products {% icon "arrow-right" %}</a>
+    </div>
+    <div class="testimonial-grid">
+      {% for review in testimonials|slice:":3" %}
+        <article class="testimonial">
+          {% include "partials/rating.html" with rating=review.rating %}
+          <p class="testimonial-quote">“{{ review.body|truncatechars:180 }}”</p>
+          <div class="testimonial-author">
+            <span class="avatar avatar-sm">{{ review.user.initials }}</span>
+            <div>
+              <strong>{{ review.user.get_full_name }}</strong>
+              <small>{{ review.product.name|truncatechars:42 }}</small>
+            </div>
+            {% if review.is_verified_purchase %}<span class="badge badge-success" style="margin-left:auto">{% icon "check-circle" %} Verified</span>{% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section-tight bg-navy">
+  <div class="container">
+    <div class="stats-band">
+      <div class="stat"><strong>{{ stats.products }}+</strong><span>Products in stock</span></div>
+      <div class="stat"><strong>{{ stats.customers }}+</strong><span>Happy customers</span></div>
+      <div class="stat"><strong>{{ stats.orders }}+</strong><span>Orders delivered</span></div>
+      <div class="stat"><strong>{{ stats.reviews }}+</strong><span>Verified reviews</span></div>
+    </div>
+  </div>
+</section>
+
+{% if recommended %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">{% icon "heart" %} Picked for you</span>
+        <h2>Recommended for you</h2>
+        <p>Highly rated products our customers keep coming back to.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'products:list' %}?sort=rating">Browse top rated {% icon "arrow-right" %}</a>
+    </div>
+    <div class="product-grid">
+      {% for product in recommended|slice:":4" %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if not trending and not deals %}
+<section class="section">
+  <div class="container">
+    <div class="empty-state">
+      <span class="empty-icon">{% icon "box" %}</span>
+      <h3>The shelves are being stocked</h3>
+      <p>Products will appear here as soon as the catalogue is seeded. Staff can add products from the dashboard.</p>
+      <a class="btn btn-primary" href="{% url 'dashboard:product_create' %}">Add your first product</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

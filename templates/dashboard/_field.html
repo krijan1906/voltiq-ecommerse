@@ -1,0 +1,15 @@
+{% load voltiq %}
+{% if field.field.widget.input_type == "checkbox" %}
+  <div class="form-group {% if wide %}span-2{% endif %}">
+    <label class="dash-check-row">{{ field }} <span>{{ field.label }}</span></label>
+    {% if field.help_text %}<span class="dash-help">{{ field.help_text }}</span>{% endif %}
+    {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+  </div>
+{% else %}
+  <div class="form-group {% if wide %}span-2{% endif %}">
+    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-red">*</span>{% endif %}</label>
+    {{ field }}
+    {% if field.help_text %}<span class="dash-help">{{ field.help_text }}</span>{% endif %}
+    {% if field.errors %}<span class="form-error">{{ field.errors.0 }}</span>{% endif %}
+  </div>
+{% endif %}

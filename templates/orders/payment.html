@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load voltiq %}
+{% block title %}Pay for order {{ order.order_number }} — Voltiq{% endblock %}
+
+{% block content %}
+<div class="payment-page">
+  <div class="container">
+    <div class="payment-card">
+      <div class="payment-card-head">
+        <h1>Complete your payment</h1>
+        <p>Order {{ order.order_number }} · {{ order.item_count }} item{{ order.item_count|pluralize }}</p>
+      </div>
+      <div class="payment-card-body">
+        <div class="payment-amount">
+          <span>Amount due</span>
+          <strong>{{ order.total|npr }}</strong>
+        </div>
+
+        {% if payment_simulation %}
+          <div class="simulator-box">
+            <strong>{% icon "zap" %} Sandbox mode</strong>
+            Online gateways without live credentials use the development simulator. No real money is charged.
+          </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}<div class="form-error-list">{{ form.non_field_errors }}</div>{% endif %}
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="payment-options">
+            {% for method in methods %}
+              <label class="radio-card">
+                <input type="radio" name="payment_method" value="{{ method.code }}"
+                  {% if form.payment_method.value == method.code or not form.payment_method.value and forloop.first %}checked{% endif %} required>
+                <span class="radio-dot"></span>
+                <span class="payment-logo logo-{{ method.code }}">{{ method.display_name }}</span>
+                <span class="radio-card-body">
+                  <strong class="payment-brand">
+                    {{ method.display_name }}
+                    {% if payment_simulation and method.is_online and not method.is_configured %}<span class="sandbox-note">{% icon "zap" %} Sandbox</span>{% endif %}
+                  </strong>
+                  <small>{{ method.description }}</small>
+                </span>
+              </label>
+            {% endfor %}
+          </div>
+          {% if form.payment_method.errors %}<span class="form-error">{{ form.payment_method.errors.0 }}</span>{% endif %}
+
+          <div class="alert alert-info" style="margin-top:18px">
+            {% icon "lock" %}
+            <div>Payments are verified server-side before your order is confirmed. We never store card numbers or PINs.</div>
+          </div>
+
+          <div class="checkout-actions">
+            <a class="back-link" href="{% url 'orders:detail' order.order_number %}">{% icon "arrow-left" %} Back to order</a>
+            <button class="btn btn-primary" type="submit">Pay {{ order.total|npr }} {% icon "arrow-right" %}</button>
+          </div>
+        </form>
+      </div>
+      <div class="payment-card-foot">
+        <a class="btn btn-ghost btn-sm" href="{% url 'core:contact' %}">{% icon "headset" %} Payment help</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
