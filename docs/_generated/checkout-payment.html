@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head><base href="http://127.0.0.1:8000/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="csrf-token" content="EE3ooawGAIi5eR0YNq2uIr58drsJrxhUWTQCcq2sqJj7wjval8iYaPwSGE4pjz2f">
+  <meta name="description" content="Shop premium laptops, smartphones, gaming gear, components and accessories at Voltiq — genuine products, expert support and fast delivery across Nepal.">
+  <meta property="og:title" content="Voltiq — Premium electronics, powered for life">
+  <meta property="og:type" content="website">
+  <title>Checkout — Payment — Voltiq</title>
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css">
+  
+</head>
+<body class="" data-authenticated="true">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h2l2.4 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h13v12H1z"/><path d="M14 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-return" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 2.8-8.7L3 8"/></symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14a2 2 0 0 1 4 0v4a2 2 0 0 1-4 0v-4ZM16 14a2 2 0 0 1 4 0v4a2 2 0 0 1-4 0v-4Z"/><path d="M18 20a3 3 0 0 1-3 2h-2"/></symbol>
+    <symbol id="i-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="12" rx="1.5"/><path d="M2 20h20M9 16v4M15 16v4"/></symbol>
+    <symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-tablet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-desktop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M10 13h.01M14 13h.01M18 13h.01M7 16h10"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h2v6H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2ZM20 14h-2v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2Z"/></symbol>
+    <symbol id="i-gamepad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a5 5 0 0 1 4.9 6l-.8 3a2.4 2.4 0 0 1-4 1L15 16H9l-2.1 2a2.4 2.4 0 0 1-4-1l-.8-3A5 5 0 0 1 7 8Z"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx=".5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/><path d="M17 12h.01"/></symbol>
+    <symbol id="i-watch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6 8 2h8l-1 4M9 18l-1 4h8l-1-4"/><path d="M12 10v2l1.5 1.5"/></symbol>
+    <symbol id="i-router" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 17h.01M10 17h.01"/><path d="M12 13V9M8.5 5.5a5 5 0 0 1 7 0M5.5 2.5a9 9 0 0 1 13 0"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 7.5h.01"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></symbol>
+    <symbol id="i-credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h13v4"/><path d="M3 6v12a2 2 0 0 0 2 2h15V8H5a2 2 0 0 1-2-2Z"/><path d="M16 13h.01"/></symbol>
+    <symbol id="i-bank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 12 3l9 6M4 21h16M6 9v8M10 9v8M14 9v8M18 9v8"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9h.01M18 15h.01"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 4a4 4 0 0 1 0 8M22 21a6 6 0 0 0-4-5.6"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.1 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9L4.1 7 6.9 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.9 7l-.1.1a1.7 1.7 0 0 0-.3 1.9A1.7 1.7 0 0 0 21 10h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7 12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5 12.8 12.8 0 0 0 2.8.7 2 2 0 0 1 1.8 2.1Z"/></symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H7v3h3v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1Z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></symbol>
+    <symbol id="i-youtube" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9Z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.9-.5-4-1.3V15a6 6 0 1 1-5.2-5.9v3.1A3 3 0 1 0 13 15V3h3Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3ZM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16ZM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6L5 3Z"/></symbol>
+    <symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4.4 0 8-3.1 8-8 0-3-1.5-5.5-4-8-1 2.5-2.5 3.5-4 4 0-3-1-6-3-8-1 5-5 7.5-5 12 0 4.9 3.6 8 8 8Z"/><path d="M9 17c0-2 1.5-3 3-4 0 2 2 2.5 2 4a2.5 2.5 0 0 1-5 0Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M3 21h18"/></symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7M10 14 21 3M21 14v7H3V3h7"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 11 23 1 13V3h10l9.6 9.6a1.4 1.4 0 0 1 0 2.8Z"/><path d="M6 6h.01"/></symbol>
+    <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13"/><path d="M12 8H7.5a2.5 2.5 0 1 1 0-5C11 3 12 8 12 8ZM12 8h4.5a2.5 2.5 0 1 0 0-5C13 3 12 8 12 8Z"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5Z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="i-shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+    <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
+    <symbol id="i-user-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 22v-6h6M21 8a9 9 0 0 0-15-3.5L3 8M3 16a9 9 0 0 0 15 3.5L21 16"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></symbol>
+  </defs>
+</svg>
+
+  
+<div class="announcement-bar">
+  <div class="container announcement-inner">
+    <div class="announcement-copy">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-truck"></use></svg>
+      <span>Free delivery across Nepal on orders over Rs. 10,000</span>
+    </div>
+    <div class="announcement-links">
+      <a href="/orders/">Track order</a>
+      <span class="dot-sep"></span>
+      <a href="/contact/">Help centre</a>
+      <span class="dot-sep"></span>
+      <a href="tel:+977 980-000-0000" class="hide-sm">+977 980-000-0000</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header">
+  <div class="container header-main">
+    <button class="icon-btn nav-toggle" type="button" data-drawer-open aria-label="Open menu" aria-controls="mobile-drawer">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-menu"></use></svg>
+    </button>
+
+    <a class="brand" href="/" aria-label="Voltiq home">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg></span>
+      <span class="brand-text">VOLTI<span>Q</span></span>
+    </a>
+
+    <form class="header-search" id="search-form" action="/products/" method="get" role="search">
+      <div class="search-field">
+        <svg class="icon search-icon" aria-hidden="true" focusable="false"><use href="#i-search"></use></svg>
+        <input id="site-search" type="search" name="q" placeholder="Search laptops, phones, GPUs…" value="" autocomplete="off" aria-label="Search products" aria-expanded="false" aria-controls="search-suggestions">
+        <kbd class="search-kbd">/</kbd>
+        <button type="submit" class="search-submit">Search</button>
+      </div>
+      <div class="search-panel" id="search-suggestions" hidden></div>
+    </form>
+
+    <div class="header-actions">
+      
+        <details class="popover user-menu">
+          <summary class="icon-btn header-action" aria-label="Notifications">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"></use></svg>
+            <span class="badge-dot" aria-label="3 unread notifications"></span>
+          </summary>
+          <div class="popover-panel notifications-panel">
+            <div class="popover-head">
+              <strong>Notifications</strong>
+              <a href="/accounts/account/notifications/">View all</a>
+            </div>
+            
+              <a class="notification-row" href="#">
+                <span class="notification-icon notification-order"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"></use></svg></span>
+                <span>
+                  <strong>Order delivered</strong>
+                  <small>Your Voltiq order has been delivered. We would love your review.</small>
+                </span>
+              </a>
+            
+              <a class="notification-row" href="#">
+                <span class="notification-icon notification-payment"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"></use></svg></span>
+                <span>
+                  <strong>Payment successful</strong>
+                  <small>We received your payment for order VQ-261116-083636.</small>
+                </span>
+              </a>
+            
+              <a class="notification-row" href="#">
+                <span class="notification-icon notification-account"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"></use></svg></span>
+                <span>
+                  <strong>Welcome to Voltiq</strong>
+                  <small>Thanks for joining. Your first-order coupon WELCOME10 is waiting at checkout.</small>
+                </span>
+              </a>
+            
+          </div>
+        </details>
+
+        <details class="popover user-menu">
+          <summary class="account-trigger" aria-label="Account menu">
+            <span class="avatar avatar-sm">
+              AS
+            </span>
+            <span class="account-trigger-copy hide-md">
+              <small>Hello, Aarav</small>
+              <strong>My account</strong>
+            </span>
+            <svg class="icon chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg>
+          </summary>
+          <div class="popover-panel account-panel">
+            <div class="account-panel-head">
+              <span class="avatar">AS</span>
+              <div><strong>Aarav Sharma</strong><small>aarav.sharma@example.com</small></div>
+            </div>
+            
+            <a href="/accounts/account/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dashboard"></use></svg> Account overview</a>
+            <a href="/orders/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-package"></use></svg> My orders</a>
+            <a href="/wishlist/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-heart"></use></svg> Wishlist</a>
+            <a href="/accounts/account/profile/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg> Profile settings</a>
+            <a href="/accounts/account/notifications/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-bell"></use></svg> Notifications <span class="pill pill-brand">3</span></a>
+            
+            <div class="menu-divider"></div>
+            <form action="/accounts/logout/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="EE3ooawGAIi5eR0YNq2uIr58drsJrxhUWTQCcq2sqJj7wjval8iYaPwSGE4pjz2f">
+              <button type="submit" class="menu-button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-logout"></use></svg> Sign out</button>
+            </form>
+          </div>
+        </details>
+      
+
+      <a class="icon-btn header-action" href="/wishlist/" aria-label="Wishlist">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-heart"></use></svg>
+        <span class="count-badge " id="wishlist-count">3</span>
+      </a>
+      <a class="icon-btn header-action cart-action" href="/cart/" aria-label="Shopping cart">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cart"></use></svg>
+        <span class="count-badge " id="cart-count">2</span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="category-nav" aria-label="Categories">
+    <div class="container category-nav-inner">
+      <div class="nav-mega">
+        <button class="nav-link nav-mega-trigger" type="button" aria-expanded="false">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg> All categories <svg class="icon chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg>
+        </button>
+        <div class="mega-panel">
+          <div class="mega-grid">
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=laptops">Laptops <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=ultrabooks">Ultrabooks</a>
+                
+                  <a href="/products/?category=gaming-laptops">Gaming Laptops</a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=smartphones">Smartphones <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=flagship-phones">Flagship Phones</a>
+                
+                  <a href="/products/?category=budget-phones">Budget Phones</a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=audio">Audio <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=headphones">Headphones</a>
+                
+                  <a href="/products/?category=earbuds-speakers">Earbuds &amp; Speakers</a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=gaming">Gaming <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=consoles">Consoles</a>
+                
+                  <a href="/products/?category=gaming-gear">Gaming Gear</a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=monitors">Monitors <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=components">Components <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=graphics-cards">Graphics Cards</a>
+                
+                  <a href="/products/?category=storage-memory">Storage &amp; Memory</a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=wearables">Wearables <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=networking">Networking <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+              </div>
+            
+              <div class="mega-col">
+                <a class="mega-title" href="/products/?category=accessories">Accessories <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+                
+                  <a href="/products/?category=keyboards-mice">Keyboards &amp; Mice</a>
+                
+                  <a href="/products/?category=power-charging">Power &amp; Charging</a>
+                
+              </div>
+            
+            <div class="mega-promo">
+              <span class="eyebrow"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg> Curated for you</span>
+              <h4>The new standard in mobile.</h4>
+              <p>Flagship cameras, all-day battery and 5G — explore the latest smartphones.</p>
+              <a class="btn btn-light btn-sm" href="/products/?category=smartphones">Shop smartphones <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="category-links">
+        
+          <a class="nav-link" href="/products/?category=laptops">Laptops</a>
+        
+          <a class="nav-link" href="/products/?category=smartphones">Smartphones</a>
+        
+          <a class="nav-link" href="/products/?category=audio">Audio</a>
+        
+          <a class="nav-link" href="/products/?category=gaming">Gaming</a>
+        
+          <a class="nav-link" href="/products/?category=monitors">Monitors</a>
+        
+          <a class="nav-link" href="/products/?category=components">Components</a>
+        
+          <a class="nav-link" href="/products/?category=wearables">Wearables</a>
+        
+        <a class="nav-link nav-deal" href="/products/?discount=10&sort=price_asc"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-fire"></use></svg> Deals</a>
+        <a class="nav-link" href="/products/?sort=newest">New arrivals</a>
+      </div>
+      <a class="nav-link nav-support" href="/contact/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-headset"></use></svg> Expert support</a>
+    </div>
+  </nav>
+</header>
+
+<div class="drawer-backdrop" data-drawer-close hidden></div>
+<aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true" aria-label="Mobile navigation">
+  <div class="drawer-head">
+    <a class="brand" href="/">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg></span><span class="brand-text">VOLTI<span>Q</span></span>
+    </a>
+    <button class="icon-btn" type="button" data-drawer-close aria-label="Close menu"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg></button>
+  </div>
+  <div class="drawer-body">
+    <form action="/products/" method="get" class="drawer-search">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-search"></use></svg>
+      <input type="search" name="q" placeholder="Search products" aria-label="Search products">
+      <button type="submit" class="btn btn-primary btn-sm">Go</button>
+    </form>
+    
+      <div class="drawer-account">
+        <span class="avatar">AS</span>
+        <div><strong>Aarav Sharma</strong><small>aarav.sharma@example.com</small></div>
+      </div>
+      <div class="drawer-links">
+        <a href="/accounts/account/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dashboard"></use></svg> My account</a>
+        <a href="/orders/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-package"></use></svg> Orders</a>
+        <a href="/wishlist/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-heart"></use></svg> Wishlist</a>
+        
+      </div>
+    
+    <div class="drawer-section">
+      <h4>Shop by category</h4>
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=laptops">Laptops</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Laptops subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=ultrabooks">Ultrabooks</a><a href="/products/?category=gaming-laptops">Gaming Laptops</a>
+          </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=smartphones">Smartphones</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Smartphones subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=flagship-phones">Flagship Phones</a><a href="/products/?category=budget-phones">Budget Phones</a>
+          </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=audio">Audio</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Audio subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=headphones">Headphones</a><a href="/products/?category=earbuds-speakers">Earbuds &amp; Speakers</a>
+          </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=gaming">Gaming</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Gaming subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=consoles">Consoles</a><a href="/products/?category=gaming-gear">Gaming Gear</a>
+          </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=monitors">Monitors</a>
+          
+        </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=components">Components</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Components subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=graphics-cards">Graphics Cards</a><a href="/products/?category=storage-memory">Storage &amp; Memory</a>
+          </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=wearables">Wearables</a>
+          
+        </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=networking">Networking</a>
+          
+        </div>
+        
+      
+        <div class="drawer-cat">
+          <a href="/products/?category=accessories">Accessories</a>
+          
+            <button type="button" class="drawer-expand" data-expand aria-label="Show Accessories subcategories"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+          
+        </div>
+        
+          <div class="drawer-sub" hidden>
+            <a href="/products/?category=keyboards-mice">Keyboards &amp; Mice</a><a href="/products/?category=power-charging">Power &amp; Charging</a>
+          </div>
+        
+      
+    </div>
+    <div class="drawer-links">
+      <a href="/products/?sort=newest">New arrivals</a>
+      <a href="/products/?discount=10">Deals</a>
+      <a href="/about/">About Voltiq</a>
+      <a href="/contact/">Contact us</a>
+    </div>
+    
+      <form action="/accounts/logout/" method="post" class="drawer-logout"><input type="hidden" name="csrfmiddlewaretoken" value="EE3ooawGAIi5eR0YNq2uIr58drsJrxhUWTQCcq2sqJj7wjval8iYaPwSGE4pjz2f">
+        <button class="btn btn-outline btn-block" type="submit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-logout"></use></svg> Sign out</button>
+      </form>
+    
+  </div>
+</aside>
+
+  <main id="main" class="site-main">
+    
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-head">
+      <h1>Payment</h1>
+      <span class="checkout-secure"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"></use></svg> Secure checkout</span>
+    </div>
+    
+<div class="checkout-steps" aria-label="Checkout progress">
+  <div class="checkout-step is-done">
+    <span class="step-num"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span><span class="step-label">Contact</span>
+  </div>
+  <div class="checkout-step is-done">
+    <span class="step-num"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span><span class="step-label">Address</span>
+  </div>
+  <div class="checkout-step is-done">
+    <span class="step-num"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span><span class="step-label">Delivery</span>
+  </div>
+  <div class="checkout-step is-done">
+    <span class="step-num"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg></span><span class="step-label">Review</span>
+  </div>
+  <div class="checkout-step is-active">
+    <span class="step-num">5</span><span class="step-label">Payment</span>
+  </div>
+</div>
+
+
+    <div class="checkout-layout">
+      <div>
+        <div class="checkout-card">
+          <h2>How would you like to pay?</h2>
+          <p class="card-lead">Online payments are verified securely on our server before your order is confirmed.</p>
+
+          
+            <div class="simulator-box" style="margin-bottom:18px">
+              <strong><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg> Sandbox mode enabled</strong>
+              Online gateways without credentials are running in the development simulator. No real money moves.
+              Set <code>PAYMENT_SIMULATION=False</code> with live credentials for production.
+            </div>
+          
+
+          
+
+          <form method="post" novalidate id="payment-form">
+            <input type="hidden" name="csrfmiddlewaretoken" value="EE3ooawGAIi5eR0YNq2uIr58drsJrxhUWTQCcq2sqJj7wjval8iYaPwSGE4pjz2f">
+            <div class="payment-options">
+              
+                <label class="radio-card">
+                  <input type="radio" name="payment_method" value="esewa"
+                    checked required>
+                  <span class="radio-dot"></span>
+                  <span class="payment-logo logo-esewa">eSewa</span>
+                  <span class="radio-card-body">
+                    <strong class="payment-brand">
+                      eSewa
+                      
+                        <span class="sandbox-note"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg> Sandbox</span>
+                      
+                    </strong>
+                    <small>Pay securely with your eSewa wallet</small>
+                  </span>
+                  <span class="radio-card-price">
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"></use></svg>
+                  </span>
+                </label>
+              
+                <label class="radio-card">
+                  <input type="radio" name="payment_method" value="khalti"
+                     required>
+                  <span class="radio-dot"></span>
+                  <span class="payment-logo logo-khalti">Khalti</span>
+                  <span class="radio-card-body">
+                    <strong class="payment-brand">
+                      Khalti
+                      
+                        <span class="sandbox-note"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg> Sandbox</span>
+                      
+                    </strong>
+                    <small>Pay with Khalti wallet, bank or connected wallet</small>
+                  </span>
+                  <span class="radio-card-price">
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"></use></svg>
+                  </span>
+                </label>
+              
+                <label class="radio-card">
+                  <input type="radio" name="payment_method" value="cod"
+                     required>
+                  <span class="radio-dot"></span>
+                  <span class="payment-logo logo-cod">Cash on Delivery</span>
+                  <span class="radio-card-body">
+                    <strong class="payment-brand">
+                      Cash on Delivery
+                      
+                    </strong>
+                    <small>Pay in cash when your order arrives</small>
+                  </span>
+                  <span class="radio-card-price">
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"></use></svg>
+                  </span>
+                </label>
+              
+                <label class="radio-card">
+                  <input type="radio" name="payment_method" value="bank"
+                     required>
+                  <span class="radio-dot"></span>
+                  <span class="payment-logo logo-bank">Bank Transfer</span>
+                  <span class="radio-card-body">
+                    <strong class="payment-brand">
+                      Bank Transfer
+                      
+                    </strong>
+                    <small>Direct bank deposit or transfer — verified by our team</small>
+                  </span>
+                  <span class="radio-card-price">
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"></use></svg>
+                  </span>
+                </label>
+              
+            </div>
+            
+
+            <div class="form-group" style="margin-top:20px">
+              <label class="form-label" for="id_customer_notes">Order notes</label>
+              <textarea name="customer_notes" cols="40" rows="3" placeholder="Delivery instructions (optional)" maxlength="500" class="textarea" id="id_customer_notes">
+</textarea>
+              
+            </div>
+
+            <div class="alert alert-info" style="margin-top:16px">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"></use></svg>
+              <div>
+                <strong>Secure by design.</strong> We never ask for or store card numbers, PINs or CVVs.
+                Online payments redirect you to the gateway, and we verify the result server-side.
+              </div>
+            </div>
+
+            <div class="checkout-actions">
+              <a class="back-link" href="/checkout/review/"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"></use></svg> Back to review</a>
+              <button class="btn btn-primary btn-lg" type="submit">
+                Place order · Rs. 154,998 <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"></use></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      
+<aside class="checkout-summary" aria-label="Order summary">
+  <div class="cart-summary-head">
+    <h2>Order summary</h2>
+    <a href="/cart/" style="font-size:.78rem;font-weight:600">Edit cart</a>
+  </div>
+  <div class="cart-summary-body">
+    <div class="checkout-items">
+      
+        <div class="checkout-item">
+          <span class="checkout-item-media">
+            
+              <img src="/media/products/APL-WATCH-S9/8635a115e56a49db9affa63c14766b3c_apl-watch-s9-1.jpg" alt="Apple Watch Series 9" loading="lazy">
+            
+          </span>
+          <span class="checkout-item-body">
+            <strong>Apple Watch Series 9</strong>
+            <small>Qty 1 · Apple</small>
+          </span>
+          <span class="checkout-item-price">Rs. 64,999</span>
+        </div>
+      
+        <div class="checkout-item">
+          <span class="checkout-item-media">
+            
+              <img src="/media/products/SON-PS5-SLIM/4e93f82ca41e4a1abe9b7124f2ac36af_son-ps5-slim-1.jpg" alt="PlayStation 5 Slim" loading="lazy">
+            
+          </span>
+          <span class="checkout-item-body">
+            <strong>PlayStation 5 Slim</strong>
+            <small>Qty 1 · Sony</small>
+          </span>
+          <span class="checkout-item-price">Rs. 89,999</span>
+        </div>
+      
+    </div>
+    <hr class="divider">
+    <div class="summary-row"><span>Subtotal</span><span>Rs. 154,998</span></div>
+    
+    <div class="summary-row"><span>Delivery</span><span>Free</span></div>
+    <div class="summary-row total"><span>Total</span><span>Rs. 154,998</span></div>
+  </div>
+  <div class="cart-summary-foot">
+    <span class="secure-note"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-lock"></use></svg> Secure, encrypted checkout</span>
+    <div class="payment-badges">
+      <span class="pay-badge">eSewa</span>
+      <span class="pay-badge">Khalti</span>
+      <span class="pay-badge">Bank</span>
+      <span class="pay-badge">COD</span>
+    </div>
+  </div>
+</aside>
+
+    </div>
+  </div>
+</div>
+
+  </main>
+  
+<footer class="site-footer">
+  <div class="footer-newsletter">
+    <div class="container footer-newsletter-inner">
+      <div>
+        <span class="eyebrow eyebrow-light"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"></use></svg> The insider list</span>
+        <h3>Get first access to drops, deals and guides.</h3>
+        <p>Join 20,000+ smart shoppers. No spam, unsubscribe anytime.</p>
+      </div>
+      <form class="newsletter-form" action="/newsletter/subscribe/" method="post" data-newsletter-form>
+        <input type="hidden" name="csrfmiddlewaretoken" value="EE3ooawGAIi5eR0YNq2uIr58drsJrxhUWTQCcq2sqJj7wjval8iYaPwSGE4pjz2f">
+        <div class="newsletter-input">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-mail"></use></svg>
+          <input type="email" name="email" placeholder="Enter your email address" required aria-label="Email address">
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </div>
+        <small class="newsletter-note">By subscribing you agree to our <a href="/privacy/">Privacy Policy</a>.</small>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-main">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="/">
+          <span class="brand-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg></span>
+          <span class="brand-text">VOLTI<span>Q</span></span>
+        </a>
+        <p>Premium electronics, powered for life. Genuine products, expert advice and dependable after-sales support across Nepal.</p>
+        <div class="footer-contact">
+          <a href="tel:+977 980-000-0000"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-phone"></use></svg> +977 980-000-0000</a>
+          <a href="mailto:support@voltiq.com.np"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-mail"></use></svg> support@voltiq.com.np</a>
+          <span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-map-pin"></use></svg> Durbar Marg, Kathmandu 44600, Nepal</span>
+        </div>
+        <div class="social-links">
+          <a href="https://facebook.com/voltiqnp" aria-label="Facebook" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-facebook"></use></svg></a>
+          <a href="https://instagram.com/voltiqnp" aria-label="Instagram" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-instagram"></use></svg></a>
+          <a href="https://youtube.com/@voltiq" aria-label="YouTube" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-youtube"></use></svg></a>
+          <a href="https://tiktok.com/@voltiq" aria-label="TikTok" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tiktok"></use></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Shop</h4>
+        
+          <a href="/products/?category=laptops">Laptops</a>
+        
+          <a href="/products/?category=smartphones">Smartphones</a>
+        
+          <a href="/products/?category=audio">Audio</a>
+        
+          <a href="/products/?category=gaming">Gaming</a>
+        
+          <a href="/products/?category=monitors">Monitors</a>
+        
+          <a href="/products/?category=components">Components</a>
+        
+        <a href="/products/?sort=newest">New arrivals</a>
+        <a href="/products/?discount=10">Deals & offers</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Customer care</h4>
+        <a href="/contact/">Contact us</a>
+        <a href="/faq/">FAQs</a>
+        <a href="/shipping/">Shipping & delivery</a>
+        <a href="/returns/">Returns & refunds</a>
+        <a href="/orders/">Track your order</a>
+        <a href="/accounts/account/addresses/">Manage addresses</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/about/">About Voltiq</a>
+        <a href="/privacy/">Privacy policy</a>
+        <a href="/terms/">Terms of service</a>
+        <a href="/contact/">Corporate enquiries</a>
+        <a href="/contact/">Careers</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Voltiq. All rights reserved. Built for Nepal.</p>
+      <div class="payment-badges" aria-label="Accepted payment methods">
+        <span class="pay-badge">eSewa</span>
+        <span class="pay-badge">Khalti</span>
+        <span class="pay-badge">VISA</span>
+        <span class="pay-badge">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  
+<nav class="mobile-nav" aria-label="Mobile quick navigation">
+  <div class="mobile-nav-inner">
+    <a href="/" class="">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-home"></use></svg><span>Home</span>
+    </a>
+    <a href="/products/" class="">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg><span>Shop</span>
+    </a>
+    <a href="/wishlist/" class="">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-heart"></use></svg><span>Wishlist</span>
+      <span class="count-badge " id="wishlist-count-mobile">3</span>
+    </a>
+    <a href="/cart/" class="">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-cart"></use></svg><span>Cart</span>
+      <span class="count-badge " id="cart-count-mobile">2</span>
+    </a>
+    <a href="/accounts/account/">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg><span>Account</span>
+    </a>
+  </div>
+</nav>
+
+
+  <div class="toast-stack" id="toast-stack" role="status" aria-live="polite">
+    
+  </div>
+
+  
+    <div class="simulation-flag" title="Set PAYMENT_SIMULATION=False for live payments">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg> Sandbox mode
+    </div>
+  
+
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"></use></svg></button>
+
+  <script>
+    window.VOLTIQ_CONFIG = {
+      cartAdd: "/cart/add/",
+      cartUpdate: "/cart/update/0/",
+      cartRemove: "/cart/remove/0/",
+      couponApply: "/cart/coupon/apply/",
+      couponRemove: "/cart/coupon/remove/",
+      wishlistToggle: "/wishlist/toggle/",
+      suggestions: "/products/search/suggestions/",
+      cartSummary: "/cart/summary/"
+    };
+  </script>
+  <script src="/static/js/app.js" defer></script>
+  
+</body>
+</html>

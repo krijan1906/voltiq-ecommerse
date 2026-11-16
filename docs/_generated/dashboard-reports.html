@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head><base href="http://127.0.0.1:8000/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="tUSlR1niOoPU9WAvOeW0AaYyWXlTkwPegf11zQulyNI9TaB5wQ3QDGvRByFLEP29">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Reports &amp; analytics — Voltiq Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  
+</head>
+<body class="dash-body">
+  <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h2l2.4 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h13v12H1z"/><path d="M14 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-return" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 2.8-8.7L3 8"/></symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14a2 2 0 0 1 4 0v4a2 2 0 0 1-4 0v-4ZM16 14a2 2 0 0 1 4 0v4a2 2 0 0 1-4 0v-4Z"/><path d="M18 20a3 3 0 0 1-3 2h-2"/></symbol>
+    <symbol id="i-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="12" rx="1.5"/><path d="M2 20h20M9 16v4M15 16v4"/></symbol>
+    <symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-tablet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-desktop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M10 13h.01M14 13h.01M18 13h.01M7 16h10"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h2v6H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2ZM20 14h-2v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2Z"/></symbol>
+    <symbol id="i-gamepad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a5 5 0 0 1 4.9 6l-.8 3a2.4 2.4 0 0 1-4 1L15 16H9l-2.1 2a2.4 2.4 0 0 1-4-1l-.8-3A5 5 0 0 1 7 8Z"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx=".5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/><path d="M17 12h.01"/></symbol>
+    <symbol id="i-watch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6 8 2h8l-1 4M9 18l-1 4h8l-1-4"/><path d="M12 10v2l1.5 1.5"/></symbol>
+    <symbol id="i-router" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 17h.01M10 17h.01"/><path d="M12 13V9M8.5 5.5a5 5 0 0 1 7 0M5.5 2.5a9 9 0 0 1 13 0"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 7.5h.01"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></symbol>
+    <symbol id="i-credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h13v4"/><path d="M3 6v12a2 2 0 0 0 2 2h15V8H5a2 2 0 0 1-2-2Z"/><path d="M16 13h.01"/></symbol>
+    <symbol id="i-bank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 12 3l9 6M4 21h16M6 9v8M10 9v8M14 9v8M18 9v8"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9h.01M18 15h.01"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 4a4 4 0 0 1 0 8M22 21a6 6 0 0 0-4-5.6"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.1 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9L4.1 7 6.9 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.9 7l-.1.1a1.7 1.7 0 0 0-.3 1.9A1.7 1.7 0 0 0 21 10h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7 12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5 12.8 12.8 0 0 0 2.8.7 2 2 0 0 1 1.8 2.1Z"/></symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H7v3h3v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1Z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></symbol>
+    <symbol id="i-youtube" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3V9Z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2.3 1.7 3.8 4 4v3c-1.5 0-2.9-.5-4-1.3V15a6 6 0 1 1-5.2-5.9v3.1A3 3 0 1 0 13 15V3h3Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3ZM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16ZM5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6L5 3Z"/></symbol>
+    <symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4.4 0 8-3.1 8-8 0-3-1.5-5.5-4-8-1 2.5-2.5 3.5-4 4 0-3-1-6-3-8-1 5-5 7.5-5 12 0 4.9 3.6 8 8 8Z"/><path d="M9 17c0-2 1.5-3 3-4 0 2 2 2.5 2 4a2.5 2.5 0 0 1-5 0Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M3 21h18"/></symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7M10 14 21 3M21 14v7H3V3h7"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 11 23 1 13V3h10l9.6 9.6a1.4 1.4 0 0 1 0 2.8Z"/><path d="M6 6h.01"/></symbol>
+    <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13"/><path d="M12 8H7.5a2.5 2.5 0 1 1 0-5C11 3 12 8 12 8ZM12 8h4.5a2.5 2.5 0 1 0 0-5C13 3 12 8 12 8Z"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5Z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Z"/><path d="M9 22V12h6v10"/></symbol>
+    <symbol id="i-shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+    <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
+    <symbol id="i-user-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 22v-6h6M21 8a9 9 0 0 0-15-3.5L3 8M3 16a9 9 0 0 0 15 3.5L21 16"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></symbol>
+  </defs>
+</svg>
+
+  <aside class="dash-sidebar" id="dash-sidebar" aria-label="Admin navigation">
+    <div class="dash-brand-row">
+      <a class="brand brand-light" href="/dashboard/">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"></use></svg></span>
+        <span class="brand-text">VOLTI<span>Q</span></span>
+      </a>
+      <span class="dash-badge">Admin</span>
+      <button class="dash-sidebar-close" type="button" data-dash-close aria-label="Close menu"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg></button>
+    </div>
+
+    <nav class="dash-nav">
+      <span class="dash-nav-label">Overview</span>
+      <a href="/dashboard/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dashboard"></use></svg> Dashboard</a>
+      <a href="/dashboard/reports/" class="is-active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg> Reports &amp; analytics</a>
+
+      <span class="dash-nav-label">Catalogue</span>
+      <a href="/dashboard/products/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-package"></use></svg> Products</a>
+      <a href="/dashboard/categories/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg> Categories</a>
+      <a href="/dashboard/brands/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tag"></use></svg> Brands</a>
+      <a href="/dashboard/spec-fields/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sliders"></use></svg> Spec fields</a>
+      <a href="/dashboard/inventory/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-box"></use></svg> Inventory</a>
+
+      <span class="dash-nav-label">Sales</span>
+      <a href="/dashboard/orders/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shopping-bag"></use></svg> Orders</a>
+      <a href="/dashboard/customers/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg> Customers</a>
+      <a href="/dashboard/reviews/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-star"></use></svg> Reviews</a>
+      <a href="/dashboard/coupons/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-percent"></use></svg> Coupons</a>
+
+      <span class="dash-nav-label">Marketing &amp; inbox</span>
+      <a href="/dashboard/newsletter/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-mail"></use></svg> Newsletter</a>
+      <a href="/dashboard/messages/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-message"></use></svg> Messages</a>
+
+      <span class="dash-nav-label">Configuration</span>
+      <a href="/dashboard/settings/" class=""><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-settings"></use></svg> Store settings</a>
+      <a href="/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-external-link"></use></svg> View storefront</a>
+    </nav>
+
+    <div class="dash-sidebar-foot">
+      <div class="dash-user">
+        <span class="avatar avatar-sm">AS</span>
+        <div><strong>Aarati</strong><small>Administrator</small></div>
+      </div>
+      <form action="/accounts/logout/" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="tUSlR1niOoPU9WAvOeW0AaYyWXlTkwPegf11zQulyNI9TaB5wQ3QDGvRByFLEP29">
+        <button class="dash-logout" type="submit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-logout"></use></svg> Sign out</button>
+      </form>
+    </div>
+  </aside>
+  <div class="dash-backdrop" data-dash-close hidden></div>
+
+  <div class="dash-shell">
+    <header class="dash-topbar">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <button class="dash-menu-btn" type="button" data-dash-open aria-label="Open menu" aria-controls="dash-sidebar"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-menu"></use></svg></button>
+        <div class="dash-title">
+          <h1>Reports &amp; analytics</h1>
+          <p>18 Oct 2026 – 16 Nov 2026</p>
+        </div>
+      </div>
+      <div class="dash-topbar-actions">
+        
+  <a class="btn btn-outline btn-sm" href="/dashboard/reports/orders.csv"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg> Orders CSV</a>
+  <a class="btn btn-outline btn-sm" href="/dashboard/reports/newsletter.csv"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-mail"></use></svg> Newsletter CSV</a>
+
+        <a class="dash-icon-btn" href="/" target="_blank" rel="noopener" title="View storefront" aria-label="View storefront"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-external-link"></use></svg></a>
+        <a class="dash-icon-btn" href="/dashboard/messages/" title="Messages" aria-label="Messages"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-message"></use></svg></a>
+        <span class="dash-avatar" title="admin@voltiq.com">AS</span>
+      </div>
+    </header>
+
+    <main class="dash-main">
+      
+      
+<div class="dash-card">
+  <form class="dash-filter" method="get">
+    <label class="dash-help" for="report-from">From</label>
+    <input class="input" id="report-from" type="date" name="from" value="2026-10-18" aria-label="Report start date">
+    <label class="dash-help" for="report-to">To</label>
+    <input class="input" id="report-to" type="date" name="to" value="2026-11-16" aria-label="Report end date">
+    <button class="btn btn-dark" type="submit"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-filter"></use></svg> Apply range</button>
+    <span class="spacer"></span>
+    <span class="dash-help">Paid orders only · maximum range 365 days</span>
+  </form>
+</div>
+
+<div class="dash-stats">
+  <div class="dash-stat">
+    <span class="dash-stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wallet"></use></svg></span>
+    <strong>Rs. 781,491</strong>
+    <span>Paid revenue</span>
+    <small>7 paid orders</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shopping-bag"></use></svg></span>
+    <strong>Rs. 111,641.57</strong>
+    <span>Average order value</span>
+    <small>Revenue ÷ paid orders</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-box"></use></svg></span>
+    <strong>9</strong>
+    <span>Units sold</span>
+    <small>Across all paid orders</small>
+  </div>
+  <div class="dash-stat">
+    <span class="dash-stat-icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg></span>
+    <strong>1</strong>
+    <span>New customers</span>
+    <small>Joined in this period</small>
+  </div>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <div class="dash-card-head"><div><h3>Revenue &amp; orders</h3><p>Daily performance for the selected range</p></div></div>
+    <div class="dash-card-body"><div class="dash-chart"><canvas id="revenueChart" aria-label="Revenue and orders over time" role="img"></canvas></div></div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Payment mix</h3><p>Paid revenue by method</p></div>
+    <div class="dash-card-body">
+      
+        <div class="dash-chart is-sm"><canvas id="paymentChart" aria-label="Revenue by payment method" role="img"></canvas></div>
+        <div class="dash-legend">
+          
+            <div>
+              <span><i style="background:#60bb46"></i>Esewa</span>
+              <strong>Rs. 289,496 <span class="dash-help">· 2</span></strong>
+            </div>
+          
+            <div>
+              <span><i style="background:#5c2d91"></i>Khalti</span>
+              <strong>Rs. 264,998 <span class="dash-help">· 2</span></strong>
+            </div>
+          
+            <div>
+              <span><i style="background:#0b1220"></i>Cod</span>
+              <strong>Rs. 136,998 <span class="dash-help">· 2</span></strong>
+            </div>
+          
+            <div>
+              <span><i style="background:#0e7490"></i>Bank</span>
+              <strong>Rs. 89,999 <span class="dash-help">· 1</span></strong>
+            </div>
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid-2">
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Top products</h3><p>By paid revenue</p></div>
+    <div class="dash-card-body is-flush">
+      
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Product</th><th class="num">Units</th><th class="num">Revenue</th></tr></thead>
+            <tbody>
+              
+                <tr>
+                  <td><strong>MacBook Air 13&quot; (M3)</strong><span class="dash-sub">APL-MBA13-M3</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 179,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>Samsung Galaxy S24 Ultra</strong><span class="dash-sub">SAM-S24U</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 174,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>NVIDIA GeForce RTX 4070 Super</strong><span class="dash-sub">NVIDIA-RTX4070S</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 94,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>Dell UltraSharp U2723QE</strong><span class="dash-sub">DEL-U2723QE</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 89,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>PlayStation 5 Slim</strong><span class="dash-sub">SON-PS5-SLIM</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 89,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>LG UltraGear 27GP850</strong><span class="dash-sub">LG-27GP850</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 64,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>Sony WH-1000XM5</strong><span class="dash-sub">SON-WH1000XM5</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 46,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>Apple AirPods Pro (2nd generation)</strong><span class="dash-sub">APL-AIRPODS-PRO2</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 32,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><strong>Logitech G502 X Lightspeed</strong><span class="dash-sub">LOG-G502X</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 12,999</strong></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Category performance</h3><p>Revenue by category</p></div>
+    <div class="dash-card-body is-flush">
+      
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Category</th><th class="num">Units</th><th class="num">Revenue</th></tr></thead>
+            <tbody>
+              
+                <tr>
+                  <td>Ultrabooks</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 179,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Flagship Phones</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 174,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Monitors</td>
+                  <td class="num">2</td>
+                  <td class="num"><strong>Rs. 154,998</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Graphics Cards</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 94,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Consoles</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 89,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Headphones</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 46,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Earbuds &amp; Speakers</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 32,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td>Gaming Gear</td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 12,999</strong></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="dash-grid-2">
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Top customers</h3><p>By lifetime spend in range</p></div>
+    <div class="dash-card-body is-flush">
+      
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead><tr><th>Customer</th><th class="num">Orders</th><th class="num">Spent</th></tr></thead>
+            <tbody>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/3/" style="font-weight:600">Aarav Sharma</a><span class="dash-sub">aarav.sharma@example.com</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 211,498</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/4/" style="font-weight:600">Priya Thapa</a><span class="dash-sub">priya.thapa@example.com</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 174,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/5/" style="font-weight:600">Bibek Gurung</a><span class="dash-sub">bibek.gurung@example.com</span></td>
+                  <td class="num">2</td>
+                  <td class="num"><strong>Rs. 136,998</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/7/" style="font-weight:600">Nischal Karki</a><span class="dash-sub">nischal.karki@example.com</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 89,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/8/" style="font-weight:600">Anisha Shrestha</a><span class="dash-sub">anisha.shrestha@example.com</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 89,999</strong></td>
+                </tr>
+              
+                <tr>
+                  <td><a href="/dashboard/customers/6/" style="font-weight:600">Sita Rai</a><span class="dash-sub">sita.rai@example.com</span></td>
+                  <td class="num">1</td>
+                  <td class="num"><strong>Rs. 77,998</strong></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card-head"><h3>Order status breakdown</h3><p>All orders created in range</p></div>
+    <div class="dash-card-body">
+      
+        <div class="dash-chart is-sm"><canvas id="statusChart" aria-label="Order status breakdown" role="img"></canvas></div>
+      
+    </div>
+  </div>
+</div>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="/static/js/dashboard.js" defer></script>
+  
+<script>
+  window.VOLTIQ_CHARTS = {
+    labels: ["18 Oct", "19 Oct", "20 Oct", "21 Oct", "22 Oct", "23 Oct", "24 Oct", "25 Oct", "26 Oct", "27 Oct", "28 Oct", "29 Oct", "30 Oct", "31 Oct", "01 Nov", "02 Nov", "03 Nov", "04 Nov", "05 Nov", "06 Nov", "07 Nov", "08 Nov", "09 Nov", "10 Nov", "11 Nov", "12 Nov", "13 Nov", "14 Nov", "15 Nov", "16 Nov"],
+    revenue: [0, 211498.0, 0, 0, 0, 174999.0, 0, 0, 0, 46999.0, 0, 0, 0, 0, 0, 77998.0, 0, 0, 0, 89999.0, 0, 0, 89999.0, 0, 89999.0, 0, 0, 0, 0, 0],
+    orders: [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+    paymentLabels: ["Esewa", "Khalti", "Cash On Delivery", "Bank Transfer"],
+    paymentValues: [289496.0, 264998.0, 136998.0, 89999.0],
+    statusLabels: ["Cancelled", "Confirmed", "Delivered", "Out for Delivery", "Pending", "Processing", "Shipped"],
+    statusValues: [1, 1, 3, 1, 3, 1, 1]
+  };
+</script>
+
+</body>
+</html>
