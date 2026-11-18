@@ -233,7 +233,7 @@ ecommerce/
 │   ├── reviews/       # Verified-purchase reviews and rating aggregation
 │   └── wishlist/      # Wishlist and restock alerts
 ├── config/            # Settings, root URLs, WSGI/ASGI
-├── docs/              # Setup, pgAdmin, deployment guides
+├── docs/              # PDF manual, setup, pgAdmin and deployment guides
 ├── static/            # Modular CSS, vanilla JS, icons and images
 ├── templates/         # Storefront, checkout, account, dashboard, email and error templates
 ├── media/             # Uploaded product images and avatars (not committed)
@@ -269,6 +269,7 @@ Current status: **151 tests passing**.
 
 ## Documentation
 
+- [`docs/Voltiq-Project-Documentation.pdf`](docs/Voltiq-Project-Documentation.pdf) — the complete 93-page project manual (architecture, features, data model, payments, operations, deployment)
 - [`docs/setup.md`](docs/setup.md) — local setup, PostgreSQL, assets, email and troubleshooting
 - [`docs/pgadmin.md`](docs/pgadmin.md) — creating the Voltiq database/user in pgAdmin 4, backups and restores
 - [`docs/deployment.md`](docs/deployment.md) — production checklist, WSGI server, HTTPS, static/media, payments and backups

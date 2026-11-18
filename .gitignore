@@ -29,3 +29,6 @@ htmlcov/
 .coverage
 .pytest_cache/
 test-output*.txt
+
+# Documentation build previews (page renders for visual QA)
+docs/_generated/pdf-preview/
