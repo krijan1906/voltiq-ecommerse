@@ -74,6 +74,31 @@ class RegisterForm(StyledForm):
         return user
 
 
+class OTPForm(StyledForm):
+    code = forms.CharField(
+        label="Verification code",
+        max_length=4,
+        widget=forms.TextInput(
+            attrs={
+                "inputmode": "numeric",
+                "pattern": "[0-9]{4}",
+                "maxlength": "4",
+                "autocomplete": "one-time-code",
+                "autofocus": True,
+                "placeholder": "----",
+                "class": "otp-input",
+                "aria-label": "Four digit verification code",
+            }
+        ),
+    )
+
+    def clean_code(self):
+        code = (self.cleaned_data.get("code") or "").strip()
+        if not code.isdigit() or len(code) != 4:
+            raise ValidationError("Enter the four-digit code from the email.")
+        return code
+
+
 class LoginForm(StyledFormMixin, AuthenticationForm):
     username = forms.EmailField(
         label="Email address", widget=forms.EmailInput(attrs={"autocomplete": "email", "autofocus": True})

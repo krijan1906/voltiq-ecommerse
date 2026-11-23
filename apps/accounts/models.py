@@ -2,6 +2,7 @@
 import uuid
 
 from django.conf import settings
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
 from django.db import models
@@ -211,22 +212,45 @@ class Address(models.Model):
         return ", ".join(p for p in parts if p)
 
 
-class EmailVerificationToken(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="verification_tokens")
-    token = models.CharField(max_length=64, unique=True, db_index=True)
+class EmailOTP(models.Model):
+    """A short-lived, hashed verification code sent to the account email."""
+
+    MAX_ATTEMPTS = 5
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="email_otps")
+    code_hash = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
     used_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "email verification code"
+        verbose_name_plural = "email verification codes"
 
     def __str__(self):
-        return f"Verification for {self.user.email}"
+        return f"Code for {self.user.email}"
 
     @property
     def is_valid(self):
-        return self.used_at is None and timezone.now() < self.expires_at
+        return (
+            self.used_at is None
+            and self.attempts < self.MAX_ATTEMPTS
+            and timezone.now() < self.expires_at
+        )
+
+    def matches(self, code: str) -> bool:
+        return check_password(code, self.code_hash)
+
+    def register_failed_attempt(self):
+        self.attempts += 1
+        self.save(update_fields=["attempts"])
+
+    def consume(self):
+        self.used_at = timezone.now()
+        self.attempts += 1
+        self.save(update_fields=["used_at", "attempts"])
 
 
 class Notification(models.Model):

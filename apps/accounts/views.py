@@ -21,17 +21,20 @@ from django_ratelimit.decorators import ratelimit
 from apps.accounts.forms import (
     AddressForm,
     LoginForm,
+    OTPForm,
     ProfileForm,
     RegisterForm,
     StyledPasswordChangeForm,
     StyledSetPasswordForm,
 )
-from apps.accounts.models import Address, EmailVerificationToken, Notification
+from apps.accounts.models import Address, Notification
 from apps.accounts.utils import (
-    issue_verification,
+    OTP_TTL_MINUTES,
+    active_otp,
+    issue_otp,
     notify_welcome,
-    send_verification_email,
-    verification_url,
+    resend_ready_in,
+    send_otp_email,
 )
 from apps.orders.models import Order
 from apps.payments.models import Payment
@@ -46,7 +49,7 @@ def register(request):
         try:
             with transaction.atomic():
                 user = form.save()
-                token = issue_verification(user)
+                _, code = issue_otp(user)
         except IntegrityError:
             # Two submissions can both pass the duplicate check before either
             # row is written (for example a double-clicked submit button).
@@ -54,11 +57,12 @@ def register(request):
             # form instead of returning a 500 page.
             form.add_error("email", "An account with this email already exists. Try signing in.")
         else:
-            send_verification_email(user, token, request)
+            send_otp_email(user, code)
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
             notify_welcome(user)
             messages.success(
-                request, f"Welcome to {settings.SITE_NAME}! Please verify your email to unlock checkout."
+                request,
+                f"Welcome to {settings.SITE_NAME}! Enter the 4-digit code we emailed to {user.email}.",
             )
             request.session["pending_verification"] = True
             return redirect("accounts:verify_pending")
@@ -98,17 +102,37 @@ def verify_pending(request):
     if request.user.is_email_verified:
         messages.success(request, "Your email is already verified.")
         return redirect("accounts:dashboard")
-    debug_url = None
-    if settings.DEBUG:
-        token = EmailVerificationToken.objects.filter(
-            user=request.user, used_at__isnull=True
-        ).order_by("-created_at").first()
-        if token and token.is_valid:
-            debug_url = verification_url(token.token, request)
+    form = OTPForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        record = active_otp(request.user)
+        if record is None or not record.is_valid:
+            form.add_error("code", "That code is no longer valid. Request a new one.")
+        elif not record.matches(form.cleaned_data["code"]):
+            record.register_failed_attempt()
+            remaining = max(0, record.MAX_ATTEMPTS - record.attempts)
+            if remaining:
+                form.add_error(
+                    "code",
+                    f"That code is not correct. {remaining} attempt{'s' if remaining > 1 else ''} left.",
+                )
+            else:
+                form.add_error("code", "Too many incorrect attempts. Request a new code.")
+        else:
+            record.consume()
+            request.user.mark_email_verified()
+            notify_welcome(request.user)
+            request.session.pop("pending_verification", None)
+            messages.success(request, "Email verified! You can now complete checkout.")
+            return redirect("accounts:dashboard")
     return render(
         request,
         "accounts/verify_pending.html",
-        {"debug_url": debug_url, "email": request.user.email},
+        {
+            "form": form,
+            "email": request.user.email,
+            "resend_wait": resend_ready_in(request.user),
+            "expires_minutes": OTP_TTL_MINUTES,
+        },
     )
 
 
@@ -118,35 +142,14 @@ def resend_verification(request):
     if request.user.is_email_verified:
         messages.info(request, "Your email is already verified.")
         return redirect("accounts:dashboard")
-    token = issue_verification(request.user)
-    url = send_verification_email(request.user, token, request)
-    messages.success(request, f"Verification email sent to {request.user.email}.")
-    if settings.DEBUG:
-        messages.info(request, f"Development mode verification link: {url}")
+    wait = resend_ready_in(request.user)
+    if wait:
+        messages.warning(request, f"Please wait {wait} seconds before requesting another code.")
+        return redirect("accounts:verify_pending")
+    _, code = issue_otp(request.user)
+    send_otp_email(request.user, code)
+    messages.success(request, f"A new 4-digit code was sent to {request.user.email}.")
     return redirect("accounts:verify_pending")
-
-
-def verify_email(request, token):
-    record = EmailVerificationToken.objects.select_related("user").filter(token=token).first()
-    if not record:
-        messages.error(request, "This verification link is invalid.")
-        return redirect("accounts:login")
-    if record.used_at:
-        messages.info(request, "This email is already verified.")
-        return redirect("accounts:login")
-    if not record.is_valid:
-        messages.error(request, "This verification link has expired. Request a new one.")
-        if request.user.is_authenticated:
-            return redirect("accounts:verify_pending")
-        return redirect("accounts:login")
-    record.used_at = timezone.now()
-    record.save(update_fields=["used_at"])
-    record.user.mark_email_verified()
-    notify_welcome(record.user)
-    messages.success(request, "Email verified! You can now complete checkout.")
-    if request.user.is_authenticated:
-        return redirect("accounts:dashboard")
-    return redirect("accounts:login")
 
 
 @login_required

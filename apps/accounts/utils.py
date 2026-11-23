@@ -1,46 +1,75 @@
-"""Email verification tokens and mailers."""
+"""Email verification codes and mailers.
+
+Registration sends a four-digit code to the address on the account. The code
+is stored only as a password hash, expires after ten minutes and is invalidated
+after five failed attempts. No verification link is emailed any more.
+"""
 import logging
 import secrets
 from datetime import timedelta
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.accounts.models import EmailVerificationToken, User
+from apps.accounts.models import EmailOTP
 
 logger = logging.getLogger(__name__)
 
+OTP_LENGTH = 4
+OTP_TTL_MINUTES = 10
+OTP_RESEND_SECONDS = 60
 
-def issue_verification(user):
-    EmailVerificationToken.objects.filter(user=user, used_at__isnull=True).delete()
-    token = secrets.token_urlsafe(32)
-    record = EmailVerificationToken.objects.create(
-        user=user, token=token, expires_at=timezone.now() + timedelta(days=3)
+
+def generate_otp() -> str:
+    """Return a cryptographically random numeric code, zero padded."""
+    return f"{secrets.randbelow(10 ** OTP_LENGTH):0{OTP_LENGTH}d}"
+
+
+def active_otp(user):
+    """The newest usable code for this user, or None."""
+    return (
+        EmailOTP.objects.filter(user=user, used_at__isnull=True)
+        .order_by("-created_at")
+        .first()
     )
-    return record
 
 
-def verification_url(token, request=None):
-    path = reverse("accounts:verify_email", kwargs={"token": token})
-    if request is not None:
-        return request.build_absolute_uri(path)
-    return f"{settings.SITE_URL}{path}"
+def issue_otp(user):
+    """Create a fresh code for the user, replacing any previous one."""
+    EmailOTP.objects.filter(user=user, used_at__isnull=True).delete()
+    code = generate_otp()
+    record = EmailOTP.objects.create(
+        user=user,
+        code_hash=make_password(code),
+        expires_at=timezone.now() + timedelta(minutes=OTP_TTL_MINUTES),
+    )
+    return record, code
 
 
-def send_verification_email(user, token, request=None):
-    # Callers pass either the stored record or the raw token string.
-    token_value = getattr(token, "token", token)
-    url = verification_url(token_value, request)
-    context = {"user": user, "url": url, "site_name": settings.SITE_NAME}
-    text = render_to_string("emails/verify_email.txt", context)
-    html = render_to_string("emails/verify_email.html", context)
-    from django.core.mail import EmailMultiAlternatives
+def resend_ready_in(user) -> int:
+    """Seconds the user must wait before another code can be requested."""
+    record = active_otp(user)
+    if not record:
+        return 0
+    elapsed = (timezone.now() - record.created_at).total_seconds()
+    return max(0, int(OTP_RESEND_SECONDS - elapsed))
 
+
+def send_otp_email(user, code: str) -> None:
+    context = {
+        "user": user,
+        "code": code,
+        "site_name": settings.SITE_NAME,
+        "expires_minutes": OTP_TTL_MINUTES,
+    }
+    text = render_to_string("emails/verify_otp.txt", context)
+    html = render_to_string("emails/verify_otp.html", context)
     email = EmailMultiAlternatives(
-        f"Verify your {settings.SITE_NAME} account",
+        f"{code} is your {settings.SITE_NAME} verification code",
         text,
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
@@ -51,8 +80,7 @@ def send_verification_email(user, token, request=None):
     except Exception:
         # Registration must not fail because the mail server is unreachable,
         # but the operator needs to see the problem in the log.
-        logger.exception("Could not send verification email to %s", user.email)
-    return url
+        logger.exception("Could not send verification code to %s", user.email)
 
 
 def notify_welcome(user):
