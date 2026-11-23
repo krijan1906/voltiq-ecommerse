@@ -1,4 +1,5 @@
 """Email verification tokens and mailers."""
+import logging
 import secrets
 from datetime import timedelta
 
@@ -9,6 +10,8 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.accounts.models import EmailVerificationToken, User
+
+logger = logging.getLogger(__name__)
 
 
 def issue_verification(user):
@@ -28,7 +31,9 @@ def verification_url(token, request=None):
 
 
 def send_verification_email(user, token, request=None):
-    url = verification_url(token, request)
+    # Callers pass either the stored record or the raw token string.
+    token_value = getattr(token, "token", token)
+    url = verification_url(token_value, request)
     context = {"user": user, "url": url, "site_name": settings.SITE_NAME}
     text = render_to_string("emails/verify_email.txt", context)
     html = render_to_string("emails/verify_email.html", context)
@@ -41,7 +46,12 @@ def send_verification_email(user, token, request=None):
         [user.email],
     )
     email.attach_alternative(html, "text/html")
-    email.send(fail_silently=True)
+    try:
+        email.send(fail_silently=False)
+    except Exception:
+        # Registration must not fail because the mail server is unreachable,
+        # but the operator needs to see the problem in the log.
+        logger.exception("Could not send verification email to %s", user.email)
     return url
 
 

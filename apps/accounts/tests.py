@@ -60,6 +60,18 @@ class RegistrationTests(TestCase):
         self.assertIsNotNone(user.email_verified_at)
         self.assertIsNotNone(token.used_at)
 
+    def test_verification_email_contains_direct_link(self):
+        self.client.post(reverse("accounts:register"), self._payload())
+        user = User.objects.get(email="nabin@example.com")
+        token = EmailVerificationToken.objects.get(user=user, used_at__isnull=True)
+        body = "\n".join(message.body for message in mail.outbox)
+        self.assertIn(f"/accounts/verify-email/{token.token}/", body)
+        self.assertNotIn("Verification%20for", body)
+        response = self.client.get(reverse("accounts:verify_email", args=[token.token]))
+        self.assertRedirects(response, reverse("accounts:dashboard"))
+        user.refresh_from_db()
+        self.assertTrue(user.is_email_verified)
+
     def test_expired_verification_token_is_rejected(self):
         user = make_user(email="expired@example.com", verified=False)
         token = EmailVerificationToken.objects.create(
