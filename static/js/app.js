@@ -768,6 +768,21 @@
   }
 
   /* ---------------------------------------------------------------------
+     Submit-once guard: disable the button after the first submit so a
+     double click cannot create the same record twice.
+     --------------------------------------------------------------------- */
+  document.querySelectorAll("form[data-submit-once]").forEach((form) => {
+    form.addEventListener("submit", () => {
+      const button = form.querySelector("button[type='submit']");
+      if (!button || button.disabled) return;
+      window.setTimeout(() => {
+        button.disabled = true;
+        button.setAttribute("aria-busy", "true");
+      }, 0);
+    });
+  });
+
+  /* ---------------------------------------------------------------------
      Reveal sections on scroll (progressive enhancement)
      --------------------------------------------------------------------- */
   if ("IntersectionObserver" in window) {

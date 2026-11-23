@@ -9,6 +9,7 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from django.db import IntegrityError, transaction
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -41,16 +42,26 @@ def register(request):
     if request.user.is_authenticated:
         return redirect("accounts:dashboard")
     form = RegisterForm(request.POST or None)
-    verify_url = None
     if request.method == "POST" and form.is_valid():
-        user = form.save()
-        token = issue_verification(user)
-        verify_url = send_verification_email(user, token, request)
-        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-        notify_welcome(user)
-        messages.success(request, f"Welcome to {settings.SITE_NAME}! Please verify your email to unlock checkout.")
-        request.session["pending_verification"] = True
-        return redirect("accounts:verify_pending")
+        try:
+            with transaction.atomic():
+                user = form.save()
+                token = issue_verification(user)
+        except IntegrityError:
+            # Two submissions can both pass the duplicate check before either
+            # row is written (for example a double-clicked submit button).
+            # The unique constraint is the final authority; report it in the
+            # form instead of returning a 500 page.
+            form.add_error("email", "An account with this email already exists. Try signing in.")
+        else:
+            send_verification_email(user, token, request)
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+            notify_welcome(user)
+            messages.success(
+                request, f"Welcome to {settings.SITE_NAME}! Please verify your email to unlock checkout."
+            )
+            request.session["pending_verification"] = True
+            return redirect("accounts:verify_pending")
     return render(request, "accounts/register.html", {"form": form})
 
 

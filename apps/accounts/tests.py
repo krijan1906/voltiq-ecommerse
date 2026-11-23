@@ -1,8 +1,11 @@
+from unittest.mock import patch
+
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from apps.accounts.forms import RegisterForm
 from apps.accounts.models import Address, CustomerProfile, EmailVerificationToken, Notification, User
 from apps.core.testing import DEFAULT_PASSWORD, make_address, make_order, make_product, make_user
 
@@ -42,6 +45,18 @@ class RegistrationTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "already exists")
+
+    def test_duplicate_insert_race_reports_form_error(self):
+        # Simulate the window where two submissions both pass the duplicate
+        # check: the database constraint must produce a form error, not a 500.
+        make_user(email="race@example.com")
+        with patch.object(RegisterForm, "clean_email", lambda self: self.cleaned_data["email"].lower()):
+            response = self.client.post(
+                reverse("accounts:register"), self._payload(email="race@example.com")
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "already exists")
+        self.assertEqual(User.objects.filter(email="race@example.com").count(), 1)
 
     def test_registration_rejects_terms_not_accepted(self):
         response = self.client.post(reverse("accounts:register"), self._payload(terms=""))
